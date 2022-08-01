@@ -1,0 +1,67 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!78 &1
+TagManager:
+  serializedVersion: 2
+  tags:
+  - Ground
+  - Enemy
+  - Flyer
+  - Player Bullet
+  - Companion Bullet
+  - InstaKill
+  - Rocketato
+  - Start Line
+  - Finish Line
+  layers:
+  - Default
+  - TransparentFX
+  - Ignore Raycast
+  - 
+  - Water
+  - UI
+  - 
+  - 
+  - Ground
+  - Player
+  - Enemies
+  - Player Bullet
+  - Rocketato
+  - Anchor
+  - Camera
+  - Post Processing
+  - Particles
+  - test
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  m_SortingLayers:
+  - name: Default
+    uniqueID: 0
+    locked: 0
+  - name: Background
+    uniqueID: 1704879735
+    locked: 0
+  - name: Ground
+    uniqueID: 450699857
+    locked: 0
+  - name: Enemy
+    uniqueID: 2262252127
+    locked: 0
+  - name: Player
+    uniqueID: 3470103101
+    locked: 0
+  - name: UI
+    uniqueID: 2864726515
+    locked: 0
