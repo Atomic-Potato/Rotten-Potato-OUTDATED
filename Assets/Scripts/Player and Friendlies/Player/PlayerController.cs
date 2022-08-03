@@ -296,7 +296,6 @@ public class PlayerController : MonoBehaviour
         if (input == 0 && isGrounded)
         {
             rigidBody.velocity = new Vector2(Mathf.SmoothDamp(rigidBody.velocity.x, 0, ref refVelocity, groundedDecelerationTime), rigidBody.velocity.y);
-            isMoving = false;
         }
         else if (input != 0 && !isDashingWall)
         {
@@ -312,18 +311,19 @@ public class PlayerController : MonoBehaviour
                 rigidBody.velocity = new Vector2(Mathf.SmoothDamp(rigidBody.velocity.x, targetVelocity, ref refVelocity, groundedAccelerationTime), rigidBody.velocity.y);
                 
             }
-
-            if(isGrounded)
-                isMoving = true;
-            else
-                isMoving = false;
         }
         
         //Setting the x velocity to 0 while idle
         if (rigidBody.velocity.x < 1f && rigidBody.velocity.x > -1f && input == 0 && !isKnocked && !isRolling)
+        {
             boxCollider.sharedMaterial = fullFrictionMaterial;
+            isMoving = false;
+        }
         else
+        {
             boxCollider.sharedMaterial = zeroFrictionMaterial;
+            isMoving = isGrounded; // equivalent to isMoving = isGrounded ? true : false;
+        }
     }
 
     public void Jump()
@@ -520,7 +520,10 @@ public class PlayerController : MonoBehaviour
         // if the player lands and is holding down 'S' then he can start rolling
         // it is separated so that the player can stop holding S while rolling
         if (Input.GetKey(KeyCode.S) && canRoll && isGrounded && !isDashing)
+        {
             isRolling = true; 
+            isMoving = false; //irrelevant here, but relevant to know the stater if we are running or not in Move()
+        }
 
         if(isRolling)
         {
@@ -569,7 +572,8 @@ public class PlayerController : MonoBehaviour
         if (grappleButtonPresses == 1 && grappleRayIsHit && !isGrappling) // !isGrappling so it wouldnt be spammed while grappling
         {
             isGrappling = true; //Used to disable Move() to not interfer with grappling
-
+            isMoving = false; //irrelevant here, but relevant to know the stater if we are running or not in Move()
+            
             //Disabling gravity to not interfer with the applied force
             rigidBody.gravityScale = 0f;
 

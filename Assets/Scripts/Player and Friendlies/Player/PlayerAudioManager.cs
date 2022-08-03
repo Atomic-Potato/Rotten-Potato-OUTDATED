@@ -9,23 +9,26 @@ public class PlayerAudioManager : MonoBehaviour
 
     string previousState = null;    
 
+    Coroutine fadeInCache;
+    Coroutine fadeOutCache;
+
     void Update()
     {
         string state = GetState();
         
         Debug.Log(state);
 
-        if(previousState == null || state == previousState)
+        if(previousState == null || state != previousState)
         {
-            previousState = state;
-            return;
+            //Fade caches stop coroutines from executing multiple times
+            fadeInCache = null;
+            fadeOutCache = null;
         }
 
-        //StartCoroutine(AudioManager.FadeOut(previousState, audioManagerScript.player));
-        StartCoroutine(AudioManager.FadeIn(state, audioManagerScript.player));
-
-        //AudioManager.PauseClip(previousState, audioManagerScript.player);
-        //AudioManager.PlayClip(state, audioManagerScript.player);
+        if(fadeOutCache == null && previousState != null && previousState != state)
+            fadeOutCache = StartCoroutine(AudioManager.FadeOut(previousState, audioManagerScript.player));
+        if(fadeInCache == null)
+            fadeInCache = StartCoroutine(AudioManager.FadeIn(state, audioManagerScript.player));
 
         previousState = state;
     }

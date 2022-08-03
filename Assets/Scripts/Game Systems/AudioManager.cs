@@ -87,6 +87,7 @@ public class AudioManager : MonoBehaviour
     {
         Sound s = Array.Find(entity, sound => sound.name == name);
         
+        //CHECKING FOR ERRORS
         if(s == null)
         {
             Debug.Log("Clip " + name + " not found in AudioManager.FadeOut()");
@@ -99,23 +100,34 @@ public class AudioManager : MonoBehaviour
             yield break;
         }
 
-        if(!s.source.isPlaying)
+        //FADING OUT
+        s.FadeIn(false);
+        s.FadeOut(true);
+
+        //if theres no sound or its not playing we stop
+        if(!s.source.isPlaying || s.source.volume == 0)
             yield break;
 
-        float rate = s.maxVolume/s.FadeOutTime; //The equation for acceleration
+        float rate = s.initialVolume/s.FadeOutTime; //The equation for acceleration
 
-        while(s.volume > 0)
+        //while theres volume and the sound should fade out
+        while(s.source.volume > 0 && s.isFadingOut())
         {
             s.source.volume -= rate * Time.deltaTime;
-            yield return new WaitForSeconds(s.FadeOutTime);
-            s.source.Stop();
+            yield return null;
         }
+
+        //if we finish the loop and the FadeOut is not interrupted
+        //we stop, because otherwise it will stop it during the FadeIn most likely
+        if(s.isFadingOut())
+            s.source.Stop();
     }
 
     public static IEnumerator FadeIn(string name, Sound[] entity)
     {
         Sound s = Array.Find(entity, sound => sound.name == name);
         
+        //ERROR CHECKING
         if(s == null)
         {
             Debug.Log("Clip " + name + " not found in AudioManager.FadeIn()");
@@ -127,20 +139,29 @@ public class AudioManager : MonoBehaviour
             Debug.Log("Entity cannot be null in AudioManager.FadeIn()");
             yield break;
         }
+        
+        //FADING IN
+        s.FadeIn(true);
+        s.FadeOut(false);
 
-        if(s.source.isPlaying)
+        if(s.source.volume == 1)
             yield break;
 
-        s.source.Play();
+        if(!s.source.isPlaying)
+            s.source.Play();
 
-        float rate = s.maxVolume / s.FadeInTime; //The equation for acceleration
-
-        while(s.volume < s.maxVolume)
+        float rate = s.initialVolume / s.FadeInTime; //The equation for acceleration
+        
+        while(s.source.volume < s.initialVolume && s.isFadingIn())
         {
-            Debug.Log(s.source.volume);
             s.source.volume += rate * Time.deltaTime;
-            yield return new WaitForSeconds(s.FadeInTime);
+            yield return null;
         }
 
+        //if we finish the loop and the FadeIn is not interrupted
+        //we set the volume to the exact
+        //because otherwise it will suddenly jump to initial volume mid FadeOut
+        if(s.isFadingIn())
+            s.source.volume = s.initialVolume;
     }
 }
