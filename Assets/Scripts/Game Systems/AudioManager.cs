@@ -50,12 +50,9 @@ public class AudioManager : MonoBehaviour
         
         if(!s.source.isPlaying)
         {
-            Debug.Log("Started Playing");
             s.source.Play();
             s.source.volume = 1;
         }
-        else
-            Debug.Log("Already Playing");
 
         return 1;
     }
@@ -117,6 +114,11 @@ public class AudioManager : MonoBehaviour
             yield return null;
         }
 
+        if(!s.loop)
+        {
+            s.source.time = 0;
+        }
+
         //if we finish the loop and the FadeOut is not interrupted
         //we stop, because otherwise it will stop it during the FadeIn most likely
         if(s.isFadingOut())
@@ -143,6 +145,13 @@ public class AudioManager : MonoBehaviour
         //FADING IN
         s.FadeIn(true);
         s.FadeOut(false);
+
+        if(!s.loop)
+        {
+            s.source.time = 0;
+            s.source.volume = 0;
+            s.source.Play();
+        }
 
         if(s.source.volume == 1)
             yield break;

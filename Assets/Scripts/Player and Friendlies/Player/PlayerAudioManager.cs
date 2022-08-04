@@ -14,9 +14,12 @@ public class PlayerAudioManager : MonoBehaviour
 
     void Update()
     {
+        
         string state = GetState();
         
-        Debug.Log(state);
+        if(previousState != state)
+            Debug.Log(state);
+        Debug.Log("just landed: " + playerScript.isJustLanded);
 
         if(previousState == null || state != previousState)
         {
@@ -35,8 +38,15 @@ public class PlayerAudioManager : MonoBehaviour
 
     public string GetState()
     {
+        if(playerScript.isJumping)
+            return "Jump";
+
+        if(playerScript.isJustLanded)
+            return "On Grounded";
+
         if(playerScript.isMoving)
             return "Grounded Movement";
+
 
         return "Idle";
     }

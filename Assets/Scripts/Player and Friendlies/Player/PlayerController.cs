@@ -99,14 +99,15 @@ public class PlayerController : MonoBehaviour
     [HideInInspector] public bool canGrapple = true;
 
     //States
-    [HideInInspector] public bool isRolling = false;
+    [HideInInspector] public bool isRolling;
     [HideInInspector] public bool isDashing;
     [HideInInspector] public bool isGrounded;
+    [HideInInspector] public bool isJustLanded;
     [HideInInspector] public bool isMoving;
-    [HideInInspector] bool isJumping;
-    [HideInInspector] bool isGrappling;
-    [HideInInspector] bool isDashingWall; // player is hitting a wall while dashing
-    [HideInInspector] bool isCollidingWithCollider; // Basically walls and ground
+    [HideInInspector] public bool isJumping;
+    [HideInInspector] public bool isGrappling;
+    [HideInInspector] public bool isDashingWall; // player is hitting a wall while dashing
+    [HideInInspector] public bool isCollidingWithCollider; // Basically walls and ground
 
     int grappleButtonPresses;
     int rollingDirection;
@@ -139,6 +140,8 @@ public class PlayerController : MonoBehaviour
     GameObject anchor;
     SpriteRenderer anchorSpriteRenderer;
     SpriteRenderer anchorIndicatorSpriteRender;
+
+    Coroutine justLandedCache = null;
 
     //Refrences for smoothdamp
     float refVelocity = 0f;
@@ -277,7 +280,9 @@ public class PlayerController : MonoBehaviour
     private void OnCollisionExit2D(Collision2D collision)
     {
         if (collision.gameObject.CompareTag("Ground"))
+        {
             isCollidingWithCollider = false;
+        }
     }
 
     private void OnTriggerEnter2D(Collider2D collision)
@@ -317,7 +322,7 @@ public class PlayerController : MonoBehaviour
         if (rigidBody.velocity.x < 1f && rigidBody.velocity.x > -1f && input == 0 && !isKnocked && !isRolling)
         {
             boxCollider.sharedMaterial = fullFrictionMaterial;
-            isMoving = false;
+            isMoving = false; //irrelevant here, but relevant to know the stater if we are running or not in Move()
         }
         else
         {
@@ -349,10 +354,14 @@ public class PlayerController : MonoBehaviour
         if (Physics2D.OverlapBox(boxCastPosition.position, boxCastSize, 0, groundLayer))
         {
             isGrounded = true;
+
+            if(justLandedCache == null && !isDashing) //!isDashing in case dashing while grounded
+                justLandedCache = StartCoroutine(JustLanded());
         }
         else
         {
             isGrounded = false;
+            justLandedCache = null;
         }
     }
 
@@ -461,6 +470,7 @@ public class PlayerController : MonoBehaviour
             {
                 boxCollider.size = dashingColliderSize; //we smallen the collider in case the player is dashing while colliding
                 isDashing = true;
+                isMoving = false;
                 dashesLeft--;
                 
                 //Setting up
@@ -927,5 +937,12 @@ public class PlayerController : MonoBehaviour
         isJumping = true;
         yield return new WaitForSeconds(jumpCooldownTime);
         isJumping = false;
+    }
+
+    IEnumerator JustLanded()
+    {
+        isJustLanded = true;
+        yield return new WaitForSeconds(0.1f);
+        isJustLanded = false;
     }
 }
