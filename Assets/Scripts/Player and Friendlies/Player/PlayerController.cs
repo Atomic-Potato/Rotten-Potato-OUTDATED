@@ -130,6 +130,7 @@ public class PlayerController : MonoBehaviour
     
     bool grappleRayIsHit;
     bool canRoll;
+    bool grappleForceApplied;
 
     Vector3 grapplingDirection = Vector3.zero;
     Vector2 originalColliderSize = Vector2.zero;
@@ -585,6 +586,8 @@ public class PlayerController : MonoBehaviour
         if (grappleButtonPresses == 1 && grappleRayIsHit && !isGrappling) // !isGrappling so it wouldnt be spammed while grappling
         {
             isGrappling = true; //Used to disable Move() to not interfer with grappling
+            StartCoroutine(JustGrappled());
+
             isMoving = false; //irrelevant here, but relevant to know the stater if we are running or not in Move()
             
             //Disabling gravity to not interfer with the applied force
@@ -656,6 +659,9 @@ public class PlayerController : MonoBehaviour
                 //Giving the player a bonuse force for completing the grapple
                 if (Vector2.Distance(transform.position, anchor.transform.position) <= distanceToDetachGrapple)
                 {
+                    grappleForceApplied = true;
+                    StartCoroutine(JustFinishedGrappling());
+
                     if (finalGrapplingForceDirection != Vector2.zero)
                     {
                         rigidBody.velocity = Vector2.zero;
@@ -671,7 +677,9 @@ public class PlayerController : MonoBehaviour
                     else
                         rigidBody.AddForce(new Vector2(grapplingDirection.x * finalForceOfGrapple, grapplingDirection.y * finalForceOfGrapple * 1.5f), ForceMode2D.Impulse);
                 }
-
+                else
+                    StartCoroutine(JustBrokeGrappling());
+                    
                 // Resetting
                 isGrappling = false;
                 currentGrapplingInput = Vector2.zero;
@@ -958,18 +966,17 @@ public class PlayerController : MonoBehaviour
         isJustGrappling = false;
     }
     
-    IEnumerator JustFinishGrappling()
+    IEnumerator JustFinishedGrappling()
     {
         isJustFinishedGrappling = true;
         yield return new WaitForSeconds(0.1f);
         isJustFinishedGrappling = false;
     }
 
-    /*
-    IEnumerator JustFinishGrappling()
+    IEnumerator JustBrokeGrappling()
     {
-        isJustFinishedGrappling = true;
+        isJustBrokeGrappling = true;
         yield return new WaitForSeconds(0.1f);
-        isJustFinishedGrappling = false;
-    }*/
+        isJustBrokeGrappling = false;
+    }
 }
