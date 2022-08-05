@@ -37,6 +37,9 @@ public class PlayerAudioManager : MonoBehaviour
 
     public string GetState()
     {
+        if(playerScript.isGrappling)
+            return "Grappling";
+
         if(playerScript.isJumping)
             return "Jump";
 

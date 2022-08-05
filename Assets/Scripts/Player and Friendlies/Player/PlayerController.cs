@@ -106,6 +106,9 @@ public class PlayerController : MonoBehaviour
     [HideInInspector] public bool isMoving;
     [HideInInspector] public bool isJumping;
     [HideInInspector] public bool isGrappling;
+    [HideInInspector] public bool isJustGrappling;
+    [HideInInspector] public bool isJustFinishedGrappling;
+    [HideInInspector] public bool isJustBrokeGrappling;
     [HideInInspector] public bool isDashingWall; // player is hitting a wall while dashing
     [HideInInspector] public bool isCollidingWithCollider; // Basically walls and ground
 
@@ -932,6 +935,8 @@ public class PlayerController : MonoBehaviour
         isKnocked = false;
     }
 
+
+    //State Handlers
     IEnumerator JumpCooldown()
     {
         isJumping = true;
@@ -945,4 +950,26 @@ public class PlayerController : MonoBehaviour
         yield return new WaitForSeconds(0.1f);
         isJustLanded = false;
     }
+
+    IEnumerator JustGrappled()
+    {
+        isJustGrappling = true;
+        yield return new WaitForSeconds(0.1f);
+        isJustGrappling = false;
+    }
+    
+    IEnumerator JustFinishGrappling()
+    {
+        isJustFinishedGrappling = true;
+        yield return new WaitForSeconds(0.1f);
+        isJustFinishedGrappling = false;
+    }
+
+    /*
+    IEnumerator JustFinishGrappling()
+    {
+        isJustFinishedGrappling = true;
+        yield return new WaitForSeconds(0.1f);
+        isJustFinishedGrappling = false;
+    }*/
 }
