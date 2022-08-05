@@ -19,7 +19,6 @@ public class PlayerAudioManager : MonoBehaviour
         
         if(previousState != state)
             Debug.Log(state);
-        Debug.Log("just landed: " + playerScript.isJustLanded);
 
         if(previousState == null || state != previousState)
         {
