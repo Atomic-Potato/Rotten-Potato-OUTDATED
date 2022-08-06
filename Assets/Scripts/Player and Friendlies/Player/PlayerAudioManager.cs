@@ -17,8 +17,8 @@ public class PlayerAudioManager : MonoBehaviour
         
         string state = GetState();
         
-        if(previousState != state)
-            Debug.Log(state);
+        //if(previousState != state)
+        //    Debug.Log(state);
 
         if(previousState == null || state != previousState)
         {
