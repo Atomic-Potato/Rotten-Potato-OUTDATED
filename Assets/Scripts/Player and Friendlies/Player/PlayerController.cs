@@ -101,6 +101,7 @@ public class PlayerController : MonoBehaviour
     //States
     [HideInInspector] public bool isRolling;
     [HideInInspector] public bool isDashing;
+    [HideInInspector] public bool isJustDashing;
     [HideInInspector] public bool isGrounded;
     [HideInInspector] public bool isJustLanded;
     [HideInInspector] public bool isMoving;
@@ -477,6 +478,8 @@ public class PlayerController : MonoBehaviour
                 isMoving = false;
                 dashesLeft--;
                 
+                StartCoroutine(JustDashed());
+
                 //Setting up
                 dashTimer = dashingTime;
                 dashSlowDownTimer = 0f;
@@ -978,5 +981,12 @@ public class PlayerController : MonoBehaviour
         isJustBrokeGrappling = true;
         yield return new WaitForSeconds(0.1f);
         isJustBrokeGrappling = false;
+    }
+
+    IEnumerator JustDashed()
+    {
+        isJustDashing = true;
+        yield return new WaitForSeconds(0.1f);
+        isJustDashing = false;
     }
 }

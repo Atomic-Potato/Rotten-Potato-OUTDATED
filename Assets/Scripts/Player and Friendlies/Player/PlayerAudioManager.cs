@@ -49,6 +49,12 @@ public class PlayerAudioManager : MonoBehaviour
         if(playerScript.isGrappling)
             return "Grappling";
 
+        if(playerScript.isJustDashing)
+            return "On Dashing";
+        
+        if(playerScript.isDashing)
+            return "Dashing";
+
         if(playerScript.isJumping)
             return "Jump";
 
