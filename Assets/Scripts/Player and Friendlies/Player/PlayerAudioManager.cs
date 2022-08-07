@@ -5,7 +5,7 @@ using UnityEngine;
 public class PlayerAudioManager : MonoBehaviour
 {
     [SerializeField] AudioManager audioManagerScript;
-    [SerializeField] PlayerController playerScript;
+    [SerializeField] PlayerController playerController;
 
     string previousState = null;    
 
@@ -17,9 +17,8 @@ public class PlayerAudioManager : MonoBehaviour
         
         string state = GetState();
         
-        if(previousState != state)
-            Debug.Log(state);
-        Debug.Log("just landed: " + playerScript.isJustLanded);
+        //if(previousState != state)
+        //    Debug.Log(state);
 
         if(previousState == null || state != previousState)
         {
@@ -28,7 +27,7 @@ public class PlayerAudioManager : MonoBehaviour
             fadeOutCache = null;
         }
 
-        if(fadeOutCache == null && previousState != null && previousState != state)
+        if(fadeOutCache == null && previousState != null && state != null && previousState != state)
             fadeOutCache = StartCoroutine(AudioManager.FadeOut(previousState, audioManagerScript.player));
         if(fadeInCache == null)
             fadeInCache = StartCoroutine(AudioManager.FadeIn(state, audioManagerScript.player));
@@ -38,15 +37,38 @@ public class PlayerAudioManager : MonoBehaviour
 
     public string GetState()
     {
-        if(playerScript.isJumping)
+        if(playerController.grapplingLoaded)
+            return "Grappling Ready";
+            
+        if(playerController.isJustGrappling)
+            return "On Grappling";
+
+        if(playerController.isJustBrokeGrappling)
+            return "On Grappling Break";
+
+        if(playerController.isJustFinishedGrappling)
+            return "On Grappling Finish";
+
+        if(playerController.isGrappling)
+            return "Grappling";
+
+        if(playerController.isJustDashing)
+            return "On Dashing";
+        
+        if(playerController.isDashing)
+            return "Dashing";
+
+        if(playerController.isJumping)
             return "Jump";
 
-        if(playerScript.isJustLanded)
+        if(playerController.isJustLanded)
             return "On Grounded";
 
-        if(playerScript.isMoving)
-            return "Grounded Movement";
+        if(playerController.isRolling)
+            return "Rolling";
 
+        if(playerController.isMoving)
+            return "Grounded Movement";
 
         return "Idle";
     }

@@ -57,6 +57,25 @@ public class AudioManager : MonoBehaviour
         return 1;
     }
 
+    public static IEnumerator PlayClip(Sound s)
+    {
+        if(s == null)
+        {
+            Debug.Log("Clip doesnt exist in AudioManager.PlayClip(Sound s)");
+            yield break;
+        }
+
+        Sound newSound = new Sound(s);
+
+        newSound.source.volume = s.initialVolume;
+        newSound.source.time = 0;
+        newSound.source.Play();
+
+        yield return new WaitForSeconds(s.source.clip.length);
+
+        Destroy(newSound.source);
+    }
+
     public static int PauseClip(string name, Sound[] entity)
     {
         Sound s = Array.Find(entity, sound => sound.name == name);
@@ -79,6 +98,18 @@ public class AudioManager : MonoBehaviour
         return 1;
     }
 
+    public static IEnumerator PauseClip(Sound s)
+    {
+        if(s == null)
+        {
+            Debug.Log("Clip doesnt exist in AudioManager.PauseClip(Sound s)");
+            yield break;
+        }
+
+        s.source.volume = s.initialVolume;
+        s.source.time = 0;
+        s.source.Stop();
+    }
 
     public static IEnumerator FadeOut(string name, Sound[] entity)
     {
@@ -97,6 +128,13 @@ public class AudioManager : MonoBehaviour
             yield break;
         }
 
+        //If its a non looping audio
+        if(!s.loop)
+        {
+            //yield return PauseClip(s);
+            yield break;
+        }  
+
         //FADING OUT
         s.FadeIn(false);
         s.FadeOut(true);
@@ -112,11 +150,6 @@ public class AudioManager : MonoBehaviour
         {
             s.source.volume -= rate * Time.deltaTime;
             yield return null;
-        }
-
-        if(!s.loop)
-        {
-            s.source.time = 0;
         }
 
         //if we finish the loop and the FadeOut is not interrupted
@@ -142,6 +175,12 @@ public class AudioManager : MonoBehaviour
             yield break;
         }
         
+        //If its a non looping audio
+        if(!s.loop)
+        {
+            yield return PlayClip(s);
+            yield break;
+        }
         //FADING IN
         s.FadeIn(true);
         s.FadeOut(false);

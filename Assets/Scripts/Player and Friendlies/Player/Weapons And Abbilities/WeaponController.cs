@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -15,11 +16,14 @@ public class WeaponController : MonoBehaviour
     [SerializeField] GameObject bullet;
     [SerializeField] Transform firePoint;
     [SerializeField] PivotController pivotManager;
+    [SerializeField] AudioManager audioManager;
+
+    //Hidden
+    [HideInInspector] public bool isJustShot;
 
 
     //Privates
     float timeToFire;
-
 
     void Update()
     {
@@ -43,6 +47,7 @@ public class WeaponController : MonoBehaviour
 
                 timeToFire = Time.time + 1 / fireRate;
                 Shoot();
+                StartCoroutine(AudioManager.FadeIn("Shooting", audioManager.player));
             }
         }
     }
@@ -50,6 +55,16 @@ public class WeaponController : MonoBehaviour
     void Shoot()
     {
         if (!pivotManager.locked)
+        {
             Instantiate(bullet, firePoint.position, firePoint.rotation);
+            StartCoroutine(EnableThenDisable(_ => isJustShot = _, 0.01f));
+        }
+    }
+
+    IEnumerator EnableThenDisable(Action<bool> switcher, float time)
+    {
+        switcher(true); // true => global = true;
+        yield return new WaitForSeconds(time);
+        switcher(false); // false => global = false; 
     }
 }

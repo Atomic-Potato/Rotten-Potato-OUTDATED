@@ -21,17 +21,35 @@ public class Sound
     public bool playOnAwake;
 
     //Hidden
+    [HideInInspector] public GameObject parent;
+    
     [HideInInspector] public AudioSource source;
-
+    
     //Private
-    GameObject parent;
-
     bool fadingIn;
     bool fadingOut;
 
+    public Sound(Sound s)
+    {
+        parent = s.parent;
+
+        source = parent.AddComponent<AudioSource>();
+        source.name = s.name;
+        source.clip = s.clip;
+        source.volume = s.initialVolume;
+        source.minDistance = s.minDistanceToHear;
+        source.pitch = s.pitch;
+        source.loop = s.loop;
+        source.playOnAwake = s.playOnAwake;
+
+        source.volume = 0;
+    }
+
     public void AssignToObject(GameObject gameObject)
     {
-        source = gameObject.AddComponent<AudioSource>();
+        parent = gameObject;
+
+        source = parent.AddComponent<AudioSource>();
         source.name = name;
         source.clip = clip;
         source.volume = initialVolume;
@@ -39,8 +57,6 @@ public class Sound
         source.pitch = pitch;
         source.loop = loop;
         source.playOnAwake = playOnAwake;
-
-        parent = gameObject;
 
         source.volume = 0;
     }

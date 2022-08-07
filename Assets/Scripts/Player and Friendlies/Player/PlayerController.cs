@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Pathfinding;
@@ -88,7 +89,7 @@ public class PlayerController : MonoBehaviour
     [SerializeField] GrapplingStringController stringController;
     [SerializeField] CameraController cameraController;
     [SerializeField] CompanionAbilitiesController companionAbilitiesController;
-
+    [SerializeField] AudioManager audioManager;
 
     //Private and hidden
     [Space]
@@ -101,11 +102,16 @@ public class PlayerController : MonoBehaviour
     //States
     [HideInInspector] public bool isRolling;
     [HideInInspector] public bool isDashing;
+    [HideInInspector] public bool isJustDashing;
     [HideInInspector] public bool isGrounded;
     [HideInInspector] public bool isJustLanded;
     [HideInInspector] public bool isMoving;
     [HideInInspector] public bool isJumping;
     [HideInInspector] public bool isGrappling;
+    [HideInInspector] public bool isJustGrappling;
+    [HideInInspector] public bool isJustFinishedGrappling;
+    [HideInInspector] public bool isJustBrokeGrappling;
+    [HideInInspector] public bool grapplingLoaded;
     [HideInInspector] public bool isDashingWall; // player is hitting a wall while dashing
     [HideInInspector] public bool isCollidingWithCollider; // Basically walls and ground
 
@@ -127,6 +133,7 @@ public class PlayerController : MonoBehaviour
     
     bool grappleRayIsHit;
     bool canRoll;
+    bool grappleForceApplied;
 
     Vector3 grapplingDirection = Vector3.zero;
     Vector2 originalColliderSize = Vector2.zero;
@@ -141,7 +148,10 @@ public class PlayerController : MonoBehaviour
     SpriteRenderer anchorSpriteRenderer;
     SpriteRenderer anchorIndicatorSpriteRender;
 
+    //Coroutine cache
     Coroutine justLandedCache = null;
+    Coroutine justCanGrappleCache = null;
+
 
     //Refrences for smoothdamp
     float refVelocity = 0f;
@@ -169,7 +179,8 @@ public class PlayerController : MonoBehaviour
 
     private void Update()
     {
-        
+        Debug.Log("Player velocity: X = " + rigidBody.velocity.x + " Y =" + rigidBody.velocity.y);
+
         //Resetting knock timer
         if (isKnocked)
         {
@@ -222,7 +233,6 @@ public class PlayerController : MonoBehaviour
         //DEBUGGING
 
         //MOVEMENT
-        //Debug.Log("Player velocity: X = " + rigidBody.velocity.x + " Y =" + rigidBody.velocity.y);
         //Debug.Log("Input = " + input);
         //if(isGrappling)
         //Debug.Log("Current Input direction (GetKeyDown)::: " + GetInputDirection(false, true));
@@ -340,7 +350,7 @@ public class PlayerController : MonoBehaviour
 
             jumpBufferTime = 0f;
 
-            StartCoroutine(JumpCooldown());
+            StartCoroutine(EnableThenDisable(_ => isJumping = _, jumpCooldownTime));
         }
 
         if(Input.GetButtonUp("Jump") && rigidBody.velocity.y > 0f)
@@ -356,7 +366,7 @@ public class PlayerController : MonoBehaviour
             isGrounded = true;
 
             if(justLandedCache == null && !isDashing) //!isDashing in case dashing while grounded
-                justLandedCache = StartCoroutine(JustLanded());
+                justLandedCache = StartCoroutine(EnableThenDisable(_ => isJustLanded = _, 0.1f));
         }
         else
         {
@@ -444,7 +454,7 @@ public class PlayerController : MonoBehaviour
         {
             //Applying jump force
             rigidBody.velocity = new Vector2((jumpForce*input)/2, jumpForce);
-            JumpCooldown();
+            StartCoroutine(EnableThenDisable((_ => isJumping = _), jumpCooldownTime));
 
             //Resetting
             rigidBody.gravityScale = originalGravityScale;
@@ -473,6 +483,8 @@ public class PlayerController : MonoBehaviour
                 isMoving = false;
                 dashesLeft--;
                 
+                StartCoroutine(EnableThenDisable(_ => isJustDashing = _, 0.1f));
+
                 //Setting up
                 dashTimer = dashingTime;
                 dashSlowDownTimer = 0f;
@@ -577,11 +589,15 @@ public class PlayerController : MonoBehaviour
 
     void Grapple(float originalGravity)
     {
+        if(canGrapple && justCanGrappleCache == null)
+            justCanGrappleCache = StartCoroutine(EnableThenDisable(_ => grapplingLoaded = _, 0.1f));
 
         //Activating the grapple
         if (grappleButtonPresses == 1 && grappleRayIsHit && !isGrappling) // !isGrappling so it wouldnt be spammed while grappling
         {
             isGrappling = true; //Used to disable Move() to not interfer with grappling
+            StartCoroutine(EnableThenDisable(_ => isJustGrappling = _, 0.1f));
+
             isMoving = false; //irrelevant here, but relevant to know the stater if we are running or not in Move()
             
             //Disabling gravity to not interfer with the applied force
@@ -638,21 +654,19 @@ public class PlayerController : MonoBehaviour
             }
         }
 
-        /*im not sure what this was for
-        if (finalGrapplingForceDirection != Vector2.zero && distanceToDetachGrapple == originalDistanceToDetach)
-            distanceToDetachGrapple /=4;
-        else
-            distanceToDetachGrapple = originalDistanceToDetach;
-        */
-
         //Resetting back once reached destination or if canceled by user or hit by rocketato
         if (Vector2.Distance(transform.position, anchor.transform.position) <= distanceToDetachGrapple || (grappleButtonPresses >= 2 && isGrappling) || isKnocked)
         {
             if (isGrappling) // Used to stop applying these values when not grappling
             {
+                justLandedCache = null;
+
                 //Giving the player a bonuse force for completing the grapple
                 if (Vector2.Distance(transform.position, anchor.transform.position) <= distanceToDetachGrapple)
                 {
+                    grappleForceApplied = true;
+                    StartCoroutine(EnableThenDisable(_ => isJustFinishedGrappling = _, 0.1f));
+
                     if (finalGrapplingForceDirection != Vector2.zero)
                     {
                         rigidBody.velocity = Vector2.zero;
@@ -668,7 +682,9 @@ public class PlayerController : MonoBehaviour
                     else
                         rigidBody.AddForce(new Vector2(grapplingDirection.x * finalForceOfGrapple, grapplingDirection.y * finalForceOfGrapple * 1.5f), ForceMode2D.Impulse);
                 }
-
+                else
+                    StartCoroutine(EnableThenDisable(_ => isJustBrokeGrappling = _, 0.1f));
+                    
                 // Resetting
                 isGrappling = false;
                 currentGrapplingInput = Vector2.zero;
@@ -682,8 +698,11 @@ public class PlayerController : MonoBehaviour
                 DisplayGrapplingArrows(Vector2.zero);
 
                 grappleButtonPresses = 0;
-                StartCoroutine("GrappleDelay");
+
+                StartCoroutine(DisableThenEnable(_ => canGrapple = _, grapplingDelay));
+                justCanGrappleCache = null;
             }
+            
         }
     }
 
@@ -917,12 +936,6 @@ public class PlayerController : MonoBehaviour
         }
         return inputVector;
     }
-    IEnumerator GrappleDelay()
-    {
-        canGrapple = false;
-        yield return new WaitForSeconds(grapplingDelay);
-        canGrapple = true;
-    }
 
     //For some reason the function doesnt start at all, find a fix later
     //My dumbass used to start the coroutine by just typing in ResetKnock(); instead of StartCoroutine("ResetKnock");
@@ -932,17 +945,19 @@ public class PlayerController : MonoBehaviour
         isKnocked = false;
     }
 
-    IEnumerator JumpCooldown()
+    //This function takes a function with a boolean argument as an alternative for pointers
+    //e.g.  EnableThenDisable(_ => globalVariable = _, 0.1f);
+    IEnumerator EnableThenDisable(Action<bool> switcher, float time)
     {
-        isJumping = true;
-        yield return new WaitForSeconds(jumpCooldownTime);
-        isJumping = false;
+        switcher(true); // true => global = true;
+        yield return new WaitForSeconds(time);
+        switcher(false); // false => global = false; 
     }
 
-    IEnumerator JustLanded()
+    IEnumerator DisableThenEnable(Action<bool> switcher, float time)
     {
-        isJustLanded = true;
-        yield return new WaitForSeconds(0.1f);
-        isJustLanded = false;
+        switcher(false);
+        yield return new WaitForSeconds(time);
+        switcher(true);
     }
 }
