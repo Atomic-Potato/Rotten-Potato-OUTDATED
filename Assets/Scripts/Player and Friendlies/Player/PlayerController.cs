@@ -151,8 +151,6 @@ public class PlayerController : MonoBehaviour
     //Coroutine cache
     Coroutine justLandedCache = null;
     Coroutine justCanGrappleCache = null;
-    Coroutine windCacheIn = null;
-    Coroutine windCacheOut = null;
 
 
     //Refrences for smoothdamp
@@ -232,26 +230,6 @@ public class PlayerController : MonoBehaviour
         GrappleRay();
 
 
-        //AUDIO
-
-        if(rigidBody.velocity.x > 10 || rigidBody.velocity.y > 10)
-        {
-            if(windCacheIn == null)
-            {
-                windCacheIn = StartCoroutine(AudioManager.FadeIn("Wind", audioManager.player));
-                windCacheOut = null;
-            }
-        }
-
-        if(rigidBody.velocity.x < 5 || rigidBody.velocity.y < 5)
-        {
-            if(windCacheOut == null)
-            {
-                windCacheOut = StartCoroutine(AudioManager.FadeOut("Wind", audioManager.player));
-                windCacheIn = null;
-            }
-        }
-        
         //DEBUGGING
 
         //MOVEMENT
@@ -675,14 +653,6 @@ public class PlayerController : MonoBehaviour
                 finalGrapplingForceDirection = DisplayGrapplingArrows(GetInputDirection(true, false, false));
             }
         }
-        
-
-        /*im not sure what this was for
-        if (finalGrapplingForceDirection != Vector2.zero && distanceToDetachGrapple == originalDistanceToDetach)
-            distanceToDetachGrapple /=4;
-        else
-            distanceToDetachGrapple = originalDistanceToDetach;
-        */
 
         //Resetting back once reached destination or if canceled by user or hit by rocketato
         if (Vector2.Distance(transform.position, anchor.transform.position) <= distanceToDetachGrapple || (grappleButtonPresses >= 2 && isGrappling) || isKnocked)
