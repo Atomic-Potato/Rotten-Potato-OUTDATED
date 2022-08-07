@@ -21,8 +21,6 @@ public class PlayerUIController : MonoBehaviour
     {
         GrappleIcon();
         DashIcon();
-
-        Debug.Log(playerController.canGrapple + "<< Can grapple");
     }
 
     void GrappleIcon()

@@ -89,7 +89,7 @@ public class PlayerController : MonoBehaviour
     [SerializeField] GrapplingStringController stringController;
     [SerializeField] CameraController cameraController;
     [SerializeField] CompanionAbilitiesController companionAbilitiesController;
-
+    [SerializeField] AudioManager audioManager;
 
     //Private and hidden
     [Space]
@@ -111,6 +111,7 @@ public class PlayerController : MonoBehaviour
     [HideInInspector] public bool isJustGrappling;
     [HideInInspector] public bool isJustFinishedGrappling;
     [HideInInspector] public bool isJustBrokeGrappling;
+    [HideInInspector] public bool grapplingLoaded;
     [HideInInspector] public bool isDashingWall; // player is hitting a wall while dashing
     [HideInInspector] public bool isCollidingWithCollider; // Basically walls and ground
 
@@ -147,7 +148,12 @@ public class PlayerController : MonoBehaviour
     SpriteRenderer anchorSpriteRenderer;
     SpriteRenderer anchorIndicatorSpriteRender;
 
+    //Coroutine cache
     Coroutine justLandedCache = null;
+    Coroutine justCanGrappleCache = null;
+    Coroutine windCacheIn = null;
+    Coroutine windCacheOut = null;
+
 
     //Refrences for smoothdamp
     float refVelocity = 0f;
@@ -175,7 +181,8 @@ public class PlayerController : MonoBehaviour
 
     private void Update()
     {
-        
+        Debug.Log("Player velocity: X = " + rigidBody.velocity.x + " Y =" + rigidBody.velocity.y);
+
         //Resetting knock timer
         if (isKnocked)
         {
@@ -225,10 +232,29 @@ public class PlayerController : MonoBehaviour
         GrappleRay();
 
 
+        //AUDIO
+
+        if(rigidBody.velocity.x > 10 || rigidBody.velocity.y > 10)
+        {
+            if(windCacheIn == null)
+            {
+                windCacheIn = StartCoroutine(AudioManager.FadeIn("Wind", audioManager.player));
+                windCacheOut = null;
+            }
+        }
+
+        if(rigidBody.velocity.x < 5 || rigidBody.velocity.y < 5)
+        {
+            if(windCacheOut == null)
+            {
+                windCacheOut = StartCoroutine(AudioManager.FadeOut("Wind", audioManager.player));
+                windCacheIn = null;
+            }
+        }
+        
         //DEBUGGING
 
         //MOVEMENT
-        //Debug.Log("Player velocity: X = " + rigidBody.velocity.x + " Y =" + rigidBody.velocity.y);
         //Debug.Log("Input = " + input);
         //if(isGrappling)
         //Debug.Log("Current Input direction (GetKeyDown)::: " + GetInputDirection(false, true));
@@ -585,6 +611,8 @@ public class PlayerController : MonoBehaviour
 
     void Grapple(float originalGravity)
     {
+        if(canGrapple && justCanGrappleCache == null)
+            justCanGrappleCache = StartCoroutine(EnableThenDisable(_ => grapplingLoaded = _, 0.1f));
 
         //Activating the grapple
         if (grappleButtonPresses == 1 && grappleRayIsHit && !isGrappling) // !isGrappling so it wouldnt be spammed while grappling
@@ -647,6 +675,7 @@ public class PlayerController : MonoBehaviour
                 finalGrapplingForceDirection = DisplayGrapplingArrows(GetInputDirection(true, false, false));
             }
         }
+        
 
         /*im not sure what this was for
         if (finalGrapplingForceDirection != Vector2.zero && distanceToDetachGrapple == originalDistanceToDetach)
@@ -660,6 +689,8 @@ public class PlayerController : MonoBehaviour
         {
             if (isGrappling) // Used to stop applying these values when not grappling
             {
+                justLandedCache = null;
+
                 //Giving the player a bonuse force for completing the grapple
                 if (Vector2.Distance(transform.position, anchor.transform.position) <= distanceToDetachGrapple)
                 {
@@ -699,7 +730,9 @@ public class PlayerController : MonoBehaviour
                 grappleButtonPresses = 0;
 
                 StartCoroutine(DisableThenEnable(_ => canGrapple = _, grapplingDelay));
+                justCanGrappleCache = null;
             }
+            
         }
     }
 
