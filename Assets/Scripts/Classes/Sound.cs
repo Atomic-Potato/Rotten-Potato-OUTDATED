@@ -13,16 +13,15 @@ public class Sound
     public float minDistanceToHear = 3.5f;
     [Range(-3f, 3f)] 
     public float pitch = 1f;
-    [Range(0, 10f)] 
-    public float FadeInTime;
-    [Range(0, 10f)] 
-    public float FadeOutTime;
-    public bool loop;
     public bool playOnAwake;
+
+    [Tooltip("If loop is disabled then fade in and out are ineffective")]
+    public bool loop;
+    [Range(0, 10f)] public float FadeInTime;
+    [Range(0, 10f)] public float FadeOutTime;
 
     //Hidden
     [HideInInspector] public GameObject parent;
-    
     [HideInInspector] public AudioSource source;
     
     //Private
@@ -58,7 +57,7 @@ public class Sound
         source.loop = loop;
         source.playOnAwake = playOnAwake;
 
-        source.volume = 0;
+        source.volume = initialVolume;
     }
 
     //Getters
