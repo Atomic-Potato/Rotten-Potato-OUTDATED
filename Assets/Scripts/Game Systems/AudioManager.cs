@@ -212,4 +212,53 @@ public class AudioManager : MonoBehaviour
         if(s.isFadingIn())
             s.source.volume = s.initialVolume;
     }
+
+    public static IEnumerator FadeIn(Sound s)
+    {
+        
+        //ERROR CHECKING
+        if(s == null)
+        {
+            Debug.Log("Clip " + s.name + " not found in AudioManager.FadeIn(Sound s)");
+            yield break;
+        }
+        
+        //If its a non looping audio
+        if(!s.loop)
+        {
+            yield return PlayClip(s);
+            yield break;
+        }
+
+        //FADING IN
+        s.FadeIn(true);
+        s.FadeOut(false);
+
+        if(!s.loop)
+        {
+            s.source.time = 0;
+            s.source.volume = 0;
+            s.source.Play();
+        }
+
+        s.source.Play();
+
+        if(s.source.volume == 1)
+            yield break;
+
+
+        float rate = s.initialVolume / s.FadeInTime; //The equation for acceleration
+        
+        while(s.source.volume < s.initialVolume && s.isFadingIn())
+        {
+            s.source.volume += rate * Time.deltaTime;
+            yield return null;
+        }
+
+        //if we finish the loop and the FadeIn is not interrupted
+        //we set the volume to the exact
+        //because otherwise it will suddenly jump to initial volume mid FadeOut
+        if(s.isFadingIn())
+            s.source.volume = s.initialVolume;
+    }
 }

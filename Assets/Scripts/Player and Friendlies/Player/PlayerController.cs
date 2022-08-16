@@ -179,7 +179,6 @@ public class PlayerController : MonoBehaviour
 
     private void Update()
     {
-        Debug.Log("Player velocity: X = " + rigidBody.velocity.x + " Y =" + rigidBody.velocity.y);
 
         //Resetting knock timer
         if (isKnocked)
@@ -234,6 +233,7 @@ public class PlayerController : MonoBehaviour
 
         //MOVEMENT
         //Debug.Log("Input = " + input);
+        //Debug.Log("Player velocity: X = " + rigidBody.velocity.x + " Y =" + rigidBody.velocity.y);
         //if(isGrappling)
         //Debug.Log("Current Input direction (GetKeyDown)::: " + GetInputDirection(false, true));
         //Debug.Log("Current Input direction (GetKey)::: " + GetInputDirection(true, false));
@@ -254,11 +254,8 @@ public class PlayerController : MonoBehaviour
 
         if (!isGrappling && !isRolling && !isDashing)
         {
-            if(!isDashing)
-            {
-                Move();
-                Jump();
-            }
+            Move();
+            Jump();
         }
 
         if(!isKnocked && !isGrappling)    
@@ -386,7 +383,7 @@ public class PlayerController : MonoBehaviour
         if (rigidBody.gravityScale != 0f)
         {
             rigidBody.gravityScale = 0f;
-            Debug.Log("Dashing direction: " + dashingDirection);
+            //Debug.Log("Dashing direction: " + dashingDirection);
 
             rigidBody.velocity = new Vector2(0f, 0f); // we start the dash with 0 velocity to give it an oomph 
             rigidBody.AddForce(new Vector2(dashForce * direction.x, dashForce * direction.y), ForceMode2D.Impulse);

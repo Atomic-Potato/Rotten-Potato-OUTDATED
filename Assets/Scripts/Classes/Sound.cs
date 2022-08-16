@@ -17,6 +17,7 @@ public class Sound
 
     [Tooltip("If loop is disabled then fade in and out are ineffective")]
     public bool loop;
+    [Range(0, 500f)] public float timeBeforePlayedAgain;
     [Range(0, 10f)] public float FadeInTime;
     [Range(0, 10f)] public float FadeOutTime;
 
@@ -57,7 +58,19 @@ public class Sound
         source.loop = loop;
         source.playOnAwake = playOnAwake;
 
-        source.volume = initialVolume;
+        source.volume = 0;
+        source.time = 0;
+    }
+
+    public void GiveParent(GameObject parent)
+    {
+        this.parent = parent; 
+    }
+
+    public static void GiveParent(GameObject parent, Sound[] sounds)
+    {
+        foreach(Sound s in sounds)
+            s.parent = parent;
     }
 
     //Getters

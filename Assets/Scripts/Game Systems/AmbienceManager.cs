@@ -13,6 +13,7 @@ public class AmbienceManager : MonoBehaviour
     [Space]
     [SerializeField] [Range(0f, 120f)] float minTimeToPlay;
     [SerializeField] [Range(0f, 120f)] float maxTimeToPlay;
+    [SerializeField] bool playSepicals;
     [SerializeField] int minSoundsBeforeSpecial;
     [SerializeField] int maxSoundsBeforeSpecial;
 
@@ -24,14 +25,14 @@ public class AmbienceManager : MonoBehaviour
 
     //Privates
     int maxRegulars;
-    int regularsPlayed;
+    int regularsPlayed = 0;
     Coroutine playSoundCache = null;
 
     void Awake()
     {
         AddSoundsToParent(loopingSounds);
-        AddSoundsToParent(randomSounds);
-        AddSoundsToParent(specialRandomSounds);
+        Sound.GiveParent(parentObject, randomSounds);
+        Sound.GiveParent(parentObject, specialRandomSounds);
     }
 
     void Start()
@@ -41,37 +42,48 @@ public class AmbienceManager : MonoBehaviour
 
     void Update()
     {
+        // Random sounds handeling
         if(playSoundCache == null)
         {
-            Sound s;
+            Sound s = null;
+            int toPlayIndex;
             float timeBeforeNext = Random.Range(minTimeToPlay, maxTimeToPlay);
 
-            if(regularsPlayed <= maxRegulars)
+            if((!playSepicals || regularsPlayed <= maxRegulars) && randomSounds.Length != 0)
             {
-                int toPlayIndex = Random.Range(0, randomSounds.Length);
+                toPlayIndex = Random.Range(0, randomSounds.Length);
                 s = randomSounds[toPlayIndex];
 
-                regularsPlayed++;
+                if(playSepicals)
+                    regularsPlayed++;
             }
-            else
+            else if(specialRandomSounds.Length != 0)
             {
-                int toPlayIndex = Random.Range(0, specialRandomSounds.Length);
-                s = randomSounds[toPlayIndex];
+                toPlayIndex = Random.Range(0, specialRandomSounds.Length);
+                s = specialRandomSounds[toPlayIndex];
 
                 regularsPlayed = 0;
                 maxRegulars = Random.Range(minSoundsBeforeSpecial, maxSoundsBeforeSpecial);
             }
 
-            PlaySound(s, timeBeforeNext);
+            playSoundCache = StartCoroutine(PlaySound(s, timeBeforeNext));
         }
     }
 
     IEnumerator PlaySound(Sound s, float time)
     {
+        if(s == null)
+        {
+            playSoundCache = null;
+            yield break;
+        }
+
         yield return new WaitForSeconds(time);
-        s.source.Play();
+        StartCoroutine(AudioManager.PlayClip(s));
         playSoundCache = null;
     }
+
+    
 
     void AddSoundsToParent(Sound[] sounds)
     {
@@ -80,7 +92,7 @@ public class AmbienceManager : MonoBehaviour
             s.AssignToObject(parentObject);
 
             if(s.playOnAwake)
-                s.source.Play();
+                StartCoroutine(AudioManager.FadeIn(s));
         }
     }
 }
