@@ -91,7 +91,7 @@ public class PlayerController : MonoBehaviour
     [SerializeField] CompanionAbilitiesController companionAbilitiesController;
     [SerializeField] AudioManager audioManager;
 
-    //Private and hidden
+    // ---------- Private and hidden ----------
     [Space]
     [HideInInspector] public int dashesLeft;
     [HideInInspector] public float dashDelayTimer;
@@ -99,7 +99,7 @@ public class PlayerController : MonoBehaviour
     [HideInInspector] public static bool isKnocked;
     [HideInInspector] public bool canGrapple = true;
 
-    //States
+    // ---------- States ----------
     [HideInInspector] public bool isRolling;
     [HideInInspector] public bool isDashing;
     [HideInInspector] public bool isJustDashing;
@@ -148,15 +148,17 @@ public class PlayerController : MonoBehaviour
     SpriteRenderer anchorSpriteRenderer;
     SpriteRenderer anchorIndicatorSpriteRender;
 
-    //Coroutine cache
+    // ---------- Coroutine cache ----------
     Coroutine justLandedCache = null;
     Coroutine justCanGrappleCache = null;
 
 
-    //Refrences for smoothdamp
+    // ---------- Refrences for smoothdamp ----------
     float refVelocity = 0f;
     Vector2 refVelocitVector2 = Vector2.zero;
 
+    // ---------- Constants ----------
+    const float NoGravity = 0f;
 
     private void Start()
     {
@@ -372,103 +374,93 @@ public class PlayerController : MonoBehaviour
         }
     }
 
+    // ================================== DASH ==================================
     void Dash(Vector2 direction) 
     {
-        //used later on to decide the dash force
-        Vector2 currentVelocity;
-        currentVelocity.x = Mathf.Abs(rigidBody.velocity.x);
-        currentVelocity.y = Mathf.Abs(rigidBody.velocity.y);
-
-        //Here we apply the dash force, we used this condition so we would apply it once, cuz as you can see right after the if statement we change the gravity scale to 0
-        if (rigidBody.gravityScale != 0f)
+        if (rigidBody.gravityScale != NoGravity)
         {
-            rigidBody.gravityScale = 0f;
-            //Debug.Log("Dashing direction: " + dashingDirection);
-
-            rigidBody.velocity = new Vector2(0f, 0f); // we start the dash with 0 velocity to give it an oomph 
-            rigidBody.AddForce(new Vector2(dashForce * direction.x, dashForce * direction.y), ForceMode2D.Impulse);
-
-            //We are using a curve in the inspector to slow down the player after the dash instead of keeping the momentum
-            //We here set the first key value equal to the dash force so it would start slowing the player from that value to the desired value in the curve
-            dashSlowDownCurve.RemoveKey(0);
-            dashSlowDownCurve.AddKey(0f, dashForce);
+            rigidBody.gravityScale = NoGravity;
+            ApplyDashForce(direction);
+            DecelerateDash();
         }
 
-        //Timer used to see how long we should dash
-        dashTimer -= Time.deltaTime;
-        //Debug.Log(dashTimer);
-
-        //We stop the dash when the timer is out
-        if (dashTimer <= 0 && !isDashingWall) // we handle wall dashing case in DashInput()
-        {
-            //Stopping the dash with the curve values if the dash is not interrupted
-            if (dashSlowDownTimer <= dashSlowDownCurve.keys[1].time)
-            {
-                dashSlowDownTimer += Time.deltaTime;
-                float dashCurveCurrentValue = dashSlowDownCurve.Evaluate(dashSlowDownTimer);
-                
-                //Debug.Log("Dash slow down timer: " + dashSlowDownTimer + "\n Curve current value: " + dashCurveCurrentValue);
-
-                rigidBody.velocity = new Vector2(direction.x * dashCurveCurrentValue, direction.y * dashCurveCurrentValue);
-            }
-            else //reset / finish dashing
-            {
-                rigidBody.gravityScale = originalGravityScale;
-                boxCollider.size = originalColliderSize;
-                isDashing = false;
-            }
-        }
-        
-        //If the player hits a collider while dashing (in case he didnt get stuck to it) and not grounded we slow him down and reset everything
-        //mostly for collisions with ceilings and thin slopes
-
-        //if the player is hugging a wall and dashes this will cancel the dash, it may be better anyways to keep this off
-        /*if(isCollidingWithCollider && !isGrounded && !isDashingWall)
-        {
-            rigidBody.gravityScale = originalGravityScale;
-            rigidBody.velocity = new Vector2(2.5f * input, 5f * (rigidBody.velocity.y / rigidBody.velocity.y));
-            boxCollider.size = originalColliderSize;
-            isDashing = false;
-            return;
-        }*/
+        StartCoroutine(StopDashInTime(dashingTime, direction));
     }
 
-    void WallHang()
+    private void ApplyDashForce(Vector2 direction)
     {
-        ///If the player hits a wall while dashing he gets stuck to it for some time
+        rigidBody.velocity = new Vector2(0f, 0f); // we start the dash with 0 velocity to give it an oomph 
+        rigidBody.AddForce(new Vector2(dashForce * direction.x, dashForce * direction.y), ForceMode2D.Impulse);
+    }
+
+    private void DecelerateDash()
+    {
+        //We are using a curve in the inspector to slow down the player after the dash instead of keeping the momentum
+        //We here set the first key value equal to the dash force so it would start slowing the player from that value to the desired value in the curve
+        dashSlowDownCurve.RemoveKey(0);
+        dashSlowDownCurve.AddKey(0f, dashForce);
+    }
+
+    private IEnumerator StopDashInTime(float time, Vector2 direction)
+    {
+        yield return new WaitForSeconds(time);
         
+        if(isDashingWall)
+            yield break;
+
+        //Stopping the dash with the curve values (in the inspector)
+        while(dashSlowDownTimer <= dashSlowDownCurve.keys[1].time)
+        {
+            dashSlowDownTimer += Time.deltaTime;
+            float dashCurveCurrentValue = dashSlowDownCurve.Evaluate(dashSlowDownTimer);
+            rigidBody.velocity = new Vector2(direction.x * dashCurveCurrentValue, direction.y * dashCurveCurrentValue);
+            yield return null;
+        }
+        
+        ResetDashVariables();
+    }
+
+    private void ResetDashVariables()
+    {
+        rigidBody.gravityScale = originalGravityScale;
+        boxCollider.size = originalColliderSize;
         isDashing = false;
+    }
+
+    // ================================== WALL HANG ==================================
+
+    // If the player hits a wall while dashing he gets stuck to it for some time
+    private void WallHang()
+    {
+        if(isDashing)
+            isDashing = false;
+
         wallHangTimer -= Time.deltaTime;
 
-        //Resetting  physics to normall when wall hang time is done
         if (wallHangTimer <= 0)
-        {
-            rigidBody.gravityScale = originalGravityScale;
-            boxCollider.size = originalColliderSize;
-            isDashingWall = false;
-        }
+            ResetWallHangVariables();
         else if (Input.GetKeyDown(KeyCode.Space) && isDashingWall) //The player can jump off to the top or to the other side of the wall if they choose so
         {
             //Applying jump force
             rigidBody.velocity = new Vector2((jumpForce*input)/2, jumpForce);
             StartCoroutine(EnableThenDisable((_ => isJumping = _), jumpCooldownTime));
-
-            //Resetting
-            rigidBody.gravityScale = originalGravityScale;
-            boxCollider.size = originalColliderSize;
-            isDashingWall = false;
+            ResetWallHangVariables();
         }
     }
 
+    private void ResetWallHangVariables()
+    {
+        rigidBody.gravityScale = originalGravityScale;
+        boxCollider.size = originalColliderSize;
+        isDashingWall = false;
+    }
+
+    // ================================== DASH INPUT ==================================
     void DashInput() 
     {
-        //Debug.Log("Dashing Direction: " + dashingDirection);
-        //Debug.Log("Dash delay timer: " + dashDelayTimer);
-        
         //STARTING CONDITIONS & SETTING UP
-        if(dashDelayTimer == dashDelay && (!isDashing || !isDashingWall) && dashesLeft != 0)
+        if(dashDelayTimer == dashDelay && !(isDashing &&isDashingWall) && dashesLeft != 0)
         {
-            //Deciding the direction of the dash
             if(!isDashing && !isDashingWall)
                 dashingDirection = GetInputDirection(true, false, false);
 
@@ -568,7 +560,7 @@ public class PlayerController : MonoBehaviour
             rollingCurveCurrentTime = 0f;
         }
 
-        //Deciding when we cant roll (sorry its a little messy)
+        //Deciding when we cant roll (sorry its a little messy) (a little ?)
         if (Mathf.Abs(rigidBody.velocity.x) < minSpeedToRoll  //current velocity less than min speed to roll
             || rollingCurveCurrentTime >= Mathf.Abs(rollingSpeedCurve.keys[rollingLastKey].time) // the curve timer has reached the curve last key
             || (Input.GetAxisRaw("Horizontal") != 0 && Input.GetAxisRaw("Horizontal") != rollingDirection) || (!isRolling && isGrounded) // got input in the opposite direction while rolling
