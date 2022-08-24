@@ -20,7 +20,6 @@ public class PlayerController : MonoBehaviour
     public int dashesCount = 1;
     [SerializeField] float dashForce = 15f;
     [SerializeField] float dashingTime = 0.2f;
-    [SerializeField] float dashDelay = 1f;
     [Tooltip("If the player collides with a wall while dashing he will have this time stuck on the wall to jump")]
     [SerializeField] float wallHangTime = 1.5f;
     [SerializeField] AnimationCurve dashSlowDownCurve;
@@ -112,7 +111,7 @@ public class PlayerController : MonoBehaviour
     [HideInInspector] public bool isJustFinishedGrappling;
     [HideInInspector] public bool isJustBrokeGrappling;
     [HideInInspector] public bool grapplingLoaded;
-    [HideInInspector] public bool isDashingWall; // player is hitting a wall while dashing
+    [HideInInspector] public bool isWallHanging; // player is hitting a wall while dashing
     [HideInInspector] public bool isCollidingWithCollider; // Basically walls and ground
 
     int grappleButtonPresses;
@@ -126,11 +125,13 @@ public class PlayerController : MonoBehaviour
     float originalDistanceToDetach;
     float rollingCurveCurrentTime = 0f;
     float originalJumpForce;
-    public float dashTimer;
-    public float dashSlowDownTimer;
-    public float wallHangTimer;
+    float dashTimer;
+    float dashSlowDownTimer;
+    float wallHangTimer;
 
     
+    bool jumpInputReceived;
+    bool dashInputReceived;
     bool grappleRayIsHit;
     bool canRoll;
     bool grappleForceApplied;
@@ -181,12 +182,11 @@ public class PlayerController : MonoBehaviour
 
     private void Update()
     {
+        if(!isGrappling && !isKnocked)
+            GetDashInput();
 
-        //Resetting knock timer
         if (isKnocked)
-        {
             StartCoroutine("ResetKnock");
-        }
 
         if (isKnocked || isRolling || isDashing)
             WeaponsSwitch(false);
@@ -200,13 +200,17 @@ public class PlayerController : MonoBehaviour
         else
             coyoteTime -= Time.deltaTime;
          
-        if (Input.GetButtonDown("Jump"))
+        if(Input.GetButtonDown("Jump"))
         {
+            jumpInputReceived = true;
             jumpBufferTime = originaljumpBufferTime;
             //Debug.Log("Jump BufferTime = " + jumpBufferTime);
         }
         else if (jumpBufferTime > 0f)
             jumpBufferTime -= Time.deltaTime;
+
+        if(Input.GetButtonUp("Jump"))
+            jumpInputReceived = false;
 
 
         //Displaying grappling string and other effects
@@ -229,7 +233,7 @@ public class PlayerController : MonoBehaviour
         GroundCheck();
         MouseClicksCounter();
         GrappleRay();
-
+        WhileGroundedVariablesReset();
 
         //DEBUGGING
 
@@ -247,12 +251,20 @@ public class PlayerController : MonoBehaviour
 
         //BOOLS
         //Debug.Log("isKnocked = " + isKnocked
+
+        
     }
 
     private void FixedUpdate()
     {
-        if(!isGrappling && !isKnocked)
-            DashInput();
+        if(isWallHanging)
+            WallHang();
+
+        if(dashInputReceived)
+        {
+            SetupDash();
+            dashInputReceived = false;
+        }
 
         if (!isGrappling && !isRolling && !isDashing)
         {
@@ -272,14 +284,8 @@ public class PlayerController : MonoBehaviour
         if(!isGrounded && isDashing && dashingDirection.y >= 0 && collision.gameObject.CompareTag("Ground"))
         {
             RaycastHit2D collisionRay = Physics2D.Raycast(transform.position, new Vector2(dashingDirection.x, 0f), 1f, groundLayer);
-
             if(collisionRay.collider != null)
-            {
-                rigidBody.velocity = Vector2.zero;
-                isDashingWall = true;
-                //Debug.Log("Is hitting wall");
-                //Debug.DrawRay(transform.position, dashingDirection);
-            }
+                isWallHanging = true;
         }
 
         if (collision.gameObject.CompareTag("Ground"))
@@ -311,7 +317,7 @@ public class PlayerController : MonoBehaviour
         {
             rigidBody.velocity = new Vector2(Mathf.SmoothDamp(rigidBody.velocity.x, 0, ref refVelocity, groundedDecelerationTime), rigidBody.velocity.y);
         }
-        else if (input != 0 && !isDashingWall)
+        else if (input != 0 && !isWallHanging)
         {
             //If the player is in the air and we recieve input and the current velocity of the player is already greater than the player maximum velocity
             //then we dont apply the movement line of code because it will slow the player down from his high speed to a lower speed.
@@ -343,7 +349,7 @@ public class PlayerController : MonoBehaviour
     public void Jump()
     {
         //why the hell i barely commented this
-        if (coyoteTime > 0f && jumpBufferTime > 0f && !isJumping && !isDashingWall)
+        if (coyoteTime > 0f && jumpBufferTime > 0f && !isJumping && !isWallHanging)
         {
             rigidBody.velocity = new Vector2(rigidBody.velocity.x, jumpForce);
 
@@ -381,10 +387,25 @@ public class PlayerController : MonoBehaviour
         {
             rigidBody.gravityScale = NoGravity;
             ApplyDashForce(direction);
-            DecelerateDash();
+            SetupDashKeys();
         }
 
         StartCoroutine(StopDashInTime(dashingTime, direction));
+    }
+
+    void SetupDash()
+    {
+        if(!(isDashing || isWallHanging) && dashesLeft != 0)
+        {
+            isDashing = true;
+            isMoving = false;
+            dashesLeft--;
+            StartCoroutine(EnableThenDisable(_ => isJustDashing = _, 0.1f));
+            Physics2D.IgnoreLayerCollision(LayerMask.NameToLayer(playerLayer), LayerMask.NameToLayer(flyerLayer), false);
+
+            SetupDashVariables();
+            Dash(dashingDirection);
+        }
     }
 
     private void ApplyDashForce(Vector2 direction)
@@ -393,7 +414,7 @@ public class PlayerController : MonoBehaviour
         rigidBody.AddForce(new Vector2(dashForce * direction.x, dashForce * direction.y), ForceMode2D.Impulse);
     }
 
-    private void DecelerateDash()
+    private void SetupDashKeys()
     {
         //We are using a curve in the inspector to slow down the player after the dash instead of keeping the momentum
         //We here set the first key value equal to the dash force so it would start slowing the player from that value to the desired value in the curve
@@ -405,7 +426,7 @@ public class PlayerController : MonoBehaviour
     {
         yield return new WaitForSeconds(time);
         
-        if(isDashingWall)
+        if(isWallHanging)
             yield break;
 
         //Stopping the dash with the curve values (in the inspector)
@@ -419,96 +440,84 @@ public class PlayerController : MonoBehaviour
         
         ResetDashVariables();
     }
+    
+    private void SetupDashVariables()
+    {
+        boxCollider.size = dashingColliderSize; //we smallen the collider in case the player is dashing while colliding
+        wallHangTimer = wallHangTime;
+    }
 
     private void ResetDashVariables()
     {
+        dashSlowDownTimer = 0f;
         rigidBody.gravityScale = originalGravityScale;
         boxCollider.size = originalColliderSize;
+        //removing player's ability to collide with enemies when collided
+        Physics2D.IgnoreLayerCollision(LayerMask.NameToLayer(playerLayer), LayerMask.NameToLayer(flyerLayer), true);
         isDashing = false;
     }
 
-    // ================================== WALL HANG ==================================
+    private void GetDashInput()
+    {
+        dashingDirection = GetInputDirection(true, false, false);
+        if(Input.GetKeyDown(KeyCode.LeftShift) && dashingDirection != Vector2.zero)
+            dashInputReceived = true;
+    }
 
+    // ================================== WALL HANG ==================================
     // If the player hits a wall while dashing he gets stuck to it for some time
     private void WallHang()
     {
-        if(isDashing)
-            isDashing = false;
+        SetupWallHangVariables();
+        EliminateVelocity();
+        EliminateGravity();
 
         wallHangTimer -= Time.deltaTime;
 
         if (wallHangTimer <= 0)
             ResetWallHangVariables();
-        else if (Input.GetKeyDown(KeyCode.Space) && isDashingWall) //The player can jump off to the top or to the other side of the wall if they choose so
-        {
-            //Applying jump force
-            rigidBody.velocity = new Vector2((jumpForce*input)/2, jumpForce);
-            StartCoroutine(EnableThenDisable((_ => isJumping = _), jumpCooldownTime));
-            ResetWallHangVariables();
-        }
+        
+        if (jumpInputReceived) 
+            WallJump();
+    }
+
+    private void WallJump()
+    {
+        ResetWallHangVariables();
+        rigidBody.velocity = new Vector2((jumpForce*input)/2, jumpForce);
+        StartCoroutine(EnableThenDisable((_ => isJumping = _), jumpCooldownTime));
+    }
+
+    private void EliminateVelocity()
+    {
+        if(rigidBody.velocity != Vector2.zero)
+            rigidBody.velocity = Vector2.zero;
+    }
+
+    private void EliminateGravity()
+    {
+        if (rigidBody.gravityScale != NoGravity)
+            rigidBody.gravityScale = NoGravity;
+    }
+
+    private void SetupWallHangVariables()
+    {
+        if(isWallHanging == false)
+            isWallHanging = true;
+
+        if(isDashing == true)
+            isDashing = false;
     }
 
     private void ResetWallHangVariables()
     {
         rigidBody.gravityScale = originalGravityScale;
         boxCollider.size = originalColliderSize;
-        isDashingWall = false;
+        wallHangTimer = 0f;
+        isWallHanging = false;
     }
 
-    // ================================== DASH INPUT ==================================
-    void DashInput() 
-    {
-        //STARTING CONDITIONS & SETTING UP
-        if(dashDelayTimer == dashDelay && !(isDashing &&isDashingWall) && dashesLeft != 0)
-        {
-            if(!isDashing && !isDashingWall)
-                dashingDirection = GetInputDirection(true, false, false);
-
-            //The player can dash once he presses shift and with some other input
-            if (Input.GetKeyDown(KeyCode.LeftShift) && dashingDirection != Vector2.zero && !isDashing) //ive put this statement down here so it would not initiate the else statement (future me here: i have no idea what hes talking about)
-            {
-                boxCollider.size = dashingColliderSize; //we smallen the collider in case the player is dashing while colliding
-                isDashing = true;
-                isMoving = false;
-                dashesLeft--;
-                
-                StartCoroutine(EnableThenDisable(_ => isJustDashing = _, 0.1f));
-
-                //Setting up
-                dashTimer = dashingTime;
-                dashSlowDownTimer = 0f;
-                wallHangTimer = wallHangTime;
-            }
-        }
-        
-        if (isDashing)
-        {
-            dashDelayTimer -= Time.deltaTime;
-            //Giving the player the abbility to collide with flyers so he could knock them
-            Physics2D.IgnoreLayerCollision(LayerMask.NameToLayer(playerLayer), LayerMask.NameToLayer(flyerLayer), false);
-            //Applying the dash
-            Dash(dashingDirection);
-
-        }
-        
-        if (isDashingWall)
-            WallHang();
-
-        //IN BETWEENS
-        if(isGrounded && dashDelayTimer != dashDelay)//in case we stopped dashing but the timer is not reset
-            dashDelayTimer -= Time.deltaTime;
-        if(dashDelayTimer <= 0 || (!isGrounded && !isDashingWall))
-            dashDelayTimer = dashDelay;
-
-        // STOPPING CONDITIONS & RESETING
-        if (!isDashing)
-        {
-            if(isGrounded)
-                dashesLeft = dashesCount;
-            //removing player's ability to collide with enemies when collided
-            Physics2D.IgnoreLayerCollision(LayerMask.NameToLayer(playerLayer), LayerMask.NameToLayer(flyerLayer), true);
-        }
-    }
+    // ================================== ROLL ==================================
 
     void Roll()
     {
@@ -926,8 +935,15 @@ public class PlayerController : MonoBehaviour
         return inputVector;
     }
 
-    //For some reason the function doesnt start at all, find a fix later
-    //My dumbass used to start the coroutine by just typing in ResetKnock(); instead of StartCoroutine("ResetKnock");
+    private void WhileGroundedVariablesReset()
+    {
+        if(isGrounded)
+        {
+            if(!isDashing)
+                dashesLeft = dashesCount;
+        }
+    }
+
     IEnumerator ResetKnock()
     {
         yield return new WaitForSeconds(0.3f);
