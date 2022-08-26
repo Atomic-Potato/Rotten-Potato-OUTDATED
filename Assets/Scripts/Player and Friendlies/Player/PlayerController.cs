@@ -308,31 +308,37 @@ public class PlayerController : MonoBehaviour
 
     public void Move()
     {
-        //HORIZONTAL MOVEMENT
         input = Input.GetAxisRaw("Horizontal");
         float targetVelocity = input * horizontalVelocity;
-
-        // And then smoothing it out and applying it to the character
-        if (input == 0 && isGrounded)
-        {
-            rigidBody.velocity = new Vector2(Mathf.SmoothDamp(rigidBody.velocity.x, 0, ref refVelocity, groundedDecelerationTime), rigidBody.velocity.y);
-        }
-        else if (input != 0 && !isWallHanging)
-        {
-            //If the player is in the air and we recieve input and the current velocity of the player is already greater than the player maximum velocity
-            //then we dont apply the movement line of code because it will slow the player down from his high speed to a lower speed.
-            //Else if hes in the air and his current velocity without any input is less than the max velocity and the player gives input
-            //then we apply the movment code
-            //If hes grounded we always apply it because if not, the player will maintain the current velocity which is greater than the allowed max velocity while grounded.
-            if ((rigidBody.velocity.x < targetVelocity && targetVelocity > 0) || (rigidBody.velocity.x > targetVelocity && targetVelocity < 0) && !isGrounded)
-                rigidBody.velocity = new Vector2(Mathf.SmoothDamp(rigidBody.velocity.x, targetVelocity, ref refVelocity, groundedAccelerationTime), rigidBody.velocity.y);
-            else if (isGrounded)
-            {
-                rigidBody.velocity = new Vector2(Mathf.SmoothDamp(rigidBody.velocity.x, targetVelocity, ref refVelocity, groundedAccelerationTime), rigidBody.velocity.y);
-                
-            }
-        }
         
+        if (input != 0)
+            Accelerate(targetVelocity);
+        else if (input == 0 && isGrounded)
+            Decelerate();
+        
+        HandleFirction();
+    }
+
+    void Accelerate(float targetVelocity)
+    {
+        //If the player is in the air and we recieve input and the current velocity of the player is already greater than the player maximum velocity
+        //then we dont apply the movement line of code because it will slow the player down from his high speed to a lower speed.
+        //Else if hes in the air and his current velocity without any input is less than the max velocity and the player gives input
+        //then we apply the movment code
+        //If hes grounded we always apply it because if not, the player will maintain the current velocity which is greater than the allowed max velocity while grounded.
+        if ((rigidBody.velocity.x < targetVelocity && targetVelocity > 0) || (rigidBody.velocity.x > targetVelocity && targetVelocity < 0) && !isGrounded)
+            rigidBody.velocity = new Vector2(Mathf.SmoothDamp(rigidBody.velocity.x, targetVelocity, ref refVelocity, groundedAccelerationTime), rigidBody.velocity.y);
+        else if (isGrounded)
+            rigidBody.velocity = new Vector2(Mathf.SmoothDamp(rigidBody.velocity.x, targetVelocity, ref refVelocity, groundedAccelerationTime), rigidBody.velocity.y);
+    }
+
+    void Decelerate()
+    {
+        rigidBody.velocity = new Vector2(Mathf.SmoothDamp(rigidBody.velocity.x, 0, ref refVelocity, groundedDecelerationTime), rigidBody.velocity.y);
+    }
+
+    void HandleFirction()
+    {
         //Setting the x velocity to 0 while idle
         if (rigidBody.velocity.x < 1f && rigidBody.velocity.x > -1f && input == 0 && !isKnocked && !isRolling)
         {
