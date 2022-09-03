@@ -77,7 +77,8 @@ public class PlayerController : MonoBehaviour
     [Header("Other Requiered Components")]
     [SerializeField] LayerMask groundLayer;
     [SerializeField] Transform groundBoxCastPosition;
-    [SerializeField] Transform wallBoxCastPosition;
+    [SerializeField] Transform rightWallBoxCastPosition;
+    [SerializeField] Transform leftWallBoxCastPosition;
     [SerializeField] GameObject weaponsObject;
 
     [Space]
@@ -93,7 +94,6 @@ public class PlayerController : MonoBehaviour
     [SerializeField] GrapplingStringController stringController;
     [SerializeField] CameraController cameraController;
     [SerializeField] CompanionAbilitiesController companionAbilitiesController;
-    [SerializeField] AudioManager audioManager;
 
     // ---------- Private and hidden ----------
     [Space]
@@ -119,7 +119,8 @@ public class PlayerController : MonoBehaviour
     [HideInInspector] public bool grapplingLoaded;
     [HideInInspector] public bool isWallHanging; // player is hitting a wall while dashing
     [HideInInspector] public bool isCollidingWithCollider; // Basically walls and ground
-    [HideInInspector] public bool isCollidingWithWall;
+    [HideInInspector] public bool isCollidingWithLeftWall;
+    [HideInInspector] public bool isCollidingWithRightWall;
 
 
     int grappleButtonPresses;
@@ -191,6 +192,16 @@ public class PlayerController : MonoBehaviour
 
     private void Update()
     {
+        Debug.Log("Left: " + isCollidingWithLeftWall + "\nRight : " + isCollidingWithRightWall);
+        GroundCheck();
+        WallCheck(rightWallBoxCastPosition.position, wallBoxCastSize, _ => isCollidingWithRightWall = _);
+        WallCheck(leftWallBoxCastPosition.position, wallBoxCastSize, _ => isCollidingWithLeftWall = _);
+        MouseClicksCounter();
+        GrappleRay();
+        WhileGroundedVariablesReset();
+
+        CheckForWallHang();
+
         if(!(isKnocked || isGrappling))    
             Roll();
 
@@ -242,11 +253,7 @@ public class PlayerController : MonoBehaviour
             //cameraController.CameraZoom(0, grapplingCameraZoomInTime, defaultCameraZoom);
         }
 
-        GroundCheck();
-        WallCheck();
-        MouseClicksCounter();
-        GrappleRay();
-        WhileGroundedVariablesReset();
+        
 
         //DEBUGGING
 
@@ -294,13 +301,6 @@ public class PlayerController : MonoBehaviour
 
     private void OnCollisionEnter2D(Collision2D collision)
     {
-        if(!isGrounded && isDashing && dashingDirection.y >= 0 && collision.gameObject.CompareTag("Ground"))
-        {
-            RaycastHit2D collisionRay = Physics2D.Raycast(transform.position, new Vector2(dashingDirection.x, 0f), 1f, groundLayer);
-            if(collisionRay.collider != null)
-                isWallHanging = true;
-        }
-
         if (collision.gameObject.CompareTag("Ground"))
             isCollidingWithCollider = true;
     }
@@ -335,18 +335,18 @@ public class PlayerController : MonoBehaviour
         }
     }
 
-    void WallCheck()
+    //The global variable needs to be function in this form _ => globalVariable = _
+    void WallCheck(Vector3 boxPosition, Vector2 boxSize, Action<bool> globalVariable)
     {
-        if (Physics2D.OverlapBox(wallBoxCastPosition.position, wallBoxCastSize, 0, groundLayer))
+        if (Physics2D.OverlapBox(boxPosition, boxSize, 0, groundLayer))
         {
-            isCollidingWithWall = true;
-
+            globalVariable(true);
             if(justHitWallCache == null && !isDashing) //!isDashing in case dashing while grounded
                 justHitWallCache = StartCoroutine(EnableThenDisable(_ => isJustHitWall = _, 0.1f));
         }
         else
         {
-            isCollidingWithWall = false;
+            globalVariable(false);
             justHitWallCache = null;
         }
     }
@@ -523,6 +523,15 @@ public class PlayerController : MonoBehaviour
         StartCoroutine(EnableThenDisable((_ => isJumping = _), jumpCooldownTime));
     }
 
+    void CheckForWallHang()
+    {
+        if(!isGrounded && (isCollidingWithLeftWall || isCollidingWithRightWall))
+        {
+            if(isDashing)
+                isWallHanging = true;
+        }
+    }
+
     private void EliminateVelocity()
     {
         if(rigidBody.velocity != Vector2.zero)
@@ -636,7 +645,7 @@ public class PlayerController : MonoBehaviour
     bool CanceledRoll()
     {
         return !isGrounded || isKnocked || isGrappling
-                || isCollidingWithWall
+                || isCollidingWithLeftWall
                 || rollingCurveCurrentTime >= Mathf.Abs(rollingSpeedCurve.keys[rollingLastKey].time) // the curve timer has reached the curve last key
                 || (Input.GetAxisRaw("Horizontal") != 0 && Input.GetAxisRaw("Horizontal") != rollingDirection); // got input in the opposite direction while rolling
     }
@@ -1100,5 +1109,15 @@ public class PlayerController : MonoBehaviour
         switcher(false);
         yield return new WaitForSeconds(time);
         switcher(true);
+    }
+
+    void EnableGlobalVariable(Action<bool> switcher)
+    {
+        switcher(true);
+    }
+
+    void DisableGlobalVariable(Action<bool> switcher)
+    {
+        switcher(false);
     }
 }
