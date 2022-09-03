@@ -69,10 +69,15 @@ public class PlayerController : MonoBehaviour
 
 
     [Space]
-    [Header("Requiered components")]
-    [SerializeField] Vector2 boxCastSize;
+    [Header("Other Required Variables")]
+    [SerializeField] Vector2 groundBoxCastSize;
+    [SerializeField] Vector2 wallBoxCastSize;
+
+    [Space]
+    [Header("Other Requiered Components")]
     [SerializeField] LayerMask groundLayer;
-    [SerializeField] Transform boxCastPosition;
+    [SerializeField] Transform groundBoxCastPosition;
+    [SerializeField] Transform wallBoxCastPosition;
     [SerializeField] GameObject weaponsObject;
 
     [Space]
@@ -104,6 +109,7 @@ public class PlayerController : MonoBehaviour
     [HideInInspector] public bool isJustDashing;
     [HideInInspector] public bool isGrounded;
     [HideInInspector] public bool isJustLanded;
+    [HideInInspector] public bool isJustHitWall;
     [HideInInspector] public bool isMoving;
     [HideInInspector] public bool isJumping;
     [HideInInspector] public bool isGrappling;
@@ -113,6 +119,8 @@ public class PlayerController : MonoBehaviour
     [HideInInspector] public bool grapplingLoaded;
     [HideInInspector] public bool isWallHanging; // player is hitting a wall while dashing
     [HideInInspector] public bool isCollidingWithCollider; // Basically walls and ground
+    [HideInInspector] public bool isCollidingWithWall;
+
 
     int grappleButtonPresses;
     int rollingDirection;
@@ -150,6 +158,7 @@ public class PlayerController : MonoBehaviour
 
     // ---------- Coroutine cache ----------
     Coroutine justLandedCache = null;
+    Coroutine justHitWallCache = null;
     Coroutine justCanGrappleCache = null;
 
 
@@ -181,6 +190,8 @@ public class PlayerController : MonoBehaviour
 
     private void Update()
     {
+        Debug.Log(isCollidingWithWall);
+
         if(!isGrappling && !isKnocked)
             GetDashInput();
 
@@ -230,6 +241,7 @@ public class PlayerController : MonoBehaviour
         }
 
         GroundCheck();
+        WallCheck();
         MouseClicksCounter();
         GrappleRay();
         WhileGroundedVariablesReset();
@@ -305,6 +317,39 @@ public class PlayerController : MonoBehaviour
             Knockback(collision);
     }
 
+    void GroundCheck()
+    {
+        if (Physics2D.OverlapBox(groundBoxCastPosition.position, groundBoxCastSize, 0, groundLayer))
+        {
+            isGrounded = true;
+
+            if(justLandedCache == null && !isDashing) //!isDashing in case dashing while grounded
+                justLandedCache = StartCoroutine(EnableThenDisable(_ => isJustLanded = _, 0.1f));
+        }
+        else
+        {
+            isGrounded = false;
+            justLandedCache = null;
+        }
+    }
+
+    void WallCheck()
+    {
+        if (Physics2D.OverlapBox(wallBoxCastPosition.position, wallBoxCastSize, 0, groundLayer))
+        {
+            isCollidingWithWall = true;
+
+            if(justHitWallCache == null && !isDashing) //!isDashing in case dashing while grounded
+                justHitWallCache = StartCoroutine(EnableThenDisable(_ => isJustHitWall = _, 0.1f));
+        }
+        else
+        {
+            isCollidingWithWall = false;
+            justHitWallCache = null;
+        }
+    }
+
+
     public void Move()
     {
         input = Input.GetAxisRaw("Horizontal");
@@ -367,21 +412,6 @@ public class PlayerController : MonoBehaviour
             coyoteTime = 0f;
     }
 
-    void GroundCheck()
-    {
-        if (Physics2D.OverlapBox(boxCastPosition.position, boxCastSize, 0, groundLayer))
-        {
-            isGrounded = true;
-
-            if(justLandedCache == null && !isDashing) //!isDashing in case dashing while grounded
-                justLandedCache = StartCoroutine(EnableThenDisable(_ => isJustLanded = _, 0.1f));
-        }
-        else
-        {
-            isGrounded = false;
-            justLandedCache = null;
-        }
-    }
 
     // ================================== DASH ==================================
     void Dash(Vector2 direction) 
@@ -398,7 +428,7 @@ public class PlayerController : MonoBehaviour
 
     void SetupDash()
     {
-        if(!(isDashing || isWallHanging) && dashesLeft != 0)
+        if(!(isDashing || isWallHanging || isRolling) && dashesLeft != 0)
         {
             isDashing = true;
             isMoving = false;
@@ -562,7 +592,6 @@ public class PlayerController : MonoBehaviour
 
     private bool RollingInitiated()
     {
-        Debug.Log(Input.GetKey(KeyCode.S) + " " + isGrounded + " " + !isDashing);
         return Input.GetKey(KeyCode.S) && isJustLanded && !isDashing;
     }
 
@@ -580,7 +609,6 @@ public class PlayerController : MonoBehaviour
     {
         isRolling = false;
         rollingCurveCurrentTime = 0f;
-        applyRollForce = false;
     }
 
     private void GetRollingDirection() 
@@ -605,6 +633,7 @@ public class PlayerController : MonoBehaviour
     bool CanceledRoll()
     {
         return !isGrounded || isKnocked || isGrappling
+                || isCollidingWithWall
                 || rollingCurveCurrentTime >= Mathf.Abs(rollingSpeedCurve.keys[rollingLastKey].time) // the curve timer has reached the curve last key
                 || (Input.GetAxisRaw("Horizontal") != 0 && Input.GetAxisRaw("Horizontal") != rollingDirection); // got input in the opposite direction while rolling
     }
@@ -1041,6 +1070,11 @@ public class PlayerController : MonoBehaviour
             if(!isDashing)
                 dashesLeft = dashesCount;
         }
+    }
+
+    private bool VelocityNearZero(float offsetMargin)
+    {
+        return -offsetMargin >= rigidBody.velocity.x && rigidBody.velocity.x <= offsetMargin;
     }
 
     IEnumerator ResetKnock()
