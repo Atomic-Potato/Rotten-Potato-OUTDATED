@@ -528,23 +528,22 @@ public class PlayerController : MonoBehaviour
             canRoll = true;
             GetRollingDirection();
         }
-        else if(!isRolling)
-            canRoll = false;
-
-        // if the player lands and is holding down 'S' then he can start rolling
-        // it is separated so that the player can stop holding S while rolling
-        if (Input.GetKey(KeyCode.S) && canRoll && isGrounded && !isDashing)
+        
+        if(canRoll)
         {
-            Debug.Log("Is rolling");
-            isRolling = true; 
-            isMoving = false; //irrelevant here, but relevant to know the stater if we are running or not in Move()
+            // if the player lands and is holding down 'S' then he can start rolling
+            // it is separated so that the player can stop holding S while rolling
+            if (RollingInitiated())
+            {
+                isRolling = true;
+                isMoving = false; //irrelevant here, but relevant to know the stater if we are running or not in Move()
+            }
         }
 
-        if(isRolling)
+        if (isRolling)
         {
-            ApplyRollForce();            
-            
-            if(jumpInputReceived)
+            ApplyRollForce();
+            if (jumpInputReceived)
             {
                 if (InRollJumpZone())
                     jumpForce = rollingJumpForced;
@@ -553,10 +552,18 @@ public class PlayerController : MonoBehaviour
                 jumpForce = originalJumpForce;
             }
         }
-        
+        else if(isGrounded)
+            canRoll = false;
+
         //Disabling the Roll
-        if(CanceledRoll())
+        if (CanceledRoll())
             StopRoll();
+    }
+
+    private bool RollingInitiated()
+    {
+        Debug.Log(Input.GetKey(KeyCode.S) + " " + isGrounded + " " + !isDashing);
+        return Input.GetKey(KeyCode.S) && isJustLanded && !isDashing;
     }
 
     private void ApplyRollForce()
@@ -573,6 +580,7 @@ public class PlayerController : MonoBehaviour
     {
         isRolling = false;
         rollingCurveCurrentTime = 0f;
+        applyRollForce = false;
     }
 
     private void GetRollingDirection() 
