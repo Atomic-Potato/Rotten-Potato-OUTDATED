@@ -140,9 +140,8 @@ public class PlayerController : MonoBehaviour
     Vector2 originalColliderSize = Vector2.zero;
     Vector2 dashingColliderSize = Vector2.zero;
     Vector2 dashingDirection = Vector2.zero;
-    Vector2 currentGrapplingInput = Vector2.zero;
-    Vector2 grapplingInputOld = Vector2.zero;
-    Vector2 finalGrapplingForceDirection;
+    Vector2 finalGrapplingForceDirection = Vector2.zero;
+    Vector2 finalGrapplingForceDirectionOld = Vector2.zero;
 
     PhysicsMaterial2D originalMaterial;
     GameObject anchor;
@@ -160,10 +159,10 @@ public class PlayerController : MonoBehaviour
 
     // ---------- Constants ----------
     const float NoGravity = 0f;
+    readonly Vector2 NoInput = Vector2.zero;
 
     private void Start()
     {
-
         player = gameObject;
 
         originalCoyoteTime = coyoteTime;
@@ -266,16 +265,16 @@ public class PlayerController : MonoBehaviour
             dashInputReceived = false;
         }
 
-        if (!isGrappling && !isRolling && !isDashing)
+        if (!(isGrappling || isRolling || isDashing || isWallHanging))
         {
             Move();
             Jump();
         }
 
-        if(!isKnocked && !isGrappling)    
+        if(!(isKnocked || isGrappling))    
             Roll();
 
-        if(!isRolling && !isDashing && !isKnocked)
+        if(!(isRolling || isDashing || isKnocked || isWallHanging))
             Grapple(originalGravityScale);
     }
 
@@ -365,9 +364,7 @@ public class PlayerController : MonoBehaviour
         }
 
         if(Input.GetButtonUp("Jump") && rigidBody.velocity.y > 0f)
-        {
             coyoteTime = 0f;
-        }
     }
 
     void GroundCheck()
@@ -465,7 +462,7 @@ public class PlayerController : MonoBehaviour
 
     private void GetDashInput()
     {
-        dashingDirection = GetInputDirection(true, false, false);
+        dashingDirection = GetOnHoldInput();
         if(Input.GetKeyDown(KeyCode.LeftShift) && dashingDirection != Vector2.zero)
             dashInputReceived = true;
     }
@@ -524,66 +521,61 @@ public class PlayerController : MonoBehaviour
     }
 
     // ================================== ROLL ==================================
-
     void Roll()
     {
-        //to know when we can roll we check if the player is not grounded and let him know that he can roll
-        if (!isGrounded)
+        if (CanRoll())
         {
             canRoll = true;
-
-            //Setting up the direction of the rolling on landing
-            RollingDirection();
-
-            //Setting the first key of the rolling curve to match the current speed of the player so he would keep his momentum
-            rollingSpeedCurve.RemoveKey(0);
-            rollingSpeedCurve.AddKey(0f, Mathf.Abs(rigidBody.velocity.x) + 0.1f);
-            //Edit the value of the key directly didnt work, so i just delete the old key and create a new one at the same time of the original key
-
-            //Debug.Log("First rolling curve key value: " + rollingSpeedCurve.keys[0].value);
+            GetRollingDirection();
         }
+        else if(!isRolling)
+            canRoll = false;
 
         // if the player lands and is holding down 'S' then he can start rolling
         // it is separated so that the player can stop holding S while rolling
         if (Input.GetKey(KeyCode.S) && canRoll && isGrounded && !isDashing)
         {
+            Debug.Log("Is rolling");
             isRolling = true; 
             isMoving = false; //irrelevant here, but relevant to know the stater if we are running or not in Move()
         }
 
         if(isRolling)
         {
-            //We only give the player extra jump force if the roll time has exceded the jump key in the curve
-            if (rollingCurveCurrentTime >= rollingSpeedCurve[jumpForceKey].time && Input.GetKeyDown(KeyCode.Space))
-                jumpForce = rollingJumpForced;
+            ApplyRollForce();            
+            
+            if(jumpInputReceived)
+            {
+                if (InRollJumpZone())
+                    jumpForce = rollingJumpForced;
 
-            //Calculating the passed time of the roll
-            rollingCurveCurrentTime += Time.deltaTime;
-            //Getting the value on the curve during that time
-            float rollingCurveValue = rollingSpeedCurve.Evaluate(rollingCurveCurrentTime);
-            //Applying the velocity of the roll curve
-            rigidBody.velocity = new Vector2(rollingCurveValue * rollingDirection, rigidBody.velocity.y);
+                Jump();
+                jumpForce = originalJumpForce;
+            }
         }
         
         //Disabling the Roll
-        if(Input.GetKeyDown(KeyCode.Space) || !canRoll || !isGrounded)
-        {
-            isRolling = false;
-            if(isJumping || rollingCurveCurrentTime >= rollingSpeedCurve[rollingLastKey].time)
-                jumpForce = originalJumpForce;
-            //Resetting the timer of the curver for the next roll
-            rollingCurveCurrentTime = 0f;
-        }
-
-        //Deciding when we cant roll (sorry its a little messy) (a little ?)
-        if (Mathf.Abs(rigidBody.velocity.x) < minSpeedToRoll  //current velocity less than min speed to roll
-            || rollingCurveCurrentTime >= Mathf.Abs(rollingSpeedCurve.keys[rollingLastKey].time) // the curve timer has reached the curve last key
-            || (Input.GetAxisRaw("Horizontal") != 0 && Input.GetAxisRaw("Horizontal") != rollingDirection) || (!isRolling && isGrounded) // got input in the opposite direction while rolling
-            || isKnocked || isGrappling)
-            canRoll = false;
+        if(CanceledRoll())
+            StopRoll();
     }
 
-    void RollingDirection() 
+    private void ApplyRollForce()
+    {
+        //Calculating the passed time of the roll
+        rollingCurveCurrentTime += Time.deltaTime;
+        //Getting the value on the curve during that time
+        float rollingCurveValue = rollingSpeedCurve.Evaluate(rollingCurveCurrentTime);
+        //Applying the velocity of the roll curve
+        rigidBody.velocity = new Vector2(rollingCurveValue * rollingDirection, rigidBody.velocity.y);
+    }
+
+    private void StopRoll()
+    {
+        isRolling = false;
+        rollingCurveCurrentTime = 0f;
+    }
+
+    private void GetRollingDirection() 
     {
         if (rigidBody.velocity.x < -1)
             rollingDirection  = -1;
@@ -591,125 +583,185 @@ public class PlayerController : MonoBehaviour
             rollingDirection = 1;
     }
 
+    private bool CanRoll()
+    {
+        return !isGrounded && Mathf.Abs(rigidBody.velocity.x) > minSpeedToRoll;
+    }
+
+    bool InRollJumpZone()
+    {
+        //We only give the player extra jump force if the roll time has exceded the jump key in the curve
+        return rollingCurveCurrentTime >= rollingSpeedCurve[jumpForceKey].time;
+    }
+
+    bool CanceledRoll()
+    {
+        return !isGrounded || isKnocked || isGrappling
+                || rollingCurveCurrentTime >= Mathf.Abs(rollingSpeedCurve.keys[rollingLastKey].time) // the curve timer has reached the curve last key
+                || (Input.GetAxisRaw("Horizontal") != 0 && Input.GetAxisRaw("Horizontal") != rollingDirection); // got input in the opposite direction while rolling
+    }
+
+    void SetupRollKeys()
+    {
+        //Setting the first key of the rolling curve to match the current speed of the player so he would keep his momentum
+        rollingSpeedCurve.RemoveKey(0);
+        rollingSpeedCurve.AddKey(0f, Mathf.Abs(rigidBody.velocity.x) + 0.1f);
+        //Edit the value of the key directly didnt work, so i just delete the old key and create a new one at the same time of the original key
+    }
+
+    // ================================== GRAPPLE ==================================
     void Grapple(float originalGravity)
     {
-        if(canGrapple && justCanGrappleCache == null)
-            justCanGrappleCache = StartCoroutine(EnableThenDisable(_ => grapplingLoaded = _, 0.1f));
+        GrappleLoaded();
 
         //Activating the grapple
-        if (grappleButtonPresses == 1 && grappleRayIsHit && !isGrappling) // !isGrappling so it wouldnt be spammed while grappling
-        {
-            isGrappling = true; //Used to disable Move() to not interfer with grappling
-            StartCoroutine(EnableThenDisable(_ => isJustGrappling = _, 0.1f));
+        if (StartedGrapple())
+            SetupGrapplingVariables();
+           
 
-            isMoving = false; //irrelevant here, but relevant to know the stater if we are running or not in Move()
-            
-            //Disabling gravity to not interfer with the applied force
-            rigidBody.gravityScale = 0f;
-
-            //Applying bounciness so the player wont get stuck by roofs or walls
-            originalMaterial = boxCollider.sharedMaterial;
-            boxCollider.sharedMaterial = bouncyMaterial;
-        }
-
-        // Now we keep applying the force
         if (isGrappling)
         {
-            //Finding the position and direction of the mouse
-            grapplingDirection = anchor.transform.position - transform.position;
-            //We set the position of the mouse on z to 0 because the player is on z = 0
-            grapplingDirection.z = 0;
-            //We normalize the vector so that it doesnt be faster when the driection vector is large and vice versa
-            grapplingDirection.Normalize();
-
-
-            //To avoid circiling around the anchor, we only apply force to the rigid body when affar and when close we atrract the player directly ignoring the physics
-            if (Vector2.Distance(gameObject.transform.position, anchor.transform.position) > 4f)
-            {
-                //Adding force by setting the velocity directly
-                rigidBody.velocity = Vector2.SmoothDamp(rigidBody.velocity, grapplingDirection * grapplingSpeed, ref refVelocitVector2, grapplingAcceleration);
-                //Adding force by adding force to the rigidbody
-                //rigidBody.AddForce(grapplingDirection * grapplingSpeed, ForceMode2D.Force);
-            }
-            else
-            {
-                //Debug.Log("Grappling direction: " + grapplingDirection);
-
-                transform.Translate(grapplingDirection * Time.deltaTime * grapplingSpeed);
-            }
-
-
+            ApplyGrapplingForce();
             //Dispalying Grappling Arrows
             GrapplingArrowsParent.SetActive(true);
-
-            //This bit down here fucking destroyed me, because holding input is the best one for this and is annoying to deal with each frame
-            //i kept trying and failing with stupid bools, then at the end after 6 hours (maybe more)
-            //just took a deep breath and just drew the variables changing frame by frame and saw how fucking shtoopid i was
-            //.....ummm, funny story, i found a better and easier way in 10 mins.... yeah...
-
-            //Deciding the final force of grappling direction
-            currentGrapplingInput = GetInputDirection(true, false, false);
-
-            //if the input changes since the last frame
-            if (currentGrapplingInput != grapplingInputOld) 
-            {
-                grapplingInputOld = currentGrapplingInput; //change the old input
-                finalGrapplingForceDirection = DisplayGrapplingArrows(GetInputDirection(true, false, false));
-            }
+            UpdateFinalGrappleForce();
         }
 
-        //Resetting back once reached destination or if canceled by user or hit by rocketato
-        if (Vector2.Distance(transform.position, anchor.transform.position) <= distanceToDetachGrapple || (grappleButtonPresses >= 2 && isGrappling) || isKnocked)
+        if (GrappleEnded())
         {
             if (isGrappling) // Used to stop applying these values when not grappling
             {
-                justLandedCache = null;
-
                 //Giving the player a bonuse force for completing the grapple
                 if (Vector2.Distance(transform.position, anchor.transform.position) <= distanceToDetachGrapple)
-                {
-                    grappleForceApplied = true;
-                    StartCoroutine(EnableThenDisable(_ => isJustFinishedGrappling = _, 0.1f));
-
-                    if (finalGrapplingForceDirection != Vector2.zero)
-                    {
-                        rigidBody.velocity = Vector2.zero;
-
-                        //We could have one, but i wanted to adjust it in some areas because it feels quite weak
-                        if(finalGrapplingForceDirection.y == 0)
-                            rigidBody.AddForce(new Vector2(finalGrapplingForceDirection.x * finalForceOfGrapple * 3f, finalForceOfGrapple*1.5f), ForceMode2D.Impulse);
-                        else if(finalGrapplingForceDirection.x == 0 && finalGrapplingForceDirection.y > 0)
-                            rigidBody.AddForce(new Vector2(0, finalGrapplingForceDirection.y * finalForceOfGrapple * 3.5f), ForceMode2D.Impulse);
-                        else
-                            rigidBody.AddForce(new Vector2(finalGrapplingForceDirection.x * finalForceOfGrapple * 2f, finalGrapplingForceDirection.y * finalForceOfGrapple * 1.5f * 2f), ForceMode2D.Impulse);
-                    }
-                    else
-                        rigidBody.AddForce(new Vector2(grapplingDirection.x * finalForceOfGrapple, grapplingDirection.y * finalForceOfGrapple * 1.5f), ForceMode2D.Impulse);
-                }
+                    ApplyFinalGrapplingForce();
                 else
                     StartCoroutine(EnableThenDisable(_ => isJustBrokeGrappling = _, 0.1f));
-                    
-                // Resetting
-                isGrappling = false;
-                currentGrapplingInput = Vector2.zero;
-                grapplingInputOld = Vector2.zero;
 
-                rigidBody.gravityScale = originalGravity;
-                boxCollider.sharedMaterial = originalMaterial;
-
-                finalGrapplingForceDirection = Vector2.zero;
-                GrapplingArrowsParent.SetActive(false);
-                DisplayGrapplingArrows(Vector2.zero);
-
-                grappleButtonPresses = 0;
-
-                StartCoroutine(DisableThenEnable(_ => canGrapple = _, grapplingDelay));
-                justCanGrappleCache = null;
+                ResetGrapplingVariables(originalGravity);
             }
-            
+
         }
     }
 
+    void ApplyBouncyMaterial()
+    {
+        originalMaterial = boxCollider.sharedMaterial;
+        boxCollider.sharedMaterial = bouncyMaterial;
+    }
+
+    void SetupGrapplingVariables()
+    {
+        isGrappling = true; //Used to disable Move() to not interfer with grappling
+        StartCoroutine(EnableThenDisable(_ => isJustGrappling = _, 0.1f));
+        isMoving = false; //irrelevant here, but relevant to know the stater if we are running or not in Move()
+        EliminateGravity();
+        //Applying bounciness so the player wont get stuck by roofs or walls
+        ApplyBouncyMaterial();
+    }
+
+    bool StartedGrapple()
+    {
+        return grappleButtonPresses == 1 && grappleRayIsHit && !isGrappling; // !isGrappling so it wouldnt be spammed while grappling
+    }
+
+    void GrappleLoaded()
+    {
+        //Used to detect when the moment the player can grapple
+        if(canGrapple && justCanGrappleCache == null)
+            justCanGrappleCache = StartCoroutine(EnableThenDisable(_ => grapplingLoaded = _, 0.1f));
+    }
+
+    void ApplyGrapplingForce()
+    {
+        //Finding the position and direction of the mouse
+        grapplingDirection = anchor.transform.position - transform.position;
+        //We set the position of the mouse on z to 0 because the player is on z = 0
+        grapplingDirection.z = 0;
+        //We normalize the vector so that it doesnt be faster when the driection vector is large and vice versa
+        grapplingDirection.Normalize();
+
+
+        //To avoid circiling around the anchor, we only apply force to the rigid body when affar and when close we atrract the player directly ignoring the physics
+        if (Vector2.Distance(gameObject.transform.position, anchor.transform.position) > 4f)
+        {
+            //Adding force by setting the velocity directly
+            rigidBody.velocity = Vector2.SmoothDamp(rigidBody.velocity, grapplingDirection * grapplingSpeed, ref refVelocitVector2, grapplingAcceleration);
+            //Adding force by adding force to the rigidbody
+            //rigidBody.AddForce(grapplingDirection * grapplingSpeed, ForceMode2D.Force);
+        }
+        else
+            transform.Translate(grapplingDirection * Time.deltaTime * grapplingSpeed);
+    }
+
+    void UpdateFinalGrappleForce()
+    {
+        //This bit down here fucking destroyed me, because holding input is the best one for this and is annoying to deal with each frame
+        //i kept trying and failing with stupid bools, then at the end after 6 hours (maybe more)
+        //just took a deep breath and just drew the variables changing frame by frame and saw how fucking shtoopid i was
+        //.....ummm, funny story, i found a better and easier way in 10 mins.... yeah...
+
+        //Deciding the final force of grappling direction
+        finalGrapplingForceDirection = GetOnHoldInput();
+
+        //if the input changes since the last frame
+        if (finalGrapplingForceDirection != finalGrapplingForceDirectionOld) 
+        {
+            finalGrapplingForceDirectionOld = finalGrapplingForceDirection; //change the old input
+            DisplayGrapplingArrows(finalGrapplingForceDirection);
+        }
+    }
+
+    bool GrappleEnded()
+    {
+        //reached destination or if canceled by user or hit by rocketato
+        return Vector2.Distance(transform.position, anchor.transform.position) <= distanceToDetachGrapple 
+                || (grappleButtonPresses >= 2 && isGrappling) 
+                || isKnocked;
+    }
+
+    private void ResetGrapplingVariables(float originalGravity)
+    {
+
+        // Resetting
+        isGrappling = false;
+        finalGrapplingForceDirection = Vector2.zero;
+        finalGrapplingForceDirectionOld = Vector2.zero;
+
+        rigidBody.gravityScale = originalGravity;
+        boxCollider.sharedMaterial = originalMaterial;
+
+        finalGrapplingForceDirection = Vector2.zero;
+        GrapplingArrowsParent.SetActive(false);
+        DisplayGrapplingArrows(Vector2.zero);
+
+        grappleButtonPresses = 0;
+
+        StartCoroutine(DisableThenEnable(_ => canGrapple = _, grapplingDelay));
+        justCanGrappleCache = null;
+    }
+
+    private void ApplyFinalGrapplingForce()
+    {
+        grappleForceApplied = true;
+        StartCoroutine(EnableThenDisable(_ => isJustFinishedGrappling = _, 0.1f));
+
+        if (finalGrapplingForceDirection != Vector2.zero)
+        {
+            rigidBody.velocity = Vector2.zero;
+
+            //We could have one, but i wanted to adjust it in some areas because it feels quite weak
+            if (finalGrapplingForceDirection.y == 0)
+                rigidBody.AddForce(new Vector2(finalGrapplingForceDirection.x * finalForceOfGrapple * 3f, finalForceOfGrapple * 1.5f), ForceMode2D.Impulse);
+            else if (finalGrapplingForceDirection.x == 0 && finalGrapplingForceDirection.y > 0)
+                rigidBody.AddForce(new Vector2(0, finalGrapplingForceDirection.y * finalForceOfGrapple * 3.5f), ForceMode2D.Impulse);
+            else
+                rigidBody.AddForce(new Vector2(finalGrapplingForceDirection.x * finalForceOfGrapple * 2f, finalGrapplingForceDirection.y * finalForceOfGrapple * 1.5f * 2f), ForceMode2D.Impulse);
+        }
+        else
+            rigidBody.AddForce(new Vector2(grapplingDirection.x * finalForceOfGrapple, grapplingDirection.y * finalForceOfGrapple * 1.5f), ForceMode2D.Impulse);
+    }
+
+    // ================================== GRAPPLE RAY ==================================
     void GrappleRay()
     {
         Vector3 rayDirection = Camera.main.ScreenToWorldPoint(Input.mousePosition) - transform.position;
@@ -717,29 +769,18 @@ public class PlayerController : MonoBehaviour
         rayDirection.Normalize();
         RaycastHit2D grappleRay = Physics2D.Raycast(transform.position, rayDirection, grappleDistance, anchorLayer);
 
-        if (grappleRay.collider != null)
+        if (AnchorDetected(grappleRay))
         {
-            anchor = grappleRay.collider.gameObject;
-            anchorSpriteRenderer = anchor.GetComponent<SpriteRenderer>();
-            anchorIndicatorSpriteRender = anchor.transform.GetChild(0).gameObject.GetComponent<SpriteRenderer>();
-
-            anchorSpriteRenderer.color = Color.green;
-            anchorIndicatorSpriteRender.color = Color.green;
-            
+            SetAnchorIndicatorToColor(grappleRay, Color.green);
             grappleRayIsHit = true;
         }
         else
         {
-
-            anchorSpriteRenderer.color = Color.red;
-            anchorIndicatorSpriteRender.color = Color.red;
-
+            SetAnchorToColor(Color.red);
             grappleRayIsHit = false;
         }
 
-        //Resetting the anchor to null while not grappling and the ray is not hit because its used to count the grapple button presses
-        if (!isGrappling && grappleRay.collider == null)
-            anchor = null;
+        ResetAnchor(grappleRay);
 
         //Debuging
         //Vector3 end = transform.position + rayDirection * grappleDistance;
@@ -747,72 +788,105 @@ public class PlayerController : MonoBehaviour
         //Debug.Log(grappleRayIsHit);
     }
 
-    Vector2 DisplayGrapplingArrows(Vector2 inputDirection)
+    private bool AnchorDetected(RaycastHit2D grappleRay)
+    {
+        return grappleRay.collider != null;
+    }
+
+    private void SetAnchorIndicatorToColor(RaycastHit2D grappleRay, Color color)
+    {
+        anchor = grappleRay.collider.gameObject;
+        anchorSpriteRenderer = anchor.GetComponent<SpriteRenderer>();
+        anchorIndicatorSpriteRender = anchor.transform.GetChild(0).gameObject.GetComponent<SpriteRenderer>();
+
+        anchorSpriteRenderer.color = color;
+        anchorIndicatorSpriteRender.color = color;
+    }
+
+    private void SetAnchorToColor(Color color)
+    {
+        anchorSpriteRenderer.color = color;
+        anchorIndicatorSpriteRender.color = color;
+    }
+
+    private void ResetAnchor(RaycastHit2D grappleRay)
+    {
+
+        //Resetting the anchor to null while not grappling 
+        //and the ray is not hit because its used to count the grapple button presses
+        if (!isGrappling && grappleRay.collider == null)
+            anchor = null;
+    }
+
+    // ================================== GRAPPLE ARROWS ==================================
+    private void DisplayGrapplingArrows(Vector2 inputDirection)
     {
         SpriteRenderer arrowSprite = null;
-        Color arrowColor;
+        Color arrowColor = Color.green;
 
         //if theres no input
-        if(inputDirection == Vector2.zero)
+        if (inputDirection == NoInput)
         {
-            //we loop over the arrows
-            foreach (GameObject arrow in GrapplingArrows)
-            {
-                //find the active one
-                if (arrow.GetComponent<SpriteRenderer>().color == Color.green)
-                {
-                    //Disable it
-                    arrowColor.a = 0.3f;
-                    arrowColor = Color.white;
-                    arrow.GetComponent<SpriteRenderer>().color = arrowColor;
-                }
-            }
-
-            return Vector2.zero;
+            arrowColor = DeactivateGrapplingArrows(arrowColor);
+            return;
         }
-
-        //Getting the arrow to activate based on the given direction
-        if (inputDirection.x == 1f && inputDirection.y == 0f) //Right
-            arrowSprite = GrapplingArrows[1].GetComponent<SpriteRenderer>();
-        else if (inputDirection.x == 1f && inputDirection.y == 1f) //Top Right
-            arrowSprite = GrapplingArrows[0].GetComponent<SpriteRenderer>();
-        else if (inputDirection.x == 1f && inputDirection.y == -1f) //Bottom Right
-            arrowSprite = GrapplingArrows[2].GetComponent<SpriteRenderer>();
-        else if (inputDirection.x == -1f && inputDirection.y == 0f) //Left
-            arrowSprite = GrapplingArrows[5].GetComponent<SpriteRenderer>();
-        else if (inputDirection.x == -1f && inputDirection.y == 1f) //Top Left
-            arrowSprite = GrapplingArrows[6].GetComponent<SpriteRenderer>();
-        else if (inputDirection.x == -1f && inputDirection.y == -1f) //Bottom Left
-            arrowSprite = GrapplingArrows[4].GetComponent<SpriteRenderer>();
-        else if (inputDirection.x == 0f && inputDirection.y == 1f) //Top
-            arrowSprite = GrapplingArrows[7].GetComponent<SpriteRenderer>();
-        else if (inputDirection.x == 0f && inputDirection.y == -1f) //Bottom
-            arrowSprite = GrapplingArrows[3].GetComponent<SpriteRenderer>();
-
-        //Debug.Log("Arrow color :: " + arrowSprite.color + " ::");
         
-        //The following part is uncessary if the input direction is the same
-        //Looping over the arrows
+        arrowSprite = GetActiveGrapplingArrow(inputDirection, arrowSprite);
+
+        // Deactivate all the arrows even the one we want
+        arrowColor = DeactivateGrapplingArrows(arrowColor);
+        // And because we're still in the same we can activate the one we want again
+        // Without even displaying the deavtivation
+        ActivateGrapplingArrow(arrowSprite);
+    }
+
+    private void ActivateGrapplingArrow(SpriteRenderer arrowSprite)
+    {
+        Color arrowColor;
+        arrowColor.a = 1f;
+        arrowColor = Color.green;
+        arrowSprite.color = arrowColor;
+    }
+
+    private Color DeactivateGrapplingArrows(Color arrowColor)
+    {
+        //we loop over the arrows
         foreach (GameObject arrow in GrapplingArrows)
         {
-            //disabling the one that is active
+            //find the active one
             if (arrow.GetComponent<SpriteRenderer>().color == Color.green)
             {
+                //Disable it
                 arrowColor.a = 0.3f;
                 arrowColor = Color.white;
                 arrow.GetComponent<SpriteRenderer>().color = arrowColor;
             }
         }
 
-        //Activating the arrow with the corresponding inputDirection
-        arrowColor.a = 1f;
-        arrowColor = Color.green;
-
-        arrowSprite.color = arrowColor;
-
-        return inputDirection;
+        return arrowColor;
     }
-
+    private SpriteRenderer GetActiveGrapplingArrow(Vector2 inputDirection, SpriteRenderer arrowSprite)
+        {
+            //Getting the arrow to activate based on the given direction
+            if (inputDirection.x == 1f && inputDirection.y == 0f) //Right
+                arrowSprite = GrapplingArrows[1].GetComponent<SpriteRenderer>();
+            else if (inputDirection.x == 1f && inputDirection.y == 1f) //Top Right
+                arrowSprite = GrapplingArrows[0].GetComponent<SpriteRenderer>();
+            else if (inputDirection.x == 1f && inputDirection.y == -1f) //Bottom Right
+                arrowSprite = GrapplingArrows[2].GetComponent<SpriteRenderer>();
+            else if (inputDirection.x == -1f && inputDirection.y == 0f) //Left
+                arrowSprite = GrapplingArrows[5].GetComponent<SpriteRenderer>();
+            else if (inputDirection.x == -1f && inputDirection.y == 1f) //Top Left
+                arrowSprite = GrapplingArrows[6].GetComponent<SpriteRenderer>();
+            else if (inputDirection.x == -1f && inputDirection.y == -1f) //Bottom Left
+                arrowSprite = GrapplingArrows[4].GetComponent<SpriteRenderer>();
+            else if (inputDirection.x == 0f && inputDirection.y == 1f) //Top
+                arrowSprite = GrapplingArrows[7].GetComponent<SpriteRenderer>();
+            else if (inputDirection.x == 0f && inputDirection.y == -1f) //Bottom
+                arrowSprite = GrapplingArrows[3].GetComponent<SpriteRenderer>();
+            return arrowSprite;
+        }
+    
     void MouseClicksCounter()
     {
         if(canGrapple)
@@ -827,7 +901,6 @@ public class PlayerController : MonoBehaviour
                 if ((Input.GetMouseButtonDown(1) || Input.GetKeyDown(KeyCode.Space)) && anchor != null)
                 {
                     grappleButtonPresses++;
-                    //grappleButtonPresses = 0;
                 }
             }
         }
@@ -874,70 +947,76 @@ public class PlayerController : MonoBehaviour
         }
     }
 
-    Vector2 GetInputDirection(bool onHolding, bool onPress, bool onRelease)
+    Vector2 GetOnHoldInput()
     {
         Vector2 inputVector = Vector2.zero;
 
-        if (onHolding)
-        {
-            if (Input.GetKey(KeyCode.W)) //UP
-                inputVector.y = 1;
+        if (Input.GetKey(KeyCode.W)) //UP
+            inputVector.y = 1;
 
-            if (Input.GetKey(KeyCode.S)) //DOWN
-                inputVector.y = -1;
+        if (Input.GetKey(KeyCode.S)) //DOWN
+            inputVector.y = -1;
 
-            if (Input.GetAxisRaw("Vertical") == 0)
-                inputVector.y = 0;
+        if (Input.GetAxisRaw("Vertical") == 0)
+            inputVector.y = 0;
 
-            if (Input.GetKey(KeyCode.A)) //LEFT
-                inputVector.x = -1;
+        if (Input.GetKey(KeyCode.A)) //LEFT
+            inputVector.x = -1;
 
-            if (Input.GetKey(KeyCode.D)) //RIGHT
-                inputVector.x = 1;
+        if (Input.GetKey(KeyCode.D)) //RIGHT
+            inputVector.x = 1;
 
-            if (Input.GetAxisRaw("Horizontal") == 0)
-                inputVector.x = 0;
-        }
-        else if (onPress)
-        {
-            if (Input.GetKeyDown(KeyCode.W)) //UP
-                inputVector.y = 1;
+        if (Input.GetAxisRaw("Horizontal") == 0)
+            inputVector.x = 0;
 
-            if (Input.GetKeyDown(KeyCode.S)) //DOWN
-                inputVector.y = -1;
+        return inputVector;
+    }
+    Vector2 GetOnPressInput()
+    {
+        Vector2 inputVector = Vector2.zero;
 
-            if (Input.GetAxisRaw("Vertical") == 0)
-                inputVector.y = 0;
+        if (Input.GetKeyDown(KeyCode.W)) //UP
+            inputVector.y = 1;
 
-            if (Input.GetKeyDown(KeyCode.A)) //LEFT
-                inputVector.x = -1;
+        if (Input.GetKeyDown(KeyCode.S)) //DOWN
+            inputVector.y = -1;
 
-            if (Input.GetKeyDown(KeyCode.D)) //RIGHT
-                inputVector.x = 1;
+        if (Input.GetAxisRaw("Vertical") == 0)
+            inputVector.y = 0;
 
-            if (Input.GetAxisRaw("Horizontal") == 0)
-                inputVector.x = 0;
-        }
-        else if (onRelease)
-        {
-            if (Input.GetKeyUp(KeyCode.W)) //UP
-                inputVector.y = 1;
+        if (Input.GetKeyDown(KeyCode.A)) //LEFT
+            inputVector.x = -1;
 
-            if (Input.GetKeyUp(KeyCode.S)) //DOWN
-                inputVector.y = -1;
+        if (Input.GetKeyDown(KeyCode.D)) //RIGHT
+            inputVector.x = 1;
 
-            if (Input.GetAxisRaw("Vertical") == 0)
-                inputVector.y = 0;
+        if (Input.GetAxisRaw("Horizontal") == 0)
+            inputVector.x = 0;
 
-            if (Input.GetKeyUp(KeyCode.A)) //LEFT
-                inputVector.x = -1;
+        return inputVector;
+    }
+    Vector2 GetOnReleaseInput()
+    {
+        Vector2 inputVector = Vector2.zero;
 
-            if (Input.GetKeyUp(KeyCode.D)) //RIGHT
-                inputVector.x = 1;
+        if (Input.GetKeyUp(KeyCode.W)) //UP
+            inputVector.y = 1;
 
-            if (Input.GetAxisRaw("Horizontal") == 0)
-                inputVector.x = 0;
-        }
+        if (Input.GetKeyUp(KeyCode.S)) //DOWN
+            inputVector.y = -1;
+
+        if (Input.GetAxisRaw("Vertical") == 0)
+            inputVector.y = 0;
+
+        if (Input.GetKeyUp(KeyCode.A)) //LEFT
+            inputVector.x = -1;
+
+        if (Input.GetKeyUp(KeyCode.D)) //RIGHT
+            inputVector.x = 1;
+
+        if (Input.GetAxisRaw("Horizontal") == 0)
+            inputVector.x = 0;
+
         return inputVector;
     }
 
