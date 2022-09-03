@@ -929,22 +929,28 @@ public class PlayerController : MonoBehaviour
         if (collider.gameObject.CompareTag("Flyer"))
         {
             Rigidbody2D foundRigidBody = collider.gameObject.GetComponent<Rigidbody2D>();
-
-            //Disabling scripts that can interfer with the force
-            collider.gameObject.GetComponent<AIPath>().enabled = false;
-            collider.gameObject.GetComponent<AIDestinationSetter>().enabled = false;
-
-            //Deciding the direction of the force
-            if (transform.position.x < collider.gameObject.GetComponent<Transform>().position.x)
-                foundRigidBody.AddForce(enemyKnockForce, ForceMode2D.Impulse);
-            else
-                foundRigidBody.AddForce(new Vector2(enemyKnockForce.x * -1, enemyKnockForce.y), ForceMode2D.Impulse);
-
-            foundRigidBody.drag = enemyKnockLinearDrag;
-            foundRigidBody.gravityScale = enemyKnockGravity;
-
+            DisableFlyerScripts(collider);
+            ApplyKnockbackForceTo(collider, foundRigidBody);
             collider.gameObject.GetComponent<EnemyFlyerController>().gotKnocked = true;
         }
+    }
+    private static void DisableFlyerScripts(Collider2D collider)
+    {
+
+        //Disabling scripts that can interfer with the force
+        collider.gameObject.GetComponent<AIPath>().enabled = false;
+        collider.gameObject.GetComponent<AIDestinationSetter>().enabled = false;
+    }
+    private void ApplyKnockbackForceTo(Collider2D collider, Rigidbody2D foundRigidBody)
+    {
+        //Deciding the direction of the force
+        if (transform.position.x < collider.gameObject.GetComponent<Transform>().position.x)
+            foundRigidBody.AddForce(enemyKnockForce, ForceMode2D.Impulse);
+        else
+            foundRigidBody.AddForce(new Vector2(enemyKnockForce.x * -1, enemyKnockForce.y), ForceMode2D.Impulse);
+
+        foundRigidBody.drag = enemyKnockLinearDrag;
+        foundRigidBody.gravityScale = enemyKnockGravity;
     }
 
     Vector2 GetOnHoldInput()
