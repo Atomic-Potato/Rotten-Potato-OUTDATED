@@ -143,6 +143,7 @@ public class PlayerController : MonoBehaviour
     bool grappleRayIsHit;
     bool canRoll;
     bool grappleForceApplied;
+    bool applyRollForce = true;
 
     Vector3 grapplingDirection = Vector3.zero;
     Vector2 originalColliderSize = Vector2.zero;
@@ -190,7 +191,8 @@ public class PlayerController : MonoBehaviour
 
     private void Update()
     {
-        Debug.Log(isCollidingWithWall);
+        if(!(isKnocked || isGrappling))    
+            Roll();
 
         if(!isGrappling && !isKnocked)
             GetDashInput();
@@ -283,8 +285,8 @@ public class PlayerController : MonoBehaviour
             Jump();
         }
 
-        if(!(isKnocked || isGrappling))    
-            Roll();
+        if(applyRollForce)
+            ApplyRollForce();
 
         if(!(isRolling || isDashing || isKnocked || isWallHanging))
             Grapple(originalGravityScale);
@@ -572,7 +574,7 @@ public class PlayerController : MonoBehaviour
 
         if (isRolling)
         {
-            ApplyRollForce();
+            applyRollForce = true; // ApplyRollForce() is called in FixedUpdat()
             if (jumpInputReceived)
             {
                 if (InRollJumpZone())
@@ -609,6 +611,7 @@ public class PlayerController : MonoBehaviour
     {
         isRolling = false;
         rollingCurveCurrentTime = 0f;
+        applyRollForce = false;
     }
 
     private void GetRollingDirection() 
@@ -971,7 +974,7 @@ public class PlayerController : MonoBehaviour
             collider.gameObject.GetComponent<EnemyFlyerController>().gotKnocked = true;
         }
     }
-    private static void DisableFlyerScripts(Collider2D collider)
+    private void DisableFlyerScripts(Collider2D collider)
     {
 
         //Disabling scripts that can interfer with the force

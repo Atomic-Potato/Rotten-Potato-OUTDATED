@@ -33,10 +33,10 @@ public class PivotController : MonoBehaviour
 
     void FixedUpdate()
     {
-        RotateWeapon(pivot1);
+        RotateWeapons(pivot1);
     }
 
-    void RotateWeapon(GameObject pivot) //We also handle the rotation of the companion from here, save some time
+    void RotateWeapons(GameObject pivot) // Weapons with an S because the companion is sort of a weapon....
     {
         functionPivot = pivot; //For using the function's pivot outside of the function
 
@@ -50,58 +50,18 @@ public class PivotController : MonoBehaviour
         if (playerScript.rigidBody.velocity.x < 0)
         {
             if (mouseAngle < pivotMax && mouseAngle > pivotMin)
-            {
-                speed = resetSpeed;
-
-                rotationAngle = 180f;
-                compCont.Rotation(compCont.mouseAngle);
-
-                compCont.companionSprite.flipY = false;
-                locked = true;
-            }
+                SetRotationValues(resetSpeed, 180f, compCont.mouseAngle, false, true);
             else if (mouseAngle > pivotMin && mouseAngle < pivotMax)
-            {
-                speed = resetSpeed;
-
-                rotationAngle = -180f;
-                compCont.Rotation(compCont.mouseAngle);
-
-                compCont.companionSprite.flipY = false;
-                locked = true;
-            }
+                SetRotationValues(resetSpeed, -180f, compCont.mouseAngle, false, true);
             else
-            {
-                speed = pivotSpeed;
-
-                rotationAngle = mouseAngle;
-                compCont.Rotation(180f);
-
-                compCont.companionSprite.flipY = true;
-                locked = false;
-            }
+                SetRotationValues(pivotSpeed, mouseAngle, 180f, true, false);
         }
         else if (playerScript.rigidBody.velocity.x > 0)
         {
             if (mouseAngle > pivotMax || mouseAngle < pivotMin)
-            {
-                speed = resetSpeed;
-
-                rotationAngle = 0f;
-                compCont.Rotation(compCont.mouseAngle);
-
-                compCont.companionSprite.flipY = true;
-                locked = true;
-            }
+                SetRotationValues(resetSpeed, 0f, compCont.mouseAngle, true, true);
             else
-            {
-                speed = resetSpeed;
-
-                rotationAngle = mouseAngle;
-                compCont.Rotation(0f);
-
-                compCont.companionSprite.flipY = false;
-                locked = false;
-            }
+                SetRotationValues(resetSpeed, mouseAngle, 0f, false, false);
         }
         else if (Mathf.Approximately(0f , playerScript.rigidBody.velocity.x))
         {
@@ -114,5 +74,15 @@ public class PivotController : MonoBehaviour
         Quaternion rotation = Quaternion.AngleAxis(rotationAngle, Vector3.forward);
         pivot.transform.rotation = Quaternion.Lerp(pivot.transform.rotation, rotation, speed * Time.deltaTime);
     }
+
+    private void SetRotationValues(float speed, float rotationAngle, float companionRotation, bool flipCompanionY, bool locked)
+    {
+        this.speed = resetSpeed;
+        this.rotationAngle = rotationAngle;
+        compCont.Rotation(companionRotation);
+        compCont.companionSprite.flipY = flipCompanionY;
+        this.locked = locked;
+    }
+
 
 }

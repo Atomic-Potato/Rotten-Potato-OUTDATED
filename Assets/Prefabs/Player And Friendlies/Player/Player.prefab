@@ -34843,7 +34843,7 @@ MonoBehaviour:
   enemyKnockGravity: 5
   defaultCameraZoom: 8.4375
   groundBoxCastSize: {x: 0.825, y: 0.65}
-  wallBoxCastSize: {x: 0.65, y: 0.825}
+  wallBoxCastSize: {x: 0.1, y: 0.925}
   groundLayer:
     serializedVersion: 2
     m_Bits: 256
