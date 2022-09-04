@@ -34763,6 +34763,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   horizontalVelocity: 10
+  maxFallingVelocity: -20
   groundedAccelerationTime: 0.25
   groundedDecelerationTime: 0.15
   jumpForce: 20
@@ -34772,8 +34773,9 @@ MonoBehaviour:
   dashesCount: 1
   dashForce: 25
   dashingTime: 0.2
-  wallHangTime: 1.5
   dashingWallBoxSize: 0.1
+  wallHangTime: 1.5
+  wallJumpForce: 0
   dashSlowDownCurve:
     serializedVersion: 2
     m_Curve:

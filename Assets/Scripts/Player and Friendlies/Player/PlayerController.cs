@@ -8,6 +8,7 @@ public class PlayerController : MonoBehaviour
 {
     [Header("Basic Movment")]
     public float horizontalVelocity = 5f;
+    [SerializeField] float maxFallingVelocity = 20f;
     [SerializeField] float groundedAccelerationTime = 0.05f;
     [SerializeField] float groundedDecelerationTime = 0.05f;
     [SerializeField] float jumpForce = 400f;
@@ -277,10 +278,12 @@ public class PlayerController : MonoBehaviour
 
     private void FixedUpdate()
     {
-        if(isWallHanging)
+        CapFallingVelocity();
+        
+        if (isWallHanging)
             WallHang();
 
-        if(dashInputReceived)
+        if (dashInputReceived)
         {
             SetupDash();
             dashInputReceived = false;
@@ -292,12 +295,14 @@ public class PlayerController : MonoBehaviour
             Jump(jumpForce);
         }
 
-        if(applyRollForce)
+        if (applyRollForce)
             ApplyRollForce();
 
-        if(!(isRolling || isDashing || isKnocked || isWallHanging))
+        if (!(isRolling || isDashing || isKnocked || isWallHanging))
             Grapple(originalGravityScale);
     }
+
+    
 
     private void OnCollisionEnter2D(Collision2D collision)
     {
@@ -356,6 +361,11 @@ public class PlayerController : MonoBehaviour
         }
     }
 
+    private void CapFallingVelocity()
+    {
+        if (rigidBody.velocity.y < maxFallingVelocity)
+            rigidBody.velocity = new Vector2(rigidBody.velocity.x, maxFallingVelocity);
+    }
 
     public void Move()
     {
