@@ -8,6 +8,7 @@ public class PauseMenu : MonoBehaviour
 {
     [SerializeField] GameObject pauseMenu;
     [SerializeField] GameObject controlsMenu;
+    [SerializeField] GameObject creditsMenu;
     [SerializeField] GameObject quitMenu;
     [SerializeField] string currentSceneName;
 
@@ -50,6 +51,7 @@ public class PauseMenu : MonoBehaviour
         gameIsPaused = true;
         pauseMenu.SetActive(true);
         controlsMenu.SetActive(false);
+        creditsMenu.SetActive(false);
         quitMenu.SetActive(false);
         Time.timeScale = 0f;
 
@@ -66,6 +68,7 @@ public class PauseMenu : MonoBehaviour
         gameIsPaused = false;
         pauseMenu.SetActive(false);
         controlsMenu.SetActive(false);
+        creditsMenu.SetActive(false);
         quitMenu.SetActive(false);
         Time.timeScale = 1f;
 
@@ -123,6 +126,12 @@ public class PauseMenu : MonoBehaviour
     {
         Resume();
         SceneManager.LoadScene(currentSceneName);
+    }
+
+    public void Credits()
+    {
+        pauseMenu.SetActive(false);
+        creditsMenu.SetActive(true);
     }
 
     public void QuitButton()

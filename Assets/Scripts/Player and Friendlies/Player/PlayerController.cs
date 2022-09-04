@@ -57,8 +57,6 @@ public class PlayerController : MonoBehaviour
     [SerializeField] Transform grappleOrigin;
     [SerializeField] LayerMask anchorLayer;
     [SerializeField] GameObject GrapplingArrowsParent;
-    //GameObject anchor = new GameObject("DELETE ME");
-    GameObject anchor;
     [SerializeField] GameObject[] GrapplingArrows;
 
     [Space]
@@ -158,6 +156,7 @@ public class PlayerController : MonoBehaviour
     Vector2 originalWallBoxCastSize = Vector2.zero;
 
     PhysicsMaterial2D originalMaterial;
+    GameObject anchor;
     SpriteRenderer anchorSpriteRenderer;
     SpriteRenderer anchorIndicatorSpriteRender;
 
@@ -709,7 +708,7 @@ public class PlayerController : MonoBehaviour
                     else
                         StartCoroutine(EnableThenDisable(_ => isJustBrokeGrappling = _, 0.1f));
                 }
-                
+
                 ResetGrapplingVariables(originalGravity);
             }
 
@@ -875,17 +874,13 @@ public class PlayerController : MonoBehaviour
 
     private void SetAnchorIndicatorToColor(RaycastHit2D grappleRay, Color color)
     {
-        try
-        {
-            anchorSpriteRenderer = anchor.GetComponent<SpriteRenderer>();
-            anchorIndicatorSpriteRender = anchor.transform.GetChild(0).gameObject.GetComponent<SpriteRenderer>();
-        }
-        catch(NullReferenceException exception)
-        {
-            Debug.Log(exception);
-        }
-            anchorSpriteRenderer.color = color;
-            anchorIndicatorSpriteRender.color = color;
+        if(!anchor)
+            return;
+
+        anchorSpriteRenderer = anchor.GetComponent<SpriteRenderer>();
+        anchorIndicatorSpriteRender = anchor.transform.GetChild(0).gameObject.GetComponent<SpriteRenderer>();
+        anchorSpriteRenderer.color = color;
+        anchorIndicatorSpriteRender.color = color;
     }
 
     private void SetAnchorToColor(Color color)
