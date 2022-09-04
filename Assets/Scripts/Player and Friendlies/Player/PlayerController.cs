@@ -57,6 +57,8 @@ public class PlayerController : MonoBehaviour
     [SerializeField] Transform grappleOrigin;
     [SerializeField] LayerMask anchorLayer;
     [SerializeField] GameObject GrapplingArrowsParent;
+    //GameObject anchor = new GameObject("DELETE ME");
+    GameObject anchor;
     [SerializeField] GameObject[] GrapplingArrows;
 
     [Space]
@@ -145,7 +147,6 @@ public class PlayerController : MonoBehaviour
     bool dashInputReceived;
     bool grappleRayIsHit;
     bool canRoll;
-    bool grappleForceApplied;
     bool applyRollForce = true;
 
     Vector3 grapplingDirection = Vector3.zero;
@@ -157,7 +158,6 @@ public class PlayerController : MonoBehaviour
     Vector2 originalWallBoxCastSize = Vector2.zero;
 
     PhysicsMaterial2D originalMaterial;
-    GameObject anchor;
     SpriteRenderer anchorSpriteRenderer;
     SpriteRenderer anchorIndicatorSpriteRender;
 
@@ -192,6 +192,11 @@ public class PlayerController : MonoBehaviour
         originaljumpBufferTime = jumpBufferTime;
         jumpBufferTime = 0f;
 
+        //it will reset next frame
+        //but unity breaks if youre trying to access something that is null
+        //even tho you have a condition to check if its null
+        //so youre forced to assign it to some value
+        //anchor = new GameObject("DEFAULT ANCHOR");
     }
 
     private void Update()
@@ -242,7 +247,6 @@ public class PlayerController : MonoBehaviour
         {
             stringController.gameObject.SetActive(true);
             stringController.GrapplingStringTarget(grappleOrigin.transform, anchor.transform);
-
             //Camera shake and zoom out
             //cameraController.CameraShake(grapplingCameraShakeStrength);
             //cameraController.CameraZoom(grapplingCameraZoomOffset, grapplingCameraZoomOutTime, defaultCameraZoom);
@@ -697,12 +701,15 @@ public class PlayerController : MonoBehaviour
         {
             if (isGrappling) // Used to stop applying these values when not grappling
             {
-                //Giving the player a bonuse force for completing the grapple
-                if (Vector2.Distance(transform.position, anchor.transform.position) <= distanceToDetachGrapple)
-                    ApplyFinalGrapplingForce();
-                else
-                    StartCoroutine(EnableThenDisable(_ => isJustBrokeGrappling = _, 0.1f));
-
+                if(anchor != null)
+                {
+                    //Giving the player a bonuse force for completing the grapple
+                    if (Vector2.Distance(transform.position, anchor.transform.position) <= distanceToDetachGrapple)
+                        ApplyFinalGrapplingForce();
+                    else
+                        StartCoroutine(EnableThenDisable(_ => isJustBrokeGrappling = _, 0.1f));
+                }
+                
                 ResetGrapplingVariables(originalGravity);
             }
 
@@ -739,6 +746,9 @@ public class PlayerController : MonoBehaviour
 
     void ApplyGrapplingForce()
     {
+        if(!anchor)
+            return;
+
         //Finding the position and direction of the mouse
         grapplingDirection = anchor.transform.position - transform.position;
         //We set the position of the mouse on z to 0 because the player is on z = 0
@@ -779,10 +789,14 @@ public class PlayerController : MonoBehaviour
 
     bool GrappleEnded()
     {
+        if(!anchor)
+            return true;
+
         //reached destination or if canceled by user or hit by rocketato
         return Vector2.Distance(transform.position, anchor.transform.position) <= distanceToDetachGrapple 
                 || (grappleButtonPresses >= 2 && isGrappling) 
                 || isKnocked;
+
     }
 
     private void ResetGrapplingVariables(float originalGravity)
@@ -808,7 +822,6 @@ public class PlayerController : MonoBehaviour
 
     private void ApplyFinalGrapplingForce()
     {
-        grappleForceApplied = true;
         StartCoroutine(EnableThenDisable(_ => isJustFinishedGrappling = _, 0.1f));
 
         if (finalGrapplingForceDirection != Vector2.zero)
@@ -837,6 +850,7 @@ public class PlayerController : MonoBehaviour
 
         if (AnchorDetected(grappleRay))
         {
+            anchor = grappleRay.collider.gameObject;
             SetAnchorIndicatorToColor(grappleRay, Color.green);
             grappleRayIsHit = true;
         }
@@ -861,16 +875,24 @@ public class PlayerController : MonoBehaviour
 
     private void SetAnchorIndicatorToColor(RaycastHit2D grappleRay, Color color)
     {
-        anchor = grappleRay.collider.gameObject;
-        anchorSpriteRenderer = anchor.GetComponent<SpriteRenderer>();
-        anchorIndicatorSpriteRender = anchor.transform.GetChild(0).gameObject.GetComponent<SpriteRenderer>();
-
-        anchorSpriteRenderer.color = color;
-        anchorIndicatorSpriteRender.color = color;
+        try
+        {
+            anchorSpriteRenderer = anchor.GetComponent<SpriteRenderer>();
+            anchorIndicatorSpriteRender = anchor.transform.GetChild(0).gameObject.GetComponent<SpriteRenderer>();
+        }
+        catch(NullReferenceException exception)
+        {
+            Debug.Log(exception);
+        }
+            anchorSpriteRenderer.color = color;
+            anchorIndicatorSpriteRender.color = color;
     }
 
     private void SetAnchorToColor(Color color)
     {
+        if(!anchorSpriteRenderer || !anchorIndicatorSpriteRender)
+            return;
+
         anchorSpriteRenderer.color = color;
         anchorIndicatorSpriteRender.color = color;
     }
