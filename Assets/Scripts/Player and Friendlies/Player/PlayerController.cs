@@ -20,8 +20,10 @@ public class PlayerController : MonoBehaviour
     public int dashesCount = 1;
     [SerializeField] float dashForce = 15f;
     [SerializeField] float dashingTime = 0.2f;
+    [SerializeField] float dashingWallBoxSize;
     [Tooltip("If the player collides with a wall while dashing he will have this time stuck on the wall to jump")]
     [SerializeField] float wallHangTime = 1.5f;
+    [SerializeField] float wallJumpForce;
     [SerializeField] AnimationCurve dashSlowDownCurve;
     [SerializeField] string playerLayer;
     [SerializeField] string flyerLayer;
@@ -137,7 +139,6 @@ public class PlayerController : MonoBehaviour
     float dashTimer;
     float dashSlowDownTimer;
     float wallHangTimer;
-
     
     bool jumpInputReceived;
     bool dashInputReceived;
@@ -152,6 +153,7 @@ public class PlayerController : MonoBehaviour
     Vector2 dashingDirection = Vector2.zero;
     Vector2 finalGrapplingForceDirection = Vector2.zero;
     Vector2 finalGrapplingForceDirectionOld = Vector2.zero;
+    Vector2 originalWallBoxCastSize = Vector2.zero;
 
     PhysicsMaterial2D originalMaterial;
     GameObject anchor;
@@ -181,9 +183,10 @@ public class PlayerController : MonoBehaviour
         originalJumpForce = jumpForce;
         dashesLeft = dashesCount;
         originalColliderSize = boxCollider.size;
-        dashingColliderSize = new Vector2(originalColliderSize.x - 0.1f, originalColliderSize.y - 0.01f);
+        dashingColliderSize = new Vector2(originalColliderSize.x-0.01f, originalColliderSize.y - 0.01f);
         wallHangTimer = wallHangTime;
         originalDistanceToDetach = distanceToDetachGrapple;
+        originalWallBoxCastSize = wallBoxCastSize;
 
         originaljumpBufferTime = jumpBufferTime;
         jumpBufferTime = 0f;
@@ -192,15 +195,12 @@ public class PlayerController : MonoBehaviour
 
     private void Update()
     {
-        Debug.Log("Left: " + isCollidingWithLeftWall + "\nRight : " + isCollidingWithRightWall);
         GroundCheck();
         WallCheck(rightWallBoxCastPosition.position, wallBoxCastSize, _ => isCollidingWithRightWall = _);
         WallCheck(leftWallBoxCastPosition.position, wallBoxCastSize, _ => isCollidingWithLeftWall = _);
         MouseClicksCounter();
         GrappleRay();
         WhileGroundedVariablesReset();
-
-        CheckForWallHang();
 
         if(!(isKnocked || isGrappling))    
             Roll();
@@ -289,7 +289,7 @@ public class PlayerController : MonoBehaviour
         if (!(isGrappling || isRolling || isDashing || isWallHanging))
         {
             Move();
-            Jump();
+            Jump(jumpForce);
         }
 
         if(applyRollForce)
@@ -303,6 +303,11 @@ public class PlayerController : MonoBehaviour
     {
         if (collision.gameObject.CompareTag("Ground"))
             isCollidingWithCollider = true;
+    }
+
+    private void OnCollisionStay2D(Collision2D other) 
+    {
+        CheckForWallHang();
     }
 
     private void OnCollisionExit2D(Collision2D collision)
@@ -398,7 +403,7 @@ public class PlayerController : MonoBehaviour
         }
     }
 
-    public void Jump()
+    public void Jump(float jumpForce)
     {
         //why the hell i barely commented this
         if (coyoteTime > 0f && jumpBufferTime > 0f && !isJumping && !isWallHanging)
@@ -480,6 +485,7 @@ public class PlayerController : MonoBehaviour
     {
         boxCollider.size = dashingColliderSize; //we smallen the collider in case the player is dashing while colliding
         wallHangTimer = wallHangTime;
+        wallBoxCastSize.x = dashingWallBoxSize;
     }
 
     private void ResetDashVariables()
@@ -487,6 +493,7 @@ public class PlayerController : MonoBehaviour
         dashSlowDownTimer = 0f;
         rigidBody.gravityScale = originalGravityScale;
         boxCollider.size = originalColliderSize;
+        wallBoxCastSize = originalWallBoxCastSize;
         //removing player's ability to collide with enemies when collided
         Physics2D.IgnoreLayerCollision(LayerMask.NameToLayer(playerLayer), LayerMask.NameToLayer(flyerLayer), true);
         isDashing = false;
@@ -512,14 +519,15 @@ public class PlayerController : MonoBehaviour
         if (wallHangTimer <= 0)
             ResetWallHangVariables();
         
-        if (jumpInputReceived) 
-            WallJump();
+        if (jumpInputReceived && wallHangTimer <= (wallHangTime - 0.15f))
+            StartCoroutine(WallJump());
     }
 
-    private void WallJump()
+    IEnumerator WallJump()
     {
         ResetWallHangVariables();
-        rigidBody.velocity = new Vector2((jumpForce*input)/2, jumpForce);
+        yield return null;
+        rigidBody.velocity = new Vector2((wallJumpForce*input)/2, wallJumpForce);
         StartCoroutine(EnableThenDisable((_ => isJumping = _), jumpCooldownTime));
     }
 
@@ -587,10 +595,9 @@ public class PlayerController : MonoBehaviour
             if (jumpInputReceived)
             {
                 if (InRollJumpZone())
-                    jumpForce = rollingJumpForced;
-
-                Jump();
-                jumpForce = originalJumpForce;
+                    Jump(rollingJumpForced);
+                else
+                    Jump(jumpForce);
             }
         }
         else if(isGrounded)

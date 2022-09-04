@@ -19638,7 +19638,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 4060755328964785319}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0.55, y: 0, z: 0}
+  m_LocalPosition: {x: 0.5, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 7048394261642957588}
@@ -24810,7 +24810,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 5931194461016924083}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -0.55, y: 0, z: 0}
+  m_LocalPosition: {x: -0.5, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 7048394261642957588}
@@ -34773,6 +34773,7 @@ MonoBehaviour:
   dashForce: 25
   dashingTime: 0.2
   wallHangTime: 1.5
+  dashingWallBoxSize: 0.1
   dashSlowDownCurve:
     serializedVersion: 2
     m_Curve:
@@ -34874,7 +34875,7 @@ MonoBehaviour:
   enemyKnockGravity: 5
   defaultCameraZoom: 8.4375
   groundBoxCastSize: {x: 0.825, y: 0.65}
-  wallBoxCastSize: {x: 0.1, y: 0.925}
+  wallBoxCastSize: {x: 0.001, y: 0.925}
   groundLayer:
     serializedVersion: 2
     m_Bits: 256
