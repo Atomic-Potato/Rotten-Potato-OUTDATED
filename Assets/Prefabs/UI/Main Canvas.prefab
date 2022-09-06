@@ -687,7 +687,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 1, y: 0.5}
   m_AnchorMax: {x: 1, y: 0.5}
-  m_AnchoredPosition: {x: -430, y: -115}
+  m_AnchoredPosition: {x: -430, y: -190}
   m_SizeDelta: {x: 860, y: 578.9}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &3066638563813810926
@@ -734,14 +734,20 @@ MonoBehaviour:
 
     @UrbanProtagoni1 (Twitter)
 
-    @TarnishedBand
+    @ZeroSugarAshton
     (Twitter)
+
+    @TarnishedBand (Twitter)
 
     @SomeDudeDev (Twitter)
 
     Domeen0
 
-    XRed'
+    XRed
+
+
+    Theres
+    probably more but i cant remember'
 --- !u!1 &5416649136715705999
 GameObject:
   m_ObjectHideFlags: 0
@@ -5420,7 +5426,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 1}
   m_AnchorMax: {x: 0.5, y: 1}
-  m_AnchoredPosition: {x: 0, y: -150}
+  m_AnchoredPosition: {x: 0, y: -200}
   m_SizeDelta: {x: 860, y: 75}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &329950111565363938

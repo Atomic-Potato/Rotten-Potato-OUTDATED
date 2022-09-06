@@ -34705,6 +34705,7 @@ GameObject:
   - component: {fileID: 7048394261642957610}
   - component: {fileID: 7048394261642957609}
   - component: {fileID: 5484123185706636538}
+  - component: {fileID: 8476856365992745798}
   m_Layer: 9
   m_Name: Player
   m_TagString: Player
@@ -34763,7 +34764,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   horizontalVelocity: 10
-  maxFallingVelocity: -20
+  maxFallingVelocity: -25
   groundedAccelerationTime: 0.25
   groundedDecelerationTime: 0.15
   jumpForce: 20
@@ -34772,10 +34773,10 @@ MonoBehaviour:
   jumpCooldownTime: 0.4
   dashesCount: 1
   dashForce: 25
-  dashingTime: 0.2
+  dashingTime: 0.15
   dashingWallBoxSize: 0.1
   wallHangTime: 1.5
-  wallJumpForce: 0
+  wallJumpForce: 20
   dashSlowDownCurve:
     serializedVersion: 2
     m_Curve:
@@ -35020,6 +35021,36 @@ CircleCollider2D:
   m_Offset: {x: 0, y: 0}
   serializedVersion: 2
   m_Radius: 1.15
+--- !u!114 &8476856365992745798
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7048394261642957608}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 62899f850307741f2a39c98a8b639597, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Actions: {fileID: 0}
+  m_NotificationBehavior: 0
+  m_UIInputModule: {fileID: 0}
+  m_DeviceLostEvent:
+    m_PersistentCalls:
+      m_Calls: []
+  m_DeviceRegainedEvent:
+    m_PersistentCalls:
+      m_Calls: []
+  m_ControlsChangedEvent:
+    m_PersistentCalls:
+      m_Calls: []
+  m_ActionEvents: []
+  m_NeverAutoSwitchControlSchemes: 0
+  m_DefaultControlScheme: 
+  m_DefaultActionMap: 
+  m_SplitScreenIndex: -1
+  m_Camera: {fileID: 0}
 --- !u!1 &7048394261848010771
 GameObject:
   m_ObjectHideFlags: 0
