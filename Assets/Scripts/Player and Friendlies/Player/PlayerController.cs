@@ -6,6 +6,7 @@ using Pathfinding;
 
 public class PlayerController : MonoBehaviour
 {
+    #region Public Variables
     [Header("Basic Movment")]
     public float horizontalVelocity = 5f;
     [SerializeField] float maxFallingVelocity = 20f;
@@ -98,8 +99,10 @@ public class PlayerController : MonoBehaviour
     [SerializeField] CameraController cameraController;
     [SerializeField] CompanionAbilitiesController companionAbilitiesController;
 
-    // ---------- Private and hidden ----------
-    [Space]
+    #endregion
+
+    #region Public And Hidden Varriables
+    [Space] //in case of debugging
     [HideInInspector] public int dashesLeft;
     [HideInInspector] public float dashDelayTimer;
     [HideInInspector] public static GameObject player;
@@ -124,8 +127,9 @@ public class PlayerController : MonoBehaviour
     [HideInInspector] public bool isCollidingWithCollider; // Basically walls and ground
     [HideInInspector] public bool isCollidingWithLeftWall;
     [HideInInspector] public bool isCollidingWithRightWall;
+    #endregion
 
-
+    #region Private Variables
     int grappleButtonPresses;
     int rollingDirection;
 
@@ -173,7 +177,10 @@ public class PlayerController : MonoBehaviour
     // ---------- Constants ----------
     const float NoGravity = 0f;
     readonly Vector2 NoInput = Vector2.zero;
+    
+    #endregion
 
+    #region Awake, Start, Update, OnX functions
     private void Start()
     {
         player = gameObject;
@@ -305,8 +312,6 @@ public class PlayerController : MonoBehaviour
             Grapple(originalGravityScale);
     }
 
-    
-
     private void OnCollisionEnter2D(Collision2D collision)
     {
         if (collision.gameObject.CompareTag("Ground"))
@@ -331,45 +336,9 @@ public class PlayerController : MonoBehaviour
         if (isDashing && collision.gameObject.CompareTag("Flyer"))
             Knockback(collision);
     }
+    #endregion
 
-    void GroundCheck()
-    {
-        if (Physics2D.OverlapBox(groundBoxCastPosition.position, groundBoxCastSize, 0, groundLayer))
-        {
-            isGrounded = true;
-
-            if(justLandedCache == null && !isDashing) //!isDashing in case dashing while grounded
-                justLandedCache = StartCoroutine(EnableThenDisable(_ => isJustLanded = _, 0.1f));
-        }
-        else
-        {
-            isGrounded = false;
-            justLandedCache = null;
-        }
-    }
-
-    //The global variable needs to be function in this form _ => globalVariable = _
-    void WallCheck(Vector3 boxPosition, Vector2 boxSize, Action<bool> globalVariable)
-    {
-        if (Physics2D.OverlapBox(boxPosition, boxSize, 0, groundLayer))
-        {
-            globalVariable(true);
-            if(justHitWallCache == null && !isDashing) //!isDashing in case dashing while grounded
-                justHitWallCache = StartCoroutine(EnableThenDisable(_ => isJustHitWall = _, 0.1f));
-        }
-        else
-        {
-            globalVariable(false);
-            justHitWallCache = null;
-        }
-    }
-
-    private void CapFallingVelocity()
-    {
-        if (rigidBody.velocity.y < maxFallingVelocity)
-            rigidBody.velocity = new Vector2(rigidBody.velocity.x, maxFallingVelocity);
-    }
-
+    #region MOVEMENT
     public void Move()
     {
         input = Input.GetAxisRaw("Horizontal");
@@ -381,6 +350,12 @@ public class PlayerController : MonoBehaviour
             Decelerate();
         
         HandleFirction();
+    }
+
+    private void CapFallingVelocity()
+    {
+        if (rigidBody.velocity.y < maxFallingVelocity)
+            rigidBody.velocity = new Vector2(rigidBody.velocity.x, maxFallingVelocity);
     }
 
     void Accelerate(float targetVelocity)
@@ -415,7 +390,9 @@ public class PlayerController : MonoBehaviour
             isMoving = isGrounded; // equivalent to isMoving = isGrounded ? true : false;
         }
     }
+    #endregion
 
+    #region JUMP
     public void Jump(float jumpForce)
     {
         //why the hell i barely commented this
@@ -431,9 +408,9 @@ public class PlayerController : MonoBehaviour
         if(Input.GetButtonUp("Jump") && rigidBody.velocity.y > 0f)
             coyoteTime = 0f;
     }
+    #endregion
 
-
-    // ================================== DASH ==================================
+    #region DASH
     void Dash(Vector2 direction) 
     {
         if (rigidBody.gravityScale != NoGravity)
@@ -518,8 +495,9 @@ public class PlayerController : MonoBehaviour
         if(Input.GetKeyDown(KeyCode.LeftShift) && dashingDirection != Vector2.zero)
             dashInputReceived = true;
     }
+    #endregion
 
-    // ================================== WALL HANG ==================================
+    #region WALL HANG
     // If the player hits a wall while dashing he gets stuck to it for some time
     private void WallHang()
     {
@@ -581,8 +559,9 @@ public class PlayerController : MonoBehaviour
         wallHangTimer = 0f;
         isWallHanging = false;
     }
+    #endregion
 
-    // ================================== ROLL ==================================
+    #region ROLL
     void Roll()
     {
         if (CanRoll())
@@ -677,8 +656,9 @@ public class PlayerController : MonoBehaviour
         rollingSpeedCurve.AddKey(0f, Mathf.Abs(rigidBody.velocity.x) + 0.1f);
         //Edit the value of the key directly didnt work, so i just delete the old key and create a new one at the same time of the original key
     }
+    #endregion
 
-    // ================================== GRAPPLE ==================================
+    #region GRAPPLE
     void Grapple(float originalGravity)
     {
         GrappleLoaded();
@@ -838,8 +818,9 @@ public class PlayerController : MonoBehaviour
         else
             rigidBody.AddForce(new Vector2(grapplingDirection.x * finalForceOfGrapple, grapplingDirection.y * finalForceOfGrapple * 1.5f), ForceMode2D.Impulse);
     }
+    #endregion
 
-    // ================================== GRAPPLE RAY ==================================
+    #region GRAPPLE RAY
     void GrappleRay()
     {
         Vector3 rayDirection = Camera.main.ScreenToWorldPoint(Input.mousePosition) - transform.position;
@@ -894,14 +875,14 @@ public class PlayerController : MonoBehaviour
 
     private void ResetAnchor(RaycastHit2D grappleRay)
     {
-
         //Resetting the anchor to null while not grappling 
         //and the ray is not hit because its used to count the grapple button presses
         if (!isGrappling && grappleRay.collider == null)
             anchor = null;
     }
+    #endregion
 
-    // ================================== GRAPPLE ARROWS ==================================
+    #region GRAPPLE ARROWS
     private void DisplayGrapplingArrows(Vector2 inputDirection)
     {
         SpriteRenderer arrowSprite = null;
@@ -969,7 +950,47 @@ public class PlayerController : MonoBehaviour
                 arrowSprite = GrapplingArrows[3].GetComponent<SpriteRenderer>();
             return arrowSprite;
         }
+
+    #endregion
+
+    #region KNOCKBACK
+    void Knockback(Collider2D collider)
+    {
+        if (collider.gameObject.CompareTag("Flyer"))
+        {
+            Rigidbody2D foundRigidBody = collider.gameObject.GetComponent<Rigidbody2D>();
+            DisableFlyerScripts(collider);
+            ApplyKnockbackForceTo(collider, foundRigidBody);
+            collider.gameObject.GetComponent<EnemyFlyerController>().gotKnocked = true;
+        }
+    }
+    private void DisableFlyerScripts(Collider2D collider)
+    {
+
+        //Disabling scripts that can interfer with the force
+        collider.gameObject.GetComponent<AIPath>().enabled = false;
+        collider.gameObject.GetComponent<AIDestinationSetter>().enabled = false;
+    }
+    private void ApplyKnockbackForceTo(Collider2D collider, Rigidbody2D foundRigidBody)
+    {
+        //Deciding the direction of the force
+        if (transform.position.x < collider.gameObject.GetComponent<Transform>().position.x)
+            foundRigidBody.AddForce(enemyKnockForce, ForceMode2D.Impulse);
+        else
+            foundRigidBody.AddForce(new Vector2(enemyKnockForce.x * -1, enemyKnockForce.y), ForceMode2D.Impulse);
+
+        foundRigidBody.drag = enemyKnockLinearDrag;
+        foundRigidBody.gravityScale = enemyKnockGravity;
+    }
+
+    IEnumerator ResetKnock()
+    {
+        yield return new WaitForSeconds(0.3f);
+        isKnocked = false;
+    }
+    #endregion
     
+    #region Miscellaneous
     void MouseClicksCounter()
     {
         if(canGrapple)
@@ -1006,36 +1027,43 @@ public class PlayerController : MonoBehaviour
             companionAbilitiesController.enabled = false;
         }
     }
+    #endregion
 
-    void Knockback(Collider2D collider)
+    #region Checks
+    void GroundCheck()
     {
-        if (collider.gameObject.CompareTag("Flyer"))
+        if (Physics2D.OverlapBox(groundBoxCastPosition.position, groundBoxCastSize, 0, groundLayer))
         {
-            Rigidbody2D foundRigidBody = collider.gameObject.GetComponent<Rigidbody2D>();
-            DisableFlyerScripts(collider);
-            ApplyKnockbackForceTo(collider, foundRigidBody);
-            collider.gameObject.GetComponent<EnemyFlyerController>().gotKnocked = true;
+            isGrounded = true;
+
+            if(justLandedCache == null && !isDashing) //!isDashing in case dashing while grounded
+                justLandedCache = StartCoroutine(EnableThenDisable(_ => isJustLanded = _, 0.1f));
+        }
+        else
+        {
+            isGrounded = false;
+            justLandedCache = null;
         }
     }
-    private void DisableFlyerScripts(Collider2D collider)
-    {
 
-        //Disabling scripts that can interfer with the force
-        collider.gameObject.GetComponent<AIPath>().enabled = false;
-        collider.gameObject.GetComponent<AIDestinationSetter>().enabled = false;
-    }
-    private void ApplyKnockbackForceTo(Collider2D collider, Rigidbody2D foundRigidBody)
+    //The global variable needs to be function in this form _ => globalVariable = _
+    void WallCheck(Vector3 boxPosition, Vector2 boxSize, Action<bool> globalVariable)
     {
-        //Deciding the direction of the force
-        if (transform.position.x < collider.gameObject.GetComponent<Transform>().position.x)
-            foundRigidBody.AddForce(enemyKnockForce, ForceMode2D.Impulse);
+        if (Physics2D.OverlapBox(boxPosition, boxSize, 0, groundLayer))
+        {
+            globalVariable(true);
+            if(justHitWallCache == null && !isDashing) //!isDashing in case dashing while grounded
+                justHitWallCache = StartCoroutine(EnableThenDisable(_ => isJustHitWall = _, 0.1f));
+        }
         else
-            foundRigidBody.AddForce(new Vector2(enemyKnockForce.x * -1, enemyKnockForce.y), ForceMode2D.Impulse);
-
-        foundRigidBody.drag = enemyKnockLinearDrag;
-        foundRigidBody.gravityScale = enemyKnockGravity;
+        {
+            globalVariable(false);
+            justHitWallCache = null;
+        }
     }
+    #endregion
 
+    #region Multiuse Functions
     Vector2 GetOnHoldInput()
     {
         Vector2 inputVector = Vector2.zero;
@@ -1123,11 +1151,7 @@ public class PlayerController : MonoBehaviour
         return -offsetMargin >= rigidBody.velocity.x && rigidBody.velocity.x <= offsetMargin;
     }
 
-    IEnumerator ResetKnock()
-    {
-        yield return new WaitForSeconds(0.3f);
-        isKnocked = false;
-    }
+
 
     //This function takes a function with a boolean argument as an alternative for pointers
     //e.g.  EnableThenDisable(_ => globalVariable = _, 0.1f);
@@ -1154,4 +1178,5 @@ public class PlayerController : MonoBehaviour
     {
         switcher(false);
     }
+    #endregion
 }
