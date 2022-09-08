@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.InputSystem;
 using Pathfinding;
 
 public class PlayerController : MonoBehaviour
@@ -301,7 +302,7 @@ public class PlayerController : MonoBehaviour
 
         if (!(isGrappling || isRolling || isDashing || isWallHanging))
         {
-            Move();
+            ApplyMovement();
             Jump(jumpForce);
         }
 
@@ -339,9 +340,13 @@ public class PlayerController : MonoBehaviour
     #endregion
 
     #region MOVEMENT
-    public void Move()
+    public void MovementInput(InputAction.CallbackContext context)
     {
-        input = Input.GetAxisRaw("Horizontal");
+        input = context.ReadValue<float>();
+    }
+
+    public void ApplyMovement()
+    {
         float targetVelocity = input * horizontalVelocity;
         
         if (input != 0)
