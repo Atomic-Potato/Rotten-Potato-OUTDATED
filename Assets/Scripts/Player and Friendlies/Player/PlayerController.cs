@@ -146,7 +146,7 @@ public class PlayerController : MonoBehaviour
     float dashSlowDownTimer;
     float wallHangTimer;
     
-    bool jumpInputReceived;
+    public bool jumpInputReceived;
     bool dashInputReceived;
     bool grappleRayIsHit;
     bool canRoll;
@@ -235,19 +235,9 @@ public class PlayerController : MonoBehaviour
             coyoteTime = originalCoyoteTime;
         else
             coyoteTime -= Time.deltaTime;
-         
-        if(Input.GetButtonDown("Jump"))
-        {
-            jumpInputReceived = true;
-            jumpBufferTime = originaljumpBufferTime;
-            //Debug.Log("Jump BufferTime = " + jumpBufferTime);
-        }
-        else if (jumpBufferTime > 0f)
+
+        if (jumpBufferTime > 0f)
             jumpBufferTime -= Time.deltaTime;
-
-        if(Input.GetButtonUp("Jump"))
-            jumpInputReceived = false;
-
 
         //Displaying grappling string and other effects
         if (isGrappling)
@@ -303,7 +293,7 @@ public class PlayerController : MonoBehaviour
         if (!(isGrappling || isRolling || isDashing || isWallHanging))
         {
             ApplyMovement();
-            Jump(jumpForce);
+            ApplyJump(jumpForce);
         }
 
         if (applyRollForce)
@@ -345,7 +335,7 @@ public class PlayerController : MonoBehaviour
         input = context.ReadValue<float>();
     }
 
-    public void ApplyMovement()
+    void ApplyMovement()
     {
         float targetVelocity = input * horizontalVelocity;
         
@@ -398,7 +388,19 @@ public class PlayerController : MonoBehaviour
     #endregion
 
     #region JUMP
-    public void Jump(float jumpForce)
+    
+    public void JumpInput(InputAction.CallbackContext context)
+    {
+        if(context.started)
+        {
+            jumpInputReceived = true;
+            jumpBufferTime = originaljumpBufferTime;
+        }
+        else
+            jumpInputReceived = false;
+    }
+
+    void ApplyJump(float jumpForce)
     {
         //why the hell i barely commented this
         if (coyoteTime > 0f && jumpBufferTime > 0f && !isJumping && !isWallHanging)
@@ -410,7 +412,7 @@ public class PlayerController : MonoBehaviour
             StartCoroutine(EnableThenDisable(_ => isJumping = _, jumpCooldownTime));
         }
 
-        if(Input.GetButtonUp("Jump") && rigidBody.velocity.y > 0f)
+        if(jumpInputReceived && rigidBody.velocity.y > 0f)
             coyoteTime = 0f;
     }
     #endregion
@@ -592,9 +594,9 @@ public class PlayerController : MonoBehaviour
             if (jumpInputReceived)
             {
                 if (InRollJumpZone())
-                    Jump(rollingJumpForced);
+                    ApplyJump(rollingJumpForced);
                 else
-                    Jump(jumpForce);
+                    ApplyJump(jumpForce);
             }
         }
         else if(isGrounded)

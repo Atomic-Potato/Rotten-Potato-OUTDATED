@@ -20,7 +20,7 @@ public class DELETEME : MonoBehaviour
 
     public void Jump(InputAction.CallbackContext context)
     {
-        Debug.Log("Jump: " + context.phase);
+        Debug.Log("Jump: " + context.phase  + " " + context.ReadValue<float>());
     }
 
     public void Dash(InputAction.CallbackContext context)
