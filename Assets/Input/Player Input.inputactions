@@ -6,7 +6,7 @@
             "id": "52accf8e-a287-48a1-ac92-2767e09e8bc0",
             "actions": [
                 {
-                    "name": "X Direction Hold / Move",
+                    "name": "X Axis",
                     "type": "Value",
                     "id": "a292c04c-e88d-4565-b2f9-23b2dda63e77",
                     "expectedControlType": "Axis",
@@ -15,7 +15,7 @@
                     "initialStateCheck": true
                 },
                 {
-                    "name": "Y Direction Hold",
+                    "name": "Y Axis",
                     "type": "Value",
                     "id": "9de0c87e-aa64-4617-a44b-9070ad60138c",
                     "expectedControlType": "Axis",
@@ -42,7 +42,7 @@
                     "initialStateCheck": false
                 },
                 {
-                    "name": "Shift Modifier / Dash",
+                    "name": "Dash",
                     "type": "Button",
                     "id": "4f6de1db-f7f0-4a6d-9be6-2b38a7bf72e9",
                     "expectedControlType": "Button",
@@ -152,7 +152,7 @@
                     "interactions": "Press",
                     "processors": "",
                     "groups": "",
-                    "action": "X Direction Hold / Move",
+                    "action": "X Axis",
                     "isComposite": true,
                     "isPartOfComposite": false
                 },
@@ -163,7 +163,7 @@
                     "interactions": "",
                     "processors": "",
                     "groups": "",
-                    "action": "X Direction Hold / Move",
+                    "action": "X Axis",
                     "isComposite": false,
                     "isPartOfComposite": true
                 },
@@ -174,7 +174,7 @@
                     "interactions": "",
                     "processors": "",
                     "groups": "",
-                    "action": "X Direction Hold / Move",
+                    "action": "X Axis",
                     "isComposite": false,
                     "isPartOfComposite": true
                 },
@@ -185,7 +185,7 @@
                     "interactions": "Tap",
                     "processors": "",
                     "groups": "",
-                    "action": "Shift Modifier / Dash",
+                    "action": "Dash",
                     "isComposite": false,
                     "isPartOfComposite": false
                 },
@@ -196,7 +196,7 @@
                     "interactions": "Press",
                     "processors": "",
                     "groups": "",
-                    "action": "Y Direction Hold",
+                    "action": "Y Axis",
                     "isComposite": true,
                     "isPartOfComposite": false
                 },
@@ -207,7 +207,7 @@
                     "interactions": "",
                     "processors": "",
                     "groups": "",
-                    "action": "Y Direction Hold",
+                    "action": "Y Axis",
                     "isComposite": false,
                     "isPartOfComposite": true
                 },
@@ -218,7 +218,7 @@
                     "interactions": "",
                     "processors": "",
                     "groups": "",
-                    "action": "Y Direction Hold",
+                    "action": "Y Axis",
                     "isComposite": false,
                     "isPartOfComposite": true
                 }

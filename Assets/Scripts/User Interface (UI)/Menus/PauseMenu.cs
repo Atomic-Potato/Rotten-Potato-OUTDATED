@@ -7,6 +7,7 @@ using UnityEngine.SceneManagement;
 public class PauseMenu : MonoBehaviour
 {
     [SerializeField] GameObject pauseMenu;
+    [SerializeField] GameObject keybindsMenu;
     [SerializeField] GameObject controlsMenu;
     [SerializeField] GameObject creditsMenu;
     [SerializeField] GameObject quitMenu;
@@ -49,10 +50,8 @@ public class PauseMenu : MonoBehaviour
     public void Pause()
     {
         gameIsPaused = true;
+        TrunOffAllMenus();
         pauseMenu.SetActive(true);
-        controlsMenu.SetActive(false);
-        creditsMenu.SetActive(false);
-        quitMenu.SetActive(false);
         Time.timeScale = 0f;
 
         foreach (GameObject icon in icons)
@@ -63,13 +62,11 @@ public class PauseMenu : MonoBehaviour
             timer.SetActive(false);
     }
 
+
     public void Resume()
     {
         gameIsPaused = false;
-        pauseMenu.SetActive(false);
-        controlsMenu.SetActive(false);
-        creditsMenu.SetActive(false);
-        quitMenu.SetActive(false);
+        TrunOffAllMenus();
         Time.timeScale = 1f;
 
         foreach (GameObject icon in icons)
@@ -78,6 +75,21 @@ public class PauseMenu : MonoBehaviour
         //if the timer was active before we paused then we activate
         if(timerState)
             timer.SetActive(true);
+    }
+
+    void TrunOffAllMenus()
+    {
+        pauseMenu.SetActive(false);
+        keybindsMenu.SetActive(false);
+        controlsMenu.SetActive(false);
+        creditsMenu.SetActive(false);
+        quitMenu.SetActive(false);
+    }
+
+    public void Keybinds()
+    {
+        pauseMenu.SetActive(false);
+        keybindsMenu.SetActive(true);
     }
 
     public void MoreControls()
