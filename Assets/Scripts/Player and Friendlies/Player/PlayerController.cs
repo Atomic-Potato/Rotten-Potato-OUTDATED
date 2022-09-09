@@ -147,9 +147,10 @@ public class PlayerController : MonoBehaviour
     // ---------- Input ----------
     bool jumpInputReceived;
     bool dashInputReceived;
-    public bool grappleInputReceived;
+    bool grappleInputReceived;
+    bool rollInputReceived;
 
-    public bool canceledGrapple; 
+    bool canceledGrapple; 
     bool grappleRayIsHit;
     bool canRoll;
     bool applyRollForce = true;
@@ -608,9 +609,14 @@ public class PlayerController : MonoBehaviour
             StopRoll();
     }
 
+    public void RollInput(InputAction.CallbackContext context)
+    {
+        rollInputReceived = context.performed;
+    }
+
     private bool RollingInitiated()
     {
-        return Input.GetKey(KeyCode.S) && isJustLanded && !isDashing;
+        return rollInputReceived && isJustLanded && !isDashing;
     }
 
     private void ApplyRollForce()

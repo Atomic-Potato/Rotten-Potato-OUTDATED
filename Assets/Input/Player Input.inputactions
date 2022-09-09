@@ -85,7 +85,7 @@
                     "name": "",
                     "id": "856b9561-be94-4be3-bd64-b7fa2fa3713b",
                     "path": "<Keyboard>/s",
-                    "interactions": "Hold",
+                    "interactions": "Press",
                     "processors": "",
                     "groups": "",
                     "action": "Roll",
