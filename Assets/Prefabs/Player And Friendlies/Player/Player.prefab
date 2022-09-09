@@ -34982,11 +34982,33 @@ MonoBehaviour:
     m_ActionId: c63a3943-158a-4b34-a7be-ccff752c136d
     m_ActionName: Player/Dash[/Keyboard/leftShift,/Keyboard/a,/Keyboard/d,/Keyboard/w,/Keyboard/s]
   - m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 7048394261642957590}
+        m_MethodName: GrappleInput
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
     m_ActionId: e46233c0-453f-4d94-89ba-6020b4dc925b
     m_ActionName: Player/Grapple[/Mouse/rightButton]
   - m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 7048394261642957590}
+        m_MethodName: CancelGrappleInput
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
     m_ActionId: c5796416-93e4-4a4c-a3b6-3a4bfd869418
     m_ActionName: Player/Cancle Grapple[/Mouse/rightButton,/Keyboard/space]
   - m_PersistentCalls:

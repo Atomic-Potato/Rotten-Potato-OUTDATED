@@ -131,9 +131,7 @@ public class PlayerController : MonoBehaviour
     #endregion
 
     #region Private Variables
-    int grappleButtonPresses;
     int rollingDirection;
-
 
     float input;
     float originalCoyoteTime;
@@ -146,8 +144,12 @@ public class PlayerController : MonoBehaviour
     float dashSlowDownTimer;
     float wallHangTimer;
     
-    public bool jumpInputReceived;
+    // ---------- Input ----------
+    bool jumpInputReceived;
     bool dashInputReceived;
+    public bool grappleInputReceived;
+
+    public bool canceledGrapple; 
     bool grappleRayIsHit;
     bool canRoll;
     bool applyRollForce = true;
@@ -211,7 +213,6 @@ public class PlayerController : MonoBehaviour
         GroundCheck();
         WallCheck(rightWallBoxCastPosition.position, wallBoxCastSize, _ => isCollidingWithRightWall = _);
         WallCheck(leftWallBoxCastPosition.position, wallBoxCastSize, _ => isCollidingWithLeftWall = _);
-        MouseClicksCounter();
         GrappleRay();
         WhileGroundedVariablesReset();
 
@@ -666,6 +667,32 @@ public class PlayerController : MonoBehaviour
     #endregion
 
     #region GRAPPLE
+    public void GrappleInput(InputAction.CallbackContext context)
+    {
+        float grappleInput = context.ReadValue<float>();
+
+        if(canGrapple && !isGrappling)
+        {
+            if(grappleInput == 1)
+                grappleInputReceived = true;
+        }
+        else
+            grappleInputReceived = false;
+    }
+
+    public void CancelGrappleInput(InputAction.CallbackContext context)
+    {
+        float cancelInput = context.ReadValue<float>();
+
+        if(isGrappling)
+        {
+            if(cancelInput == 1)
+                canceledGrapple = true;
+        }
+        else
+            canceledGrapple = false;
+    }
+
     void Grapple(float originalGravity)
     {
         GrappleLoaded();
@@ -720,7 +747,7 @@ public class PlayerController : MonoBehaviour
 
     bool StartedGrapple()
     {
-        return grappleButtonPresses == 1 && grappleRayIsHit && !isGrappling; // !isGrappling so it wouldnt be spammed while grappling
+        return grappleInputReceived && grappleRayIsHit && !isGrappling; // !isGrappling so it wouldnt be spammed while grappling
     }
 
     void GrappleLoaded()
@@ -780,15 +807,13 @@ public class PlayerController : MonoBehaviour
 
         //reached destination or if canceled by user or hit by rocketato
         return Vector2.Distance(transform.position, anchor.transform.position) <= distanceToDetachGrapple 
-                || (grappleButtonPresses >= 2 && isGrappling) 
+                || (canceledGrapple && isGrappling) 
                 || isKnocked;
 
     }
 
     private void ResetGrapplingVariables(float originalGravity)
     {
-
-        // Resetting
         isGrappling = false;
         finalGrapplingForceDirection = Vector2.zero;
         finalGrapplingForceDirectionOld = Vector2.zero;
@@ -799,8 +824,6 @@ public class PlayerController : MonoBehaviour
         finalGrapplingForceDirection = Vector2.zero;
         GrapplingArrowsParent.SetActive(false);
         DisplayGrapplingArrows(Vector2.zero);
-
-        grappleButtonPresses = 0;
 
         StartCoroutine(DisableThenEnable(_ => canGrapple = _, grapplingDelay));
         justCanGrappleCache = null;
@@ -998,24 +1021,7 @@ public class PlayerController : MonoBehaviour
     #endregion
     
     #region Miscellaneous
-    void MouseClicksCounter()
-    {
-        if(canGrapple)
-        {
-            if (grappleButtonPresses == 0) // Letting the player grapple with only right click
-            {
-                if (Input.GetMouseButtonDown(1) && anchor != null) //Only add button presses if the grapple ray hits an anchor
-                    grappleButtonPresses++;
-            }
-            else if (grappleButtonPresses == 1)//Letting the player detach the grapple with either "Space" ket (or jumping button) or "right click" (or grappling button)
-            {
-                if ((Input.GetMouseButtonDown(1) || Input.GetKeyDown(KeyCode.Space)) && anchor != null)
-                {
-                    grappleButtonPresses++;
-                }
-            }
-        }
-    }
+    
 
     //Disbales palyers weapon
     void WeaponsSwitch(bool status) 

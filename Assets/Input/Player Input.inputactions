@@ -116,6 +116,17 @@
                 },
                 {
                     "name": "",
+                    "id": "d1f28736-9917-49f1-b1ea-59a4e8f38e6b",
+                    "path": "<Keyboard>/space",
+                    "interactions": "Tap",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Cancle Grapple",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
                     "id": "46700cec-9a0a-40d6-8cdb-5f15df777b77",
                     "path": "<Mouse>/leftButton",
                     "interactions": "Press",
