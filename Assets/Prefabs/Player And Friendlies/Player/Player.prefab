@@ -35023,7 +35023,18 @@ MonoBehaviour:
     m_ActionId: c5796416-93e4-4a4c-a3b6-3a4bfd869418
     m_ActionName: Player/Cancle Grapple[/Mouse/rightButton,/Keyboard/space]
   - m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 7048394261522233194}
+        m_MethodName: FireInput
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
     m_ActionId: c98292f1-7540-4d86-b654-f5f2dd56020f
     m_ActionName: Player/Shoot[/Mouse/leftButton]
   m_NeverAutoSwitchControlSchemes: 0
