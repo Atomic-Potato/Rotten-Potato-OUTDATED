@@ -15,7 +15,7 @@ public class DELETEME : MonoBehaviour
 
     public void Move(InputAction.CallbackContext context)
     {
-        Debug.Log("Move: " + context.phase  + " " + context.ReadValue<float>());
+        //Debug.Log("Move: " + context.phase  + " " + context.ReadValue<float>());
     }
 
     public void Jump(InputAction.CallbackContext context)
@@ -31,5 +31,15 @@ public class DELETEME : MonoBehaviour
     public void Grapple(InputAction.CallbackContext context)
     {
         Debug.Log("Grapple: " + context.phase  + " " + context.ReadValue<float>());
+    }
+
+    public void OnXHoldInput(InputAction.CallbackContext context)
+    {
+        Debug.Log("X: " + context.ReadValue<float>());
+    }
+
+    public void OnYHoldInput(InputAction.CallbackContext context)
+    {
+        Debug.Log("Y: " + context.ReadValue<float>());
     }
 }

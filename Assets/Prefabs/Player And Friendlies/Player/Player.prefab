@@ -34917,6 +34917,8 @@ MonoBehaviour:
   isCollidingWithCollider: 0
   isCollidingWithLeftWall: 0
   isCollidingWithRightWall: 0
+  shiftModifierInputReceived: 0
+  directionHoldInputVector: {x: 0, y: 0}
 --- !u!114 &8476856365992745798
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -34946,7 +34948,7 @@ MonoBehaviour:
   - m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 7048394261642957590}
-        m_MethodName: MovementInput
+        m_MethodName: OnXHoldInput
         m_Mode: 0
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -34988,10 +34990,6 @@ MonoBehaviour:
         m_CallState: 2
     m_ActionId: 2666ef41-18c5-45e8-b0cd-d52812dd9826
     m_ActionName: Player/Roll[/Keyboard/s]
-  - m_PersistentCalls:
-      m_Calls: []
-    m_ActionId: c63a3943-158a-4b34-a7be-ccff752c136d
-    m_ActionName: Player/Dash[/Keyboard/leftShift,/Keyboard/a,/Keyboard/d,/Keyboard/w,/Keyboard/s]
   - m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 7048394261642957590}
@@ -35037,6 +35035,36 @@ MonoBehaviour:
         m_CallState: 2
     m_ActionId: c98292f1-7540-4d86-b654-f5f2dd56020f
     m_ActionName: Player/Shoot[/Mouse/leftButton]
+  - m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 7048394261642957590}
+        m_MethodName: ShiftModiferInput
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+    m_ActionId: 4f6de1db-f7f0-4a6d-9be6-2b38a7bf72e9
+    m_ActionName: Player/Shift Modifier[/Keyboard/shift]
+  - m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 7048394261642957590}
+        m_MethodName: OnYHoldInput
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+    m_ActionId: 9de0c87e-aa64-4617-a44b-9070ad60138c
+    m_ActionName: Player/Y Direction Hold[/Keyboard/s,/Keyboard/w]
   m_NeverAutoSwitchControlSchemes: 0
   m_DefaultControlScheme: 
   m_DefaultActionMap: Player

@@ -133,7 +133,6 @@ public class PlayerController : MonoBehaviour
     #region Private Variables
     int rollingDirection;
 
-    float input;
     float originalCoyoteTime;
     float originaljumpBufferTime;
     float originalGravityScale;
@@ -149,6 +148,7 @@ public class PlayerController : MonoBehaviour
     bool dashInputReceived;
     bool grappleInputReceived;
     bool rollInputReceived;
+    public bool shiftModifierInputReceived;
 
     bool canceledGrapple; 
     bool grappleRayIsHit;
@@ -162,6 +162,7 @@ public class PlayerController : MonoBehaviour
     Vector2 finalGrapplingForceDirection = Vector2.zero;
     Vector2 finalGrapplingForceDirectionOld = Vector2.zero;
     Vector2 originalWallBoxCastSize = Vector2.zero;
+    public Vector2 directionHoldInputVector = Vector2.zero;
 
     PhysicsMaterial2D originalMaterial;
     GameObject anchor;
@@ -332,18 +333,13 @@ public class PlayerController : MonoBehaviour
     #endregion
 
     #region MOVEMENT
-    public void MovementInput(InputAction.CallbackContext context)
-    {
-        input = context.ReadValue<float>();
-    }
-
     void ApplyMovement()
     {
-        float targetVelocity = input * horizontalVelocity;
+        float targetVelocity = directionHoldInputVector.x * horizontalVelocity;
         
-        if (input != 0)
+        if (directionHoldInputVector.x != 0)
             Accelerate(targetVelocity);
-        else if (input == 0 && isGrounded)
+        else if (directionHoldInputVector.x == 0 && isGrounded)
             Decelerate();
         
         HandleFirction();
@@ -376,7 +372,7 @@ public class PlayerController : MonoBehaviour
     void HandleFirction()
     {
         //Setting the x velocity to 0 while idle
-        if (rigidBody.velocity.x < 1f && rigidBody.velocity.x > -1f && input == 0 && !isKnocked && !isRolling)
+        if (rigidBody.velocity.x < 1f && rigidBody.velocity.x > -1f && directionHoldInputVector.x == 0 && !isKnocked && !isRolling)
         {
             boxCollider.sharedMaterial = fullFrictionMaterial;
             isMoving = false; //irrelevant here, but relevant to know the stater if we are running or not in Move()
@@ -500,8 +496,8 @@ public class PlayerController : MonoBehaviour
 
     private void GetDashInput()
     {
-        dashingDirection = GetOnHoldInput();
-        if(Input.GetKeyDown(KeyCode.LeftShift) && dashingDirection != Vector2.zero)
+        dashingDirection = directionHoldInputVector;
+        if(shiftModifierInputReceived && dashingDirection != Vector2.zero)
             dashInputReceived = true;
     }
     #endregion
@@ -527,7 +523,7 @@ public class PlayerController : MonoBehaviour
     {
         ResetWallHangVariables();
         yield return null;
-        rigidBody.velocity = new Vector2((wallJumpForce*input)/2, wallJumpForce);
+        rigidBody.velocity = new Vector2((wallJumpForce*directionHoldInputVector.x)/2, wallJumpForce);
         StartCoroutine(EnableThenDisable((_ => isJumping = _), jumpCooldownTime));
     }
 
@@ -796,7 +792,7 @@ public class PlayerController : MonoBehaviour
         //.....ummm, funny story, i found a better and easier way in 10 mins.... yeah...
 
         //Deciding the final force of grappling direction
-        finalGrapplingForceDirection = GetOnHoldInput();
+        finalGrapplingForceDirection = directionHoldInputVector;
 
         //if the input changes since the last frame
         if (finalGrapplingForceDirection != finalGrapplingForceDirectionOld) 
@@ -1083,77 +1079,19 @@ public class PlayerController : MonoBehaviour
     #endregion
 
     #region Multiuse Functions
-    Vector2 GetOnHoldInput()
+    public void OnXHoldInput(InputAction.CallbackContext context)
     {
-        Vector2 inputVector = Vector2.zero;
-
-        if (Input.GetKey(KeyCode.W)) //UP
-            inputVector.y = 1;
-
-        if (Input.GetKey(KeyCode.S)) //DOWN
-            inputVector.y = -1;
-
-        if (Input.GetAxisRaw("Vertical") == 0)
-            inputVector.y = 0;
-
-        if (Input.GetKey(KeyCode.A)) //LEFT
-            inputVector.x = -1;
-
-        if (Input.GetKey(KeyCode.D)) //RIGHT
-            inputVector.x = 1;
-
-        if (Input.GetAxisRaw("Horizontal") == 0)
-            inputVector.x = 0;
-
-        return inputVector;
+        directionHoldInputVector.x = context.ReadValue<float>();
     }
-    Vector2 GetOnPressInput()
+
+    public void OnYHoldInput(InputAction.CallbackContext context)
     {
-        Vector2 inputVector = Vector2.zero;
-
-        if (Input.GetKeyDown(KeyCode.W)) //UP
-            inputVector.y = 1;
-
-        if (Input.GetKeyDown(KeyCode.S)) //DOWN
-            inputVector.y = -1;
-
-        if (Input.GetAxisRaw("Vertical") == 0)
-            inputVector.y = 0;
-
-        if (Input.GetKeyDown(KeyCode.A)) //LEFT
-            inputVector.x = -1;
-
-        if (Input.GetKeyDown(KeyCode.D)) //RIGHT
-            inputVector.x = 1;
-
-        if (Input.GetAxisRaw("Horizontal") == 0)
-            inputVector.x = 0;
-
-        return inputVector;
+        directionHoldInputVector.y = context.ReadValue<float>();
     }
-    Vector2 GetOnReleaseInput()
+
+    public void ShiftModiferInput(InputAction.CallbackContext context)
     {
-        Vector2 inputVector = Vector2.zero;
-
-        if (Input.GetKeyUp(KeyCode.W)) //UP
-            inputVector.y = 1;
-
-        if (Input.GetKeyUp(KeyCode.S)) //DOWN
-            inputVector.y = -1;
-
-        if (Input.GetAxisRaw("Vertical") == 0)
-            inputVector.y = 0;
-
-        if (Input.GetKeyUp(KeyCode.A)) //LEFT
-            inputVector.x = -1;
-
-        if (Input.GetKeyUp(KeyCode.D)) //RIGHT
-            inputVector.x = 1;
-
-        if (Input.GetAxisRaw("Horizontal") == 0)
-            inputVector.x = 0;
-
-        return inputVector;
+        shiftModifierInputReceived = context.started;
     }
 
     private void WhileGroundedVariablesReset()
@@ -1169,8 +1107,6 @@ public class PlayerController : MonoBehaviour
     {
         return -offsetMargin >= rigidBody.velocity.x && rigidBody.velocity.x <= offsetMargin;
     }
-
-
 
     //This function takes a function with a boolean argument as an alternative for pointers
     //e.g.  EnableThenDisable(_ => globalVariable = _, 0.1f);

@@ -6,9 +6,18 @@
             "id": "52accf8e-a287-48a1-ac92-2767e09e8bc0",
             "actions": [
                 {
-                    "name": "Move",
+                    "name": "X Direction Hold / Move",
                     "type": "Value",
                     "id": "a292c04c-e88d-4565-b2f9-23b2dda63e77",
+                    "expectedControlType": "Axis",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": true
+                },
+                {
+                    "name": "Y Direction Hold",
+                    "type": "Value",
+                    "id": "9de0c87e-aa64-4617-a44b-9070ad60138c",
                     "expectedControlType": "Axis",
                     "processors": "",
                     "interactions": "",
@@ -33,13 +42,13 @@
                     "initialStateCheck": false
                 },
                 {
-                    "name": "Dash",
-                    "type": "Value",
-                    "id": "c63a3943-158a-4b34-a7be-ccff752c136d",
-                    "expectedControlType": "Vector2",
+                    "name": "Shift Modifier / Dash",
+                    "type": "Button",
+                    "id": "4f6de1db-f7f0-4a6d-9be6-2b38a7bf72e9",
+                    "expectedControlType": "Button",
                     "processors": "",
                     "interactions": "",
-                    "initialStateCheck": true
+                    "initialStateCheck": false
                 },
                 {
                     "name": "Grapple",
@@ -143,7 +152,7 @@
                     "interactions": "Press",
                     "processors": "",
                     "groups": "",
-                    "action": "Move",
+                    "action": "X Direction Hold / Move",
                     "isComposite": true,
                     "isPartOfComposite": false
                 },
@@ -154,7 +163,7 @@
                     "interactions": "",
                     "processors": "",
                     "groups": "",
-                    "action": "Move",
+                    "action": "X Direction Hold / Move",
                     "isComposite": false,
                     "isPartOfComposite": true
                 },
@@ -165,95 +174,51 @@
                     "interactions": "",
                     "processors": "",
                     "groups": "",
-                    "action": "Move",
+                    "action": "X Direction Hold / Move",
                     "isComposite": false,
                     "isPartOfComposite": true
                 },
                 {
-                    "name": "2D Vector",
-                    "id": "93ad934d-f896-4443-87b4-c8bdb5de1b93",
-                    "path": "2DVector",
-                    "interactions": "",
+                    "name": "",
+                    "id": "20cc4e17-3f43-49f5-979a-8d4f56332ac4",
+                    "path": "<Keyboard>/shift",
+                    "interactions": "Tap",
                     "processors": "",
                     "groups": "",
-                    "action": "Dash",
+                    "action": "Shift Modifier / Dash",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "1D Axis",
+                    "id": "c7509274-813f-4371-a766-d0d9df70a5af",
+                    "path": "1DAxis",
+                    "interactions": "Press",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Y Direction Hold",
                     "isComposite": true,
                     "isPartOfComposite": false
                 },
                 {
-                    "name": "up",
-                    "id": "fedb4584-d532-4e1a-beca-372d0b65b0fe",
-                    "path": "",
+                    "name": "negative",
+                    "id": "d7a06169-3a31-4a5c-9252-e3031b410919",
+                    "path": "<Keyboard>/s",
                     "interactions": "",
                     "processors": "",
                     "groups": "",
-                    "action": "Dash",
+                    "action": "Y Direction Hold",
                     "isComposite": false,
                     "isPartOfComposite": true
                 },
                 {
-                    "name": "down",
-                    "id": "6852f63e-eea9-4a79-b02c-613715b853dd",
-                    "path": "",
+                    "name": "positive",
+                    "id": "d65a2949-72c5-42cf-8a65-d33d4b6c9bdf",
+                    "path": "<Keyboard>/w",
                     "interactions": "",
                     "processors": "",
                     "groups": "",
-                    "action": "Dash",
-                    "isComposite": false,
-                    "isPartOfComposite": true
-                },
-                {
-                    "name": "left",
-                    "id": "f66acf43-1875-45b2-88ae-32903e0c2b8f",
-                    "path": "",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "",
-                    "action": "Dash",
-                    "isComposite": false,
-                    "isPartOfComposite": true
-                },
-                {
-                    "name": "right",
-                    "id": "a51fdcd4-bbc3-4cd6-9fa5-0fb6b9137725",
-                    "path": "",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "",
-                    "action": "Dash",
-                    "isComposite": false,
-                    "isPartOfComposite": true
-                },
-                {
-                    "name": "One Modifier",
-                    "id": "9688cf5e-8932-418f-85a4-dc09c631c95b",
-                    "path": "OneModifier",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "",
-                    "action": "Dash",
-                    "isComposite": true,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "modifier",
-                    "id": "10f75ceb-8d56-4db0-8a22-77f59b062b5e",
-                    "path": "",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "",
-                    "action": "Dash",
-                    "isComposite": false,
-                    "isPartOfComposite": true
-                },
-                {
-                    "name": "binding",
-                    "id": "30a42d33-ae0d-4768-a652-e64a7b81b673",
-                    "path": "",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "",
-                    "action": "Dash",
+                    "action": "Y Direction Hold",
                     "isComposite": false,
                     "isPartOfComposite": true
                 }
