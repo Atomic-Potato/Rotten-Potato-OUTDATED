@@ -148,6 +148,5 @@ public class EnemyFlyerController : MonoBehaviour
             valueGiven = false;
             gotKnocked = false;
         }
-
     }
 }

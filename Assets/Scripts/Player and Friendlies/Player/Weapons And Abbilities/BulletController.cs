@@ -33,16 +33,24 @@ public class BulletController : MonoBehaviour
 
     void OnTriggerEnter2D(Collider2D colInfo)
     {
-        //Player Bullets
+        Debug.Log(gameObject.name + "collided");
+        
+        if(colInfo == null)
+            return;
+
         //Collision with ground
         if (colInfo.gameObject.CompareTag(groundTag) && (gameObject.tag == "Player Bullet" || gameObject.tag == "Companion Bullet"))
+        {
             Destroy(gameObject);
+            return;
+        }
 
         //Collision with Enemy Flyer
         if (colInfo.gameObject.CompareTag(flyerTag) && gameObject.tag == "Player Bullet")
         {
             Destroy(gameObject);
             colInfo.gameObject.GetComponent<EnemyFlyerController>().GetDamaged(playerBulletDamage);
+            return;
         }
 
         //Collision with Rocketato
@@ -50,6 +58,7 @@ public class BulletController : MonoBehaviour
         {
             Destroy(gameObject);
             colInfo.gameObject.GetComponent<RocketatoController>().OnHitEffect(rocketSpeedAddition);
+            return;
         }
 
         //Companion Bullets
@@ -57,11 +66,15 @@ public class BulletController : MonoBehaviour
         {
             Destroy(gameObject);
             colInfo.gameObject.GetComponent<EnemyFlyerController>().GetDamaged(companionBulletDamage);
+            return;
         }
 
 
         //Enemy Bullets
         if (colInfo.gameObject.CompareTag("Player") && gameObject.tag == "Flyer")
+        {
             Destroy(gameObject);
+            return;
+        }
     }
 }

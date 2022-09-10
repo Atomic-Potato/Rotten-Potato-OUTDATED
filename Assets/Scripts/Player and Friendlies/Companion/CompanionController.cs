@@ -54,45 +54,47 @@ public class CompanionController : MonoBehaviour
 
     void FixedUpdate() // ty colorfurrrrr for reminding me to use fixed instead uwu
     {
-        Movement();
+        HorizontalMovement();
+        VerticalMovement();
     }
 
-    void Movement() //Movement handles which pivot to be on with respect to the player and its rotation with respect to the weapon's rotation
+    void VerticalMovement()
     {
-        //We flip the way depending on each case to keep the companion top always facing the sky
         //We used new Vector3 because the x and y are interfering eachother if we use Vector3.Lerp
+        if (playerScript.rigidBody.velocity.y > 1f)
+            transform.localPosition = new Vector3(transform.localPosition.x, Mathf.Lerp(transform.localPosition.y, upOffset, switchSpeedVertical * Time.deltaTime), transform.localPosition.z);
+        else if (playerScript.rigidBody.velocity.y < -1f)
+            transform.localPosition = new Vector3(transform.localPosition.x, Mathf.Lerp(transform.localPosition.y, downOffset, switchSpeedVertical * Time.deltaTime), transform.localPosition.z);
+        else
+            transform.localPosition = new Vector3(transform.localPosition.x, Mathf.Lerp(transform.localPosition.y, defaultPos.y, switchSpeedVertical * Time.deltaTime), transform.localPosition.z);
+        
+    }
 
-        //movement on horizontal axis
-        if (Mathf.Approximately(0f, playerScript.rigidBody.velocity.x))//when idle
+    private void HorizontalMovement()
+    {
+        if (playerScript.rigidBody.velocity.x < -1f)     //when going left
+            transform.localPosition = new Vector3(Mathf.Lerp(transform.localPosition.x, rightOffset, switchSpeedHorizontal * Time.deltaTime), transform.localPosition.y, transform.localPosition.z);
+        else if (playerScript.rigidBody.velocity.x > 1f)      //when going right
+            transform.localPosition = new Vector3(Mathf.Lerp(transform.localPosition.x, leftOffset, switchSpeedHorizontal * Time.deltaTime), transform.localPosition.y, transform.localPosition.z);
+        else // when idle
         {
-            if (playerSprite.flipX == false)
+            if (playerSprite.flipX == false) //if facing right
             {
                 transform.localPosition = new Vector3(Mathf.Lerp(transform.localPosition.x, leftOffIdle, switchSpeedIdle * Time.deltaTime), transform.localPosition.y, transform.localPosition.z);
                 Rotation(0f);
                 companionSprite.flipY = false;
             }
-            else
+            else //if facing left
             {
                 transform.localPosition = new Vector3(Mathf.Lerp(transform.localPosition.x, rightOffIdle, switchSpeedIdle * Time.deltaTime), transform.localPosition.y, transform.localPosition.z);
                 Rotation(180f);
                 companionSprite.flipY = true;
             }
         }
-        else if (playerScript.rigidBody.velocity.x < 0f)     //when going left
-            transform.localPosition = new Vector3(Mathf.Lerp(transform.localPosition.x, rightOffset, switchSpeedHorizontal * Time.deltaTime), transform.localPosition.y, transform.localPosition.z);
-        else if (playerScript.rigidBody.velocity.x > 0f)      //when going right
-            transform.localPosition = new Vector3(Mathf.Lerp(transform.localPosition.x, leftOffset, switchSpeedHorizontal * Time.deltaTime), transform.localPosition.y, transform.localPosition.z);
-
-        //movement on the vertical axis
-        if (Mathf.Approximately(0f,playerScript.rigidBody.velocity.y))
-            transform.localPosition = new Vector3(transform.localPosition.x, Mathf.Lerp(transform.localPosition.y, defaultPos.y, switchSpeedVertical * Time.deltaTime), transform.localPosition.z);
-        else if (playerScript.rigidBody.velocity.y > 0)
-            transform.localPosition = new Vector3(transform.localPosition.x, Mathf.Lerp(transform.localPosition.y, upOffset, switchSpeedVertical * Time.deltaTime), transform.localPosition.z);
-        else if (playerScript.rigidBody.velocity.y < 0)
-            transform.localPosition = new Vector3(transform.localPosition.x, Mathf.Lerp(transform.localPosition.y, downOffset, switchSpeedVertical * Time.deltaTime), transform.localPosition.z);
+        
     }
 
-    public void Rotation(float angleRotation) //Handles rotation
+    public void Rotation(float angleRotation)
     {
         Vector3 direction = Camera.main.ScreenToWorldPoint(Input.mousePosition) - transform.position; //I tried using the weapon's rotation but its not actually the same angle between the comp and the mouse, thats because they are not on the same Y• 
         mouseAngle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg;
@@ -101,4 +103,8 @@ public class CompanionController : MonoBehaviour
         transform.rotation = Quaternion.Lerp(transform.rotation, rotation, rotationSpeed * Time.deltaTime);
     }
 
+    private bool VelocityNearZero(float offsetMargin)
+    {
+        return -offsetMargin >= playerScript.rigidBody.velocity.x && playerScript.rigidBody.velocity.x <= offsetMargin;
+    }
 }

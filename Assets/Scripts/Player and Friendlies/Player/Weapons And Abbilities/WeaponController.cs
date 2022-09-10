@@ -2,11 +2,13 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 public class WeaponController : MonoBehaviour
 {
-#pragma warning disable 0649
-    //Publics
+    #pragma warning disable 0649
+    
+    #region Public Variables
     [Header("Weapon")]
     [SerializeField] float fireRate;
     [SerializeField] float damage;
@@ -17,13 +19,18 @@ public class WeaponController : MonoBehaviour
     [SerializeField] Transform firePoint;
     [SerializeField] PivotController pivotManager;
     [SerializeField] AudioManager audioManager;
+    #endregion
 
-    //Hidden
+    #region Public And Hidden Variables 
     [HideInInspector] public bool isJustShot;
+    #endregion
 
-
-    //Privates
+    #region Private Variables
     float timeToFire;
+    
+    // ---------- Input ----------
+    bool fireInputReceived;
+    #endregion
 
     void Update()
     {
@@ -34,12 +41,12 @@ public class WeaponController : MonoBehaviour
     {
         if (fireRate == 0) // For single fire
         {
-            if (Input.GetButtonDown("Fire1"))
+            if (fireInputReceived)
                 Shoot();
         }
         else //For rapid fire
         {
-            if (Input.GetButton("Fire1") && Time.time > timeToFire) //Time.time is the current time
+            if (fireInputReceived && Time.time > timeToFire) //Time.time is the current time
             {
                 /*basically when you hold the fire button, it shoots once, 
                 and then create this variable which was the time the bullet
@@ -59,6 +66,11 @@ public class WeaponController : MonoBehaviour
             Instantiate(bullet, firePoint.position, firePoint.rotation);
             StartCoroutine(EnableThenDisable(_ => isJustShot = _, 0.01f));
         }
+    }
+
+    public void FireInput(InputAction.CallbackContext context)
+    {
+        fireInputReceived = context.performed;
     }
 
     IEnumerator EnableThenDisable(Action<bool> switcher, float time)

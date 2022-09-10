@@ -1,13 +1,15 @@
 ﻿using System;
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.InputSystem;
 using Pathfinding;
 
 public class PlayerController : MonoBehaviour
 {
+    #region Public Variables
     [Header("Basic Movment")]
     public float horizontalVelocity = 5f;
+    [SerializeField] float maxFallingVelocity = 20f;
     [SerializeField] float groundedAccelerationTime = 0.05f;
     [SerializeField] float groundedDecelerationTime = 0.05f;
     [SerializeField] float jumpForce = 400f;
@@ -20,9 +22,10 @@ public class PlayerController : MonoBehaviour
     public int dashesCount = 1;
     [SerializeField] float dashForce = 15f;
     [SerializeField] float dashingTime = 0.2f;
-    [SerializeField] float dashDelay = 1f;
+    [SerializeField] float dashingWallBoxSize;
     [Tooltip("If the player collides with a wall while dashing he will have this time stuck on the wall to jump")]
     [SerializeField] float wallHangTime = 1.5f;
+    [SerializeField] float wallJumpForce;
     [SerializeField] AnimationCurve dashSlowDownCurve;
     [SerializeField] string playerLayer;
     [SerializeField] string flyerLayer;
@@ -70,10 +73,16 @@ public class PlayerController : MonoBehaviour
 
 
     [Space]
-    [Header("Requiered components")]
-    [SerializeField] Vector2 boxCastSize;
+    [Header("Other Required Variables")]
+    [SerializeField] Vector2 groundBoxCastSize;
+    [SerializeField] Vector2 wallBoxCastSize;
+
+    [Space]
+    [Header("Other Requiered Components")]
     [SerializeField] LayerMask groundLayer;
-    [SerializeField] Transform boxCastPosition;
+    [SerializeField] Transform groundBoxCastPosition;
+    [SerializeField] Transform rightWallBoxCastPosition;
+    [SerializeField] Transform leftWallBoxCastPosition;
     [SerializeField] GameObject weaponsObject;
 
     [Space]
@@ -89,22 +98,24 @@ public class PlayerController : MonoBehaviour
     [SerializeField] GrapplingStringController stringController;
     [SerializeField] CameraController cameraController;
     [SerializeField] CompanionAbilitiesController companionAbilitiesController;
-    [SerializeField] AudioManager audioManager;
 
-    //Private and hidden
-    [Space]
+    #endregion
+
+    #region Public And Hidden Varriables
+    [Space] //in case of debugging
     [HideInInspector] public int dashesLeft;
     [HideInInspector] public float dashDelayTimer;
     [HideInInspector] public static GameObject player;
     [HideInInspector] public static bool isKnocked;
     [HideInInspector] public bool canGrapple = true;
 
-    //States
+    // ---------- States ----------
     [HideInInspector] public bool isRolling;
     [HideInInspector] public bool isDashing;
     [HideInInspector] public bool isJustDashing;
     [HideInInspector] public bool isGrounded;
     [HideInInspector] public bool isJustLanded;
+    [HideInInspector] public bool isJustHitWall;
     [HideInInspector] public bool isMoving;
     [HideInInspector] public bool isJumping;
     [HideInInspector] public bool isGrappling;
@@ -112,55 +123,69 @@ public class PlayerController : MonoBehaviour
     [HideInInspector] public bool isJustFinishedGrappling;
     [HideInInspector] public bool isJustBrokeGrappling;
     [HideInInspector] public bool grapplingLoaded;
-    [HideInInspector] public bool isDashingWall; // player is hitting a wall while dashing
+    [HideInInspector] public bool isWallHanging; // player is hitting a wall while dashing
     [HideInInspector] public bool isCollidingWithCollider; // Basically walls and ground
+    [HideInInspector] public bool isCollidingWithLeftWall;
+    [HideInInspector] public bool isCollidingWithRightWall;
+    #endregion
 
-    int grappleButtonPresses;
+    #region Private Variables
     int rollingDirection;
 
-
-    float input;
     float originalCoyoteTime;
     float originaljumpBufferTime;
     float originalGravityScale;
     float originalDistanceToDetach;
     float rollingCurveCurrentTime = 0f;
     float originalJumpForce;
-    public float dashTimer;
-    public float dashSlowDownTimer;
-    public float wallHangTimer;
-
+    float dashTimer;
+    float dashSlowDownTimer;
+    float wallHangTimer;
     
+    // ---------- Input ----------
+    bool jumpInputReceived;
+    bool dashInputReceived;
+    bool grappleInputReceived;
+    bool rollInputReceived;
+    bool shiftModifierInputReceived;
+
+    bool canceledGrapple; 
     bool grappleRayIsHit;
     bool canRoll;
-    bool grappleForceApplied;
+    bool applyRollForce = true;
 
     Vector3 grapplingDirection = Vector3.zero;
     Vector2 originalColliderSize = Vector2.zero;
     Vector2 dashingColliderSize = Vector2.zero;
     Vector2 dashingDirection = Vector2.zero;
-    Vector2 currentGrapplingInput = Vector2.zero;
-    Vector2 grapplingInputOld = Vector2.zero;
-    Vector2 finalGrapplingForceDirection;
+    Vector2 finalGrapplingForceDirection = Vector2.zero;
+    Vector2 finalGrapplingForceDirectionOld = Vector2.zero;
+    Vector2 originalWallBoxCastSize = Vector2.zero;
+    Vector2 directionHoldInputVector = Vector2.zero;
 
     PhysicsMaterial2D originalMaterial;
     GameObject anchor;
     SpriteRenderer anchorSpriteRenderer;
     SpriteRenderer anchorIndicatorSpriteRender;
 
-    //Coroutine cache
+    // ---------- Coroutine cache ----------
     Coroutine justLandedCache = null;
+    Coroutine justHitWallCache = null;
     Coroutine justCanGrappleCache = null;
 
 
-    //Refrences for smoothdamp
+    // ---------- Refrences for smoothdamp ----------
     float refVelocity = 0f;
     Vector2 refVelocitVector2 = Vector2.zero;
 
+    // ---------- Constants ----------
+    const float NoGravity = 0f;
+    readonly Vector2 NoInput = Vector2.zero;
+    #endregion
 
+    #region Awake, Start, Update, OnX functions
     private void Start()
     {
-
         player = gameObject;
 
         originalCoyoteTime = coyoteTime;
@@ -168,23 +193,37 @@ public class PlayerController : MonoBehaviour
         originalJumpForce = jumpForce;
         dashesLeft = dashesCount;
         originalColliderSize = boxCollider.size;
-        dashingColliderSize = new Vector2(originalColliderSize.x - 0.1f, originalColliderSize.y - 0.01f);
+        dashingColliderSize = new Vector2(originalColliderSize.x-0.01f, originalColliderSize.y - 0.01f);
         wallHangTimer = wallHangTime;
         originalDistanceToDetach = distanceToDetachGrapple;
+        originalWallBoxCastSize = wallBoxCastSize;
 
         originaljumpBufferTime = jumpBufferTime;
         jumpBufferTime = 0f;
 
+        //it will reset next frame
+        //but unity breaks if youre trying to access something that is null
+        //even tho you have a condition to check if its null
+        //so youre forced to assign it to some value
+        //anchor = new GameObject("DEFAULT ANCHOR");
     }
 
     private void Update()
     {
+        GroundCheck();
+        WallCheck(rightWallBoxCastPosition.position, wallBoxCastSize, _ => isCollidingWithRightWall = _);
+        WallCheck(leftWallBoxCastPosition.position, wallBoxCastSize, _ => isCollidingWithLeftWall = _);
+        GrappleRay();
+        WhileGroundedVariablesReset();
 
-        //Resetting knock timer
+        if(!(isKnocked || isGrappling))    
+            Roll();
+
+        if(!isGrappling && !isKnocked)
+            GetDashInput();
+
         if (isKnocked)
-        {
             StartCoroutine("ResetKnock");
-        }
 
         if (isKnocked || isRolling || isDashing)
             WeaponsSwitch(false);
@@ -197,22 +236,15 @@ public class PlayerController : MonoBehaviour
             coyoteTime = originalCoyoteTime;
         else
             coyoteTime -= Time.deltaTime;
-         
-        if (Input.GetButtonDown("Jump"))
-        {
-            jumpBufferTime = originaljumpBufferTime;
-            //Debug.Log("Jump BufferTime = " + jumpBufferTime);
-        }
-        else if (jumpBufferTime > 0f)
-            jumpBufferTime -= Time.deltaTime;
 
+        if (jumpBufferTime > 0f)
+            jumpBufferTime -= Time.deltaTime;
 
         //Displaying grappling string and other effects
         if (isGrappling)
         {
             stringController.gameObject.SetActive(true);
             stringController.GrapplingStringTarget(grappleOrigin.transform, anchor.transform);
-
             //Camera shake and zoom out
             //cameraController.CameraShake(grapplingCameraShakeStrength);
             //cameraController.CameraZoom(grapplingCameraZoomOffset, grapplingCameraZoomOutTime, defaultCameraZoom);
@@ -224,10 +256,7 @@ public class PlayerController : MonoBehaviour
             //cameraController.CameraZoom(0, grapplingCameraZoomInTime, defaultCameraZoom);
         }
 
-        GroundCheck();
-        MouseClicksCounter();
-        GrappleRay();
-
+        
 
         //DEBUGGING
 
@@ -245,43 +274,45 @@ public class PlayerController : MonoBehaviour
 
         //BOOLS
         //Debug.Log("isKnocked = " + isKnocked
+
+        
     }
 
     private void FixedUpdate()
     {
-        if(!isGrappling && !isKnocked)
-            DashInput();
+        CapFallingVelocity();
+        
+        if (isWallHanging)
+            WallHang();
 
-        if (!isGrappling && !isRolling && !isDashing)
+        if (dashInputReceived)
         {
-            Move();
-            Jump();
+            SetupDash();
+            dashInputReceived = false;
         }
 
-        if(!isKnocked && !isGrappling)    
-            Roll();
+        if (!(isGrappling || isRolling || isDashing || isWallHanging))
+        {
+            ApplyMovement();
+            ApplyJump(jumpForce);
+        }
 
-        if(!isRolling && !isDashing && !isKnocked)
+        if (applyRollForce)
+            ApplyRollForce();
+
+        if (!(isRolling || isDashing || isKnocked || isWallHanging))
             Grapple(originalGravityScale);
     }
 
     private void OnCollisionEnter2D(Collision2D collision)
     {
-        if(!isGrounded && isDashing && dashingDirection.y >= 0 && collision.gameObject.CompareTag("Ground"))
-        {
-            RaycastHit2D collisionRay = Physics2D.Raycast(transform.position, new Vector2(dashingDirection.x, 0f), 1f, groundLayer);
-
-            if(collisionRay.collider != null)
-            {
-                rigidBody.velocity = Vector2.zero;
-                isDashingWall = true;
-                //Debug.Log("Is hitting wall");
-                //Debug.DrawRay(transform.position, dashingDirection);
-            }
-        }
-
         if (collision.gameObject.CompareTag("Ground"))
             isCollidingWithCollider = true;
+    }
+
+    private void OnCollisionStay2D(Collision2D other) 
+    {
+        CheckForWallHang();
     }
 
     private void OnCollisionExit2D(Collision2D collision)
@@ -297,36 +328,49 @@ public class PlayerController : MonoBehaviour
         if (isDashing && collision.gameObject.CompareTag("Flyer"))
             Knockback(collision);
     }
+    #endregion
 
-    public void Move()
+    #region MOVEMENT
+    void ApplyMovement()
     {
-        //HORIZONTAL MOVEMENT
-        input = Input.GetAxisRaw("Horizontal");
-        float targetVelocity = input * horizontalVelocity;
-
-        // And then smoothing it out and applying it to the character
-        if (input == 0 && isGrounded)
-        {
-            rigidBody.velocity = new Vector2(Mathf.SmoothDamp(rigidBody.velocity.x, 0, ref refVelocity, groundedDecelerationTime), rigidBody.velocity.y);
-        }
-        else if (input != 0 && !isDashingWall)
-        {
-            //If the player is in the air and we recieve input and the current velocity of the player is already greater than the player maximum velocity
-            //then we dont apply the movement line of code because it will slow the player down from his high speed to a lower speed.
-            //Else if hes in the air and his current velocity without any input is less than the max velocity and the player gives input
-            //then we apply the movment code
-            //If hes grounded we always apply it because if not, the player will maintain the current velocity which is greater than the allowed max velocity while grounded.
-            if ((rigidBody.velocity.x < targetVelocity && targetVelocity > 0) || (rigidBody.velocity.x > targetVelocity && targetVelocity < 0) && !isGrounded)
-                rigidBody.velocity = new Vector2(Mathf.SmoothDamp(rigidBody.velocity.x, targetVelocity, ref refVelocity, groundedAccelerationTime), rigidBody.velocity.y);
-            else if (isGrounded)
-            {
-                rigidBody.velocity = new Vector2(Mathf.SmoothDamp(rigidBody.velocity.x, targetVelocity, ref refVelocity, groundedAccelerationTime), rigidBody.velocity.y);
-                
-            }
-        }
+        float targetVelocity = directionHoldInputVector.x * horizontalVelocity;
         
+        if (directionHoldInputVector.x != 0)
+            Accelerate(targetVelocity);
+        else if (directionHoldInputVector.x == 0 && isGrounded)
+            Decelerate();
+        
+        HandleFirction();
+    }
+
+    private void CapFallingVelocity()
+    {
+        if (rigidBody.velocity.y < maxFallingVelocity)
+            rigidBody.velocity = new Vector2(rigidBody.velocity.x, maxFallingVelocity);
+    }
+
+    void Accelerate(float targetVelocity)
+    {
+        //If the player is in the air and we recieve input and the current velocity of the player is already greater than the player maximum velocity
+        //then we dont apply the movement line of code because it will slow the player down from his high speed to a lower speed.
+        //Else if hes in the air and his current velocity without any input is less than the max velocity and the player gives input
+        //then we apply the movment code
+        //If hes grounded we always apply it because if not, the player will maintain the current velocity which is greater than the allowed max velocity while grounded.
+        if ((rigidBody.velocity.x < targetVelocity && targetVelocity > 0) || (rigidBody.velocity.x > targetVelocity && targetVelocity < 0) && !isGrounded)
+            rigidBody.velocity = new Vector2(Mathf.SmoothDamp(rigidBody.velocity.x, targetVelocity, ref refVelocity, groundedAccelerationTime), rigidBody.velocity.y);
+        else if (isGrounded)
+            rigidBody.velocity = new Vector2(Mathf.SmoothDamp(rigidBody.velocity.x, targetVelocity, ref refVelocity, groundedAccelerationTime), rigidBody.velocity.y);
+    }
+
+    void Decelerate()
+    {
+        rigidBody.velocity = new Vector2(Mathf.SmoothDamp(rigidBody.velocity.x, 0, ref refVelocity, groundedDecelerationTime), rigidBody.velocity.y);
+    }
+
+    void HandleFirction()
+    {
         //Setting the x velocity to 0 while idle
-        if (rigidBody.velocity.x < 1f && rigidBody.velocity.x > -1f && input == 0 && !isKnocked && !isRolling)
+        if (rigidBody.velocity.x < 1f && rigidBody.velocity.x > -1f && directionHoldInputVector.x == 0 && !isKnocked && !isRolling)
         {
             boxCollider.sharedMaterial = fullFrictionMaterial;
             isMoving = false; //irrelevant here, but relevant to know the stater if we are running or not in Move()
@@ -337,11 +381,25 @@ public class PlayerController : MonoBehaviour
             isMoving = isGrounded; // equivalent to isMoving = isGrounded ? true : false;
         }
     }
+    #endregion
 
-    public void Jump()
+    #region JUMP
+    
+    public void JumpInput(InputAction.CallbackContext context)
+    {
+        if(context.started)
+        {
+            jumpInputReceived = true;
+            jumpBufferTime = originaljumpBufferTime;
+        }
+        else
+            jumpInputReceived = false;
+    }
+
+    void ApplyJump(float jumpForce)
     {
         //why the hell i barely commented this
-        if (coyoteTime > 0f && jumpBufferTime > 0f && !isJumping && !isDashingWall)
+        if (coyoteTime > 0f && jumpBufferTime > 0f && !isJumping && !isWallHanging)
         {
             rigidBody.velocity = new Vector2(rigidBody.velocity.x, jumpForce);
 
@@ -350,233 +408,224 @@ public class PlayerController : MonoBehaviour
             StartCoroutine(EnableThenDisable(_ => isJumping = _, jumpCooldownTime));
         }
 
-        if(Input.GetButtonUp("Jump") && rigidBody.velocity.y > 0f)
-        {
+        if(jumpInputReceived && rigidBody.velocity.y > 0f)
             coyoteTime = 0f;
-        }
     }
+    #endregion
 
-    void GroundCheck()
-    {
-        if (Physics2D.OverlapBox(boxCastPosition.position, boxCastSize, 0, groundLayer))
-        {
-            isGrounded = true;
-
-            if(justLandedCache == null && !isDashing) //!isDashing in case dashing while grounded
-                justLandedCache = StartCoroutine(EnableThenDisable(_ => isJustLanded = _, 0.1f));
-        }
-        else
-        {
-            isGrounded = false;
-            justLandedCache = null;
-        }
-    }
-
+    #region DASH
     void Dash(Vector2 direction) 
     {
-        //used later on to decide the dash force
-        Vector2 currentVelocity;
-        currentVelocity.x = Mathf.Abs(rigidBody.velocity.x);
-        currentVelocity.y = Mathf.Abs(rigidBody.velocity.y);
-
-        //Here we apply the dash force, we used this condition so we would apply it once, cuz as you can see right after the if statement we change the gravity scale to 0
-        if (rigidBody.gravityScale != 0f)
+        if (rigidBody.gravityScale != NoGravity)
         {
-            rigidBody.gravityScale = 0f;
-            //Debug.Log("Dashing direction: " + dashingDirection);
-
-            rigidBody.velocity = new Vector2(0f, 0f); // we start the dash with 0 velocity to give it an oomph 
-            rigidBody.AddForce(new Vector2(dashForce * direction.x, dashForce * direction.y), ForceMode2D.Impulse);
-
-            //We are using a curve in the inspector to slow down the player after the dash instead of keeping the momentum
-            //We here set the first key value equal to the dash force so it would start slowing the player from that value to the desired value in the curve
-            dashSlowDownCurve.RemoveKey(0);
-            dashSlowDownCurve.AddKey(0f, dashForce);
+            rigidBody.gravityScale = NoGravity;
+            ApplyDashForce(direction);
+            SetupDashKeys();
         }
 
-        //Timer used to see how long we should dash
-        dashTimer -= Time.deltaTime;
-        //Debug.Log(dashTimer);
-
-        //We stop the dash when the timer is out
-        if (dashTimer <= 0 && !isDashingWall) // we handle wall dashing case in DashInput()
-        {
-            //Stopping the dash with the curve values if the dash is not interrupted
-            if (dashSlowDownTimer <= dashSlowDownCurve.keys[1].time)
-            {
-                dashSlowDownTimer += Time.deltaTime;
-                float dashCurveCurrentValue = dashSlowDownCurve.Evaluate(dashSlowDownTimer);
-                
-                //Debug.Log("Dash slow down timer: " + dashSlowDownTimer + "\n Curve current value: " + dashCurveCurrentValue);
-
-                rigidBody.velocity = new Vector2(direction.x * dashCurveCurrentValue, direction.y * dashCurveCurrentValue);
-            }
-            else //reset / finish dashing
-            {
-                rigidBody.gravityScale = originalGravityScale;
-                boxCollider.size = originalColliderSize;
-                isDashing = false;
-            }
-        }
-        
-        //If the player hits a collider while dashing (in case he didnt get stuck to it) and not grounded we slow him down and reset everything
-        //mostly for collisions with ceilings and thin slopes
-
-        //if the player is hugging a wall and dashes this will cancel the dash, it may be better anyways to keep this off
-        /*if(isCollidingWithCollider && !isGrounded && !isDashingWall)
-        {
-            rigidBody.gravityScale = originalGravityScale;
-            rigidBody.velocity = new Vector2(2.5f * input, 5f * (rigidBody.velocity.y / rigidBody.velocity.y));
-            boxCollider.size = originalColliderSize;
-            isDashing = false;
-            return;
-        }*/
+        StartCoroutine(StopDashInTime(dashingTime, direction));
     }
 
-    void WallHang()
+    void SetupDash()
     {
-        ///If the player hits a wall while dashing he gets stuck to it for some time
+        if(!(isDashing || isWallHanging || isRolling) && dashesLeft != 0)
+        {
+            isDashing = true;
+            isMoving = false;
+            dashesLeft--;
+            StartCoroutine(EnableThenDisable(_ => isJustDashing = _, 0.1f));
+            Physics2D.IgnoreLayerCollision(LayerMask.NameToLayer(playerLayer), LayerMask.NameToLayer(flyerLayer), false);
+
+            SetupDashVariables();
+            Dash(dashingDirection);
+        }
+    }
+
+    private void ApplyDashForce(Vector2 direction)
+    {
+        rigidBody.velocity = new Vector2(0f, 0f); // we start the dash with 0 velocity to give it an oomph 
+        rigidBody.AddForce(new Vector2(dashForce * direction.x, dashForce * direction.y), ForceMode2D.Impulse);
+    }
+
+    private void SetupDashKeys()
+    {
+        //We are using a curve in the inspector to slow down the player after the dash instead of keeping the momentum
+        //We here set the first key value equal to the dash force so it would start slowing the player from that value to the desired value in the curve
+        dashSlowDownCurve.RemoveKey(0);
+        dashSlowDownCurve.AddKey(0f, dashForce);
+    }
+
+    private IEnumerator StopDashInTime(float time, Vector2 direction)
+    {
+        yield return new WaitForSeconds(time);
         
+        if(isWallHanging)
+            yield break;
+
+        //Stopping the dash with the curve values (in the inspector)
+        while(dashSlowDownTimer <= dashSlowDownCurve.keys[1].time)
+        {
+            dashSlowDownTimer += Time.deltaTime;
+            float dashCurveCurrentValue = dashSlowDownCurve.Evaluate(dashSlowDownTimer);
+            rigidBody.velocity = new Vector2(direction.x * dashCurveCurrentValue, direction.y * dashCurveCurrentValue);
+            yield return null;
+        }
+        
+        ResetDashVariables();
+    }
+    
+    private void SetupDashVariables()
+    {
+        boxCollider.size = dashingColliderSize; //we smallen the collider in case the player is dashing while colliding
+        wallHangTimer = wallHangTime;
+        wallBoxCastSize.x = dashingWallBoxSize;
+    }
+
+    private void ResetDashVariables()
+    {
+        dashSlowDownTimer = 0f;
+        rigidBody.gravityScale = originalGravityScale;
+        boxCollider.size = originalColliderSize;
+        wallBoxCastSize = originalWallBoxCastSize;
+        //removing player's ability to collide with enemies when collided
+        Physics2D.IgnoreLayerCollision(LayerMask.NameToLayer(playerLayer), LayerMask.NameToLayer(flyerLayer), true);
         isDashing = false;
+    }
+
+    private void GetDashInput()
+    {
+        dashingDirection = directionHoldInputVector;
+        if(shiftModifierInputReceived && dashingDirection != Vector2.zero)
+            dashInputReceived = true;
+    }
+    #endregion
+
+    #region WALL HANG
+    // If the player hits a wall while dashing he gets stuck to it for some time
+    private void WallHang()
+    {
+        SetupWallHangVariables();
+        EliminateVelocity();
+        EliminateGravity();
+
         wallHangTimer -= Time.deltaTime;
 
-        //Resetting  physics to normall when wall hang time is done
         if (wallHangTimer <= 0)
-        {
-            rigidBody.gravityScale = originalGravityScale;
-            boxCollider.size = originalColliderSize;
-            isDashingWall = false;
-        }
-        else if (Input.GetKeyDown(KeyCode.Space) && isDashingWall) //The player can jump off to the top or to the other side of the wall if they choose so
-        {
-            //Applying jump force
-            rigidBody.velocity = new Vector2((jumpForce*input)/2, jumpForce);
-            StartCoroutine(EnableThenDisable((_ => isJumping = _), jumpCooldownTime));
-
-            //Resetting
-            rigidBody.gravityScale = originalGravityScale;
-            boxCollider.size = originalColliderSize;
-            isDashingWall = false;
-        }
+            ResetWallHangVariables();
+        
+        if (jumpInputReceived && wallHangTimer <= (wallHangTime - 0.18f))
+            StartCoroutine(WallJump());
     }
 
-    void DashInput() 
+    IEnumerator WallJump()
     {
-        //Debug.Log("Dashing Direction: " + dashingDirection);
-        //Debug.Log("Dash delay timer: " + dashDelayTimer);
-        
-        //STARTING CONDITIONS & SETTING UP
-        if(dashDelayTimer == dashDelay && (!isDashing || !isDashingWall) && dashesLeft != 0)
+        ResetWallHangVariables();
+        yield return null;
+        rigidBody.velocity = new Vector2((wallJumpForce*directionHoldInputVector.x)/2, wallJumpForce);
+        StartCoroutine(EnableThenDisable((_ => isJumping = _), jumpCooldownTime));
+    }
+
+    void CheckForWallHang()
+    {
+        if(!isGrounded && (isCollidingWithLeftWall || isCollidingWithRightWall))
         {
-            //Deciding the direction of the dash
-            if(!isDashing && !isDashingWall)
-                dashingDirection = GetInputDirection(true, false, false);
-
-            //The player can dash once he presses shift and with some other input
-            if (Input.GetKeyDown(KeyCode.LeftShift) && dashingDirection != Vector2.zero && !isDashing) //ive put this statement down here so it would not initiate the else statement (future me here: i have no idea what hes talking about)
-            {
-                boxCollider.size = dashingColliderSize; //we smallen the collider in case the player is dashing while colliding
-                isDashing = true;
-                isMoving = false;
-                dashesLeft--;
-                
-                StartCoroutine(EnableThenDisable(_ => isJustDashing = _, 0.1f));
-
-                //Setting up
-                dashTimer = dashingTime;
-                dashSlowDownTimer = 0f;
-                wallHangTimer = wallHangTime;
-            }
-        }
-        
-        if (isDashing)
-        {
-            dashDelayTimer -= Time.deltaTime;
-            //Giving the player the abbility to collide with flyers so he could knock them
-            Physics2D.IgnoreLayerCollision(LayerMask.NameToLayer(playerLayer), LayerMask.NameToLayer(flyerLayer), false);
-            //Applying the dash
-            Dash(dashingDirection);
-
-        }
-        
-        if (isDashingWall)
-            WallHang();
-
-        //IN BETWEENS
-        if(isGrounded && dashDelayTimer != dashDelay)//in case we stopped dashing but the timer is not reset
-            dashDelayTimer -= Time.deltaTime;
-        if(dashDelayTimer <= 0 || (!isGrounded && !isDashingWall))
-            dashDelayTimer = dashDelay;
-
-        // STOPPING CONDITIONS & RESETING
-        if (!isDashing)
-        {
-            if(isGrounded)
-                dashesLeft = dashesCount;
-            //removing player's ability to collide with enemies when collided
-            Physics2D.IgnoreLayerCollision(LayerMask.NameToLayer(playerLayer), LayerMask.NameToLayer(flyerLayer), true);
+            if(isDashing)
+                isWallHanging = true;
         }
     }
 
+    private void EliminateVelocity()
+    {
+        if(rigidBody.velocity != Vector2.zero)
+            rigidBody.velocity = Vector2.zero;
+    }
+
+    private void EliminateGravity()
+    {
+        if (rigidBody.gravityScale != NoGravity)
+            rigidBody.gravityScale = NoGravity;
+    }
+
+    private void SetupWallHangVariables()
+    {
+        if(isWallHanging == false)
+            isWallHanging = true;
+
+        if(isDashing == true)
+            isDashing = false;
+    }
+
+    private void ResetWallHangVariables()
+    {
+        rigidBody.gravityScale = originalGravityScale;
+        boxCollider.size = originalColliderSize;
+        wallHangTimer = 0f;
+        isWallHanging = false;
+    }
+    #endregion
+
+    #region ROLL
     void Roll()
     {
-        //to know when we can roll we check if the player is not grounded and let him know that he can roll
-        if (!isGrounded)
+        if (CanRoll())
         {
             canRoll = true;
-
-            //Setting up the direction of the rolling on landing
-            RollingDirection();
-
-            //Setting the first key of the rolling curve to match the current speed of the player so he would keep his momentum
-            rollingSpeedCurve.RemoveKey(0);
-            rollingSpeedCurve.AddKey(0f, Mathf.Abs(rigidBody.velocity.x) + 0.1f);
-            //Edit the value of the key directly didnt work, so i just delete the old key and create a new one at the same time of the original key
-
-            //Debug.Log("First rolling curve key value: " + rollingSpeedCurve.keys[0].value);
-        }
-
-        // if the player lands and is holding down 'S' then he can start rolling
-        // it is separated so that the player can stop holding S while rolling
-        if (Input.GetKey(KeyCode.S) && canRoll && isGrounded && !isDashing)
-        {
-            isRolling = true; 
-            isMoving = false; //irrelevant here, but relevant to know the stater if we are running or not in Move()
-        }
-
-        if(isRolling)
-        {
-            //We only give the player extra jump force if the roll time has exceded the jump key in the curve
-            if (rollingCurveCurrentTime >= rollingSpeedCurve[jumpForceKey].time && Input.GetKeyDown(KeyCode.Space))
-                jumpForce = rollingJumpForced;
-
-            //Calculating the passed time of the roll
-            rollingCurveCurrentTime += Time.deltaTime;
-            //Getting the value on the curve during that time
-            float rollingCurveValue = rollingSpeedCurve.Evaluate(rollingCurveCurrentTime);
-            //Applying the velocity of the roll curve
-            rigidBody.velocity = new Vector2(rollingCurveValue * rollingDirection, rigidBody.velocity.y);
+            GetRollingDirection();
         }
         
-        //Disabling the Roll
-        if(Input.GetKeyDown(KeyCode.Space) || !canRoll || !isGrounded)
+        if(canRoll)
         {
-            isRolling = false;
-            if(isJumping || rollingCurveCurrentTime >= rollingSpeedCurve[rollingLastKey].time)
-                jumpForce = originalJumpForce;
-            //Resetting the timer of the curver for the next roll
-            rollingCurveCurrentTime = 0f;
+            // if the player lands and is holding down 'S' then he can start rolling
+            // it is separated so that the player can stop holding S while rolling
+            if (RollingInitiated())
+            {
+                isRolling = true;
+                isMoving = false; //irrelevant here, but relevant to know the stater if we are running or not in Move()
+            }
         }
 
-        //Deciding when we cant roll (sorry its a little messy)
-        if (Mathf.Abs(rigidBody.velocity.x) < minSpeedToRoll  //current velocity less than min speed to roll
-            || rollingCurveCurrentTime >= Mathf.Abs(rollingSpeedCurve.keys[rollingLastKey].time) // the curve timer has reached the curve last key
-            || (Input.GetAxisRaw("Horizontal") != 0 && Input.GetAxisRaw("Horizontal") != rollingDirection) || (!isRolling && isGrounded) // got input in the opposite direction while rolling
-            || isKnocked || isGrappling)
+        if (isRolling)
+        {
+            applyRollForce = true; // ApplyRollForce() is called in FixedUpdat()
+            if (jumpInputReceived)
+            {
+                if (InRollJumpZone())
+                    ApplyJump(rollingJumpForced);
+                else
+                    ApplyJump(jumpForce);
+            }
+        }
+        else if(isGrounded)
             canRoll = false;
+
+        //Disabling the Roll
+        if (CanceledRoll())
+            StopRoll();
     }
 
-    void RollingDirection() 
+    private bool RollingInitiated()
+    {
+        return directionHoldInputVector.y == -1 && isJustLanded && !isDashing;
+    }
+
+    private void ApplyRollForce()
+    {
+        //Calculating the passed time of the roll
+        rollingCurveCurrentTime += Time.deltaTime;
+        //Getting the value on the curve during that time
+        float rollingCurveValue = rollingSpeedCurve.Evaluate(rollingCurveCurrentTime);
+        //Applying the velocity of the roll curve
+        rigidBody.velocity = new Vector2(rollingCurveValue * rollingDirection, rigidBody.velocity.y);
+    }
+
+    private void StopRoll()
+    {
+        isRolling = false;
+        rollingCurveCurrentTime = 0f;
+        applyRollForce = false;
+    }
+
+    private void GetRollingDirection() 
     {
         if (rigidBody.velocity.x < -1)
             rollingDirection  = -1;
@@ -584,125 +633,219 @@ public class PlayerController : MonoBehaviour
             rollingDirection = 1;
     }
 
+    private bool CanRoll()
+    {
+        return !isGrounded && Mathf.Abs(rigidBody.velocity.x) > minSpeedToRoll;
+    }
+
+    bool InRollJumpZone()
+    {
+        //We only give the player extra jump force if the roll time has exceded the jump key in the curve
+        return rollingCurveCurrentTime >= rollingSpeedCurve[jumpForceKey].time;
+    }
+
+    bool CanceledRoll()
+    {
+        return !isGrounded || isKnocked || isGrappling
+                || isCollidingWithLeftWall
+                || rollingCurveCurrentTime >= Mathf.Abs(rollingSpeedCurve.keys[rollingLastKey].time) // the curve timer has reached the curve last key
+                || (Input.GetAxisRaw("Horizontal") != 0 && Input.GetAxisRaw("Horizontal") != rollingDirection); // got input in the opposite direction while rolling
+    }
+
+    void SetupRollKeys()
+    {
+        //Setting the first key of the rolling curve to match the current speed of the player so he would keep his momentum
+        rollingSpeedCurve.RemoveKey(0);
+        rollingSpeedCurve.AddKey(0f, Mathf.Abs(rigidBody.velocity.x) + 0.1f);
+        //Edit the value of the key directly didnt work, so i just delete the old key and create a new one at the same time of the original key
+    }
+    #endregion
+
+    #region GRAPPLE
+    public void GrappleInput(InputAction.CallbackContext context)
+    {
+        float grappleInput = context.ReadValue<float>();
+
+        if(canGrapple && !isGrappling)
+        {
+            if(grappleInput == 1)
+                grappleInputReceived = true;
+        }
+        else
+            grappleInputReceived = false;
+    }
+
+    public void CancelGrappleInput(InputAction.CallbackContext context)
+    {
+        float cancelInput = context.ReadValue<float>();
+
+        if(isGrappling)
+        {
+            if(cancelInput == 1)
+                canceledGrapple = true;
+        }
+        else
+            canceledGrapple = false;
+    }
+
     void Grapple(float originalGravity)
     {
-        if(canGrapple && justCanGrappleCache == null)
-            justCanGrappleCache = StartCoroutine(EnableThenDisable(_ => grapplingLoaded = _, 0.1f));
+        GrappleLoaded();
 
         //Activating the grapple
-        if (grappleButtonPresses == 1 && grappleRayIsHit && !isGrappling) // !isGrappling so it wouldnt be spammed while grappling
-        {
-            isGrappling = true; //Used to disable Move() to not interfer with grappling
-            StartCoroutine(EnableThenDisable(_ => isJustGrappling = _, 0.1f));
+        if (StartedGrapple())
+            SetupGrapplingVariables();
+           
 
-            isMoving = false; //irrelevant here, but relevant to know the stater if we are running or not in Move()
-            
-            //Disabling gravity to not interfer with the applied force
-            rigidBody.gravityScale = 0f;
-
-            //Applying bounciness so the player wont get stuck by roofs or walls
-            originalMaterial = boxCollider.sharedMaterial;
-            boxCollider.sharedMaterial = bouncyMaterial;
-        }
-
-        // Now we keep applying the force
         if (isGrappling)
         {
-            //Finding the position and direction of the mouse
-            grapplingDirection = anchor.transform.position - transform.position;
-            //We set the position of the mouse on z to 0 because the player is on z = 0
-            grapplingDirection.z = 0;
-            //We normalize the vector so that it doesnt be faster when the driection vector is large and vice versa
-            grapplingDirection.Normalize();
-
-
-            //To avoid circiling around the anchor, we only apply force to the rigid body when affar and when close we atrract the player directly ignoring the physics
-            if (Vector2.Distance(gameObject.transform.position, anchor.transform.position) > 4f)
-            {
-                //Adding force by setting the velocity directly
-                rigidBody.velocity = Vector2.SmoothDamp(rigidBody.velocity, grapplingDirection * grapplingSpeed, ref refVelocitVector2, grapplingAcceleration);
-                //Adding force by adding force to the rigidbody
-                //rigidBody.AddForce(grapplingDirection * grapplingSpeed, ForceMode2D.Force);
-            }
-            else
-            {
-                //Debug.Log("Grappling direction: " + grapplingDirection);
-
-                transform.Translate(grapplingDirection * Time.deltaTime * grapplingSpeed);
-            }
-
-
+            ApplyGrapplingForce();
             //Dispalying Grappling Arrows
             GrapplingArrowsParent.SetActive(true);
-
-            //This bit down here fucking destroyed me, because holding input is the best one for this and is annoying to deal with each frame
-            //i kept trying and failing with stupid bools, then at the end after 6 hours (maybe more)
-            //just took a deep breath and just drew the variables changing frame by frame and saw how fucking shtoopid i was
-            //.....ummm, funny story, i found a better and easier way in 10 mins.... yeah...
-
-            //Deciding the final force of grappling direction
-            currentGrapplingInput = GetInputDirection(true, false, false);
-
-            //if the input changes since the last frame
-            if (currentGrapplingInput != grapplingInputOld) 
-            {
-                grapplingInputOld = currentGrapplingInput; //change the old input
-                finalGrapplingForceDirection = DisplayGrapplingArrows(GetInputDirection(true, false, false));
-            }
+            UpdateFinalGrappleForce();
         }
 
-        //Resetting back once reached destination or if canceled by user or hit by rocketato
-        if (Vector2.Distance(transform.position, anchor.transform.position) <= distanceToDetachGrapple || (grappleButtonPresses >= 2 && isGrappling) || isKnocked)
+        if (GrappleEnded())
         {
             if (isGrappling) // Used to stop applying these values when not grappling
             {
-                justLandedCache = null;
-
-                //Giving the player a bonuse force for completing the grapple
-                if (Vector2.Distance(transform.position, anchor.transform.position) <= distanceToDetachGrapple)
+                if(anchor != null)
                 {
-                    grappleForceApplied = true;
-                    StartCoroutine(EnableThenDisable(_ => isJustFinishedGrappling = _, 0.1f));
-
-                    if (finalGrapplingForceDirection != Vector2.zero)
-                    {
-                        rigidBody.velocity = Vector2.zero;
-
-                        //We could have one, but i wanted to adjust it in some areas because it feels quite weak
-                        if(finalGrapplingForceDirection.y == 0)
-                            rigidBody.AddForce(new Vector2(finalGrapplingForceDirection.x * finalForceOfGrapple * 3f, finalForceOfGrapple*1.5f), ForceMode2D.Impulse);
-                        else if(finalGrapplingForceDirection.x == 0 && finalGrapplingForceDirection.y > 0)
-                            rigidBody.AddForce(new Vector2(0, finalGrapplingForceDirection.y * finalForceOfGrapple * 3.5f), ForceMode2D.Impulse);
-                        else
-                            rigidBody.AddForce(new Vector2(finalGrapplingForceDirection.x * finalForceOfGrapple * 2f, finalGrapplingForceDirection.y * finalForceOfGrapple * 1.5f * 2f), ForceMode2D.Impulse);
-                    }
+                    //Giving the player a bonuse force for completing the grapple
+                    if (Vector2.Distance(transform.position, anchor.transform.position) <= distanceToDetachGrapple)
+                        ApplyFinalGrapplingForce();
                     else
-                        rigidBody.AddForce(new Vector2(grapplingDirection.x * finalForceOfGrapple, grapplingDirection.y * finalForceOfGrapple * 1.5f), ForceMode2D.Impulse);
+                        StartCoroutine(EnableThenDisable(_ => isJustBrokeGrappling = _, 0.1f));
                 }
-                else
-                    StartCoroutine(EnableThenDisable(_ => isJustBrokeGrappling = _, 0.1f));
-                    
-                // Resetting
-                isGrappling = false;
-                currentGrapplingInput = Vector2.zero;
-                grapplingInputOld = Vector2.zero;
 
-                rigidBody.gravityScale = originalGravity;
-                boxCollider.sharedMaterial = originalMaterial;
-
-                finalGrapplingForceDirection = Vector2.zero;
-                GrapplingArrowsParent.SetActive(false);
-                DisplayGrapplingArrows(Vector2.zero);
-
-                grappleButtonPresses = 0;
-
-                StartCoroutine(DisableThenEnable(_ => canGrapple = _, grapplingDelay));
-                justCanGrappleCache = null;
+                ResetGrapplingVariables(originalGravity);
             }
-            
+
         }
     }
 
+    void ApplyBouncyMaterial()
+    {
+        originalMaterial = boxCollider.sharedMaterial;
+        boxCollider.sharedMaterial = bouncyMaterial;
+    }
+
+    void SetupGrapplingVariables()
+    {
+        isGrappling = true; //Used to disable Move() to not interfer with grappling
+        StartCoroutine(EnableThenDisable(_ => isJustGrappling = _, 0.1f));
+        isMoving = false; //irrelevant here, but relevant to know the stater if we are running or not in Move()
+        EliminateGravity();
+        //Applying bounciness so the player wont get stuck by roofs or walls
+        ApplyBouncyMaterial();
+    }
+
+    bool StartedGrapple()
+    {
+        return grappleInputReceived && grappleRayIsHit && !isGrappling; // !isGrappling so it wouldnt be spammed while grappling
+    }
+
+    void GrappleLoaded()
+    {
+        //Used to detect when the moment the player can grapple
+        if(canGrapple && justCanGrappleCache == null)
+            justCanGrappleCache = StartCoroutine(EnableThenDisable(_ => grapplingLoaded = _, 0.1f));
+    }
+
+    void ApplyGrapplingForce()
+    {
+        if(!anchor)
+            return;
+
+        //Finding the position and direction of the mouse
+        grapplingDirection = anchor.transform.position - transform.position;
+        //We set the position of the mouse on z to 0 because the player is on z = 0
+        grapplingDirection.z = 0;
+        //We normalize the vector so that it doesnt be faster when the driection vector is large and vice versa
+        grapplingDirection.Normalize();
+
+
+        //To avoid circiling around the anchor, we only apply force to the rigid body when affar and when close we atrract the player directly ignoring the physics
+        if (Vector2.Distance(gameObject.transform.position, anchor.transform.position) > 4f)
+        {
+            //Adding force by setting the velocity directly
+            rigidBody.velocity = Vector2.SmoothDamp(rigidBody.velocity, grapplingDirection * grapplingSpeed, ref refVelocitVector2, grapplingAcceleration);
+            //Adding force by adding force to the rigidbody
+            //rigidBody.AddForce(grapplingDirection * grapplingSpeed, ForceMode2D.Force);
+        }
+        else
+            transform.Translate(grapplingDirection * Time.deltaTime * grapplingSpeed);
+    }
+
+    void UpdateFinalGrappleForce()
+    {
+        //This bit down here fucking destroyed me, because holding input is the best one for this and is annoying to deal with each frame
+        //i kept trying and failing with stupid bools, then at the end after 6 hours (maybe more)
+        //just took a deep breath and just drew the variables changing frame by frame and saw how fucking shtoopid i was
+        //.....ummm, funny story, i found a better and easier way in 10 mins.... yeah...
+
+        //Deciding the final force of grappling direction
+        finalGrapplingForceDirection = directionHoldInputVector;
+
+        //if the input changes since the last frame
+        if (finalGrapplingForceDirection != finalGrapplingForceDirectionOld) 
+        {
+            finalGrapplingForceDirectionOld = finalGrapplingForceDirection; //change the old input
+            DisplayGrapplingArrows(finalGrapplingForceDirection);
+        }
+    }
+
+    bool GrappleEnded()
+    {
+        if(!anchor)
+            return true;
+
+        //reached destination or if canceled by user or hit by rocketato
+        return Vector2.Distance(transform.position, anchor.transform.position) <= distanceToDetachGrapple 
+                || (canceledGrapple && isGrappling) 
+                || isKnocked;
+
+    }
+
+    private void ResetGrapplingVariables(float originalGravity)
+    {
+        isGrappling = false;
+        finalGrapplingForceDirection = Vector2.zero;
+        finalGrapplingForceDirectionOld = Vector2.zero;
+
+        rigidBody.gravityScale = originalGravity;
+        boxCollider.sharedMaterial = originalMaterial;
+
+        finalGrapplingForceDirection = Vector2.zero;
+        GrapplingArrowsParent.SetActive(false);
+        DisplayGrapplingArrows(Vector2.zero);
+
+        StartCoroutine(DisableThenEnable(_ => canGrapple = _, grapplingDelay));
+        justCanGrappleCache = null;
+    }
+
+    private void ApplyFinalGrapplingForce()
+    {
+        StartCoroutine(EnableThenDisable(_ => isJustFinishedGrappling = _, 0.1f));
+
+        if (finalGrapplingForceDirection != Vector2.zero)
+        {
+            rigidBody.velocity = Vector2.zero;
+
+            //We could have one, but i wanted to adjust it in some areas because it feels quite weak
+            if (finalGrapplingForceDirection.y == 0)
+                rigidBody.AddForce(new Vector2(finalGrapplingForceDirection.x * finalForceOfGrapple * 3f, finalForceOfGrapple * 1.5f), ForceMode2D.Impulse);
+            else if (finalGrapplingForceDirection.x == 0 && finalGrapplingForceDirection.y > 0)
+                rigidBody.AddForce(new Vector2(0, finalGrapplingForceDirection.y * finalForceOfGrapple * 3.5f), ForceMode2D.Impulse);
+            else
+                rigidBody.AddForce(new Vector2(finalGrapplingForceDirection.x * finalForceOfGrapple * 2f, finalGrapplingForceDirection.y * finalForceOfGrapple * 1.5f * 2f), ForceMode2D.Impulse);
+        }
+        else
+            rigidBody.AddForce(new Vector2(grapplingDirection.x * finalForceOfGrapple, grapplingDirection.y * finalForceOfGrapple * 1.5f), ForceMode2D.Impulse);
+    }
+    #endregion
+
+    #region GRAPPLE RAY
     void GrappleRay()
     {
         Vector3 rayDirection = Camera.main.ScreenToWorldPoint(Input.mousePosition) - transform.position;
@@ -710,29 +853,19 @@ public class PlayerController : MonoBehaviour
         rayDirection.Normalize();
         RaycastHit2D grappleRay = Physics2D.Raycast(transform.position, rayDirection, grappleDistance, anchorLayer);
 
-        if (grappleRay.collider != null)
+        if (AnchorDetected(grappleRay))
         {
             anchor = grappleRay.collider.gameObject;
-            anchorSpriteRenderer = anchor.GetComponent<SpriteRenderer>();
-            anchorIndicatorSpriteRender = anchor.transform.GetChild(0).gameObject.GetComponent<SpriteRenderer>();
-
-            anchorSpriteRenderer.color = Color.green;
-            anchorIndicatorSpriteRender.color = Color.green;
-            
+            SetAnchorIndicatorToColor(grappleRay, Color.green);
             grappleRayIsHit = true;
         }
         else
         {
-
-            anchorSpriteRenderer.color = Color.red;
-            anchorIndicatorSpriteRender.color = Color.red;
-
+            SetAnchorToColor(Color.red);
             grappleRayIsHit = false;
         }
 
-        //Resetting the anchor to null while not grappling and the ray is not hit because its used to count the grapple button presses
-        if (!isGrappling && grappleRay.collider == null)
-            anchor = null;
+        ResetAnchor(grappleRay);
 
         //Debuging
         //Vector3 end = transform.position + rayDirection * grappleDistance;
@@ -740,91 +873,149 @@ public class PlayerController : MonoBehaviour
         //Debug.Log(grappleRayIsHit);
     }
 
-    Vector2 DisplayGrapplingArrows(Vector2 inputDirection)
+    private bool AnchorDetected(RaycastHit2D grappleRay)
+    {
+        return grappleRay.collider != null;
+    }
+
+    private void SetAnchorIndicatorToColor(RaycastHit2D grappleRay, Color color)
+    {
+        if(!anchor)
+            return;
+
+        anchorSpriteRenderer = anchor.GetComponent<SpriteRenderer>();
+        anchorIndicatorSpriteRender = anchor.transform.GetChild(0).gameObject.GetComponent<SpriteRenderer>();
+        anchorSpriteRenderer.color = color;
+        anchorIndicatorSpriteRender.color = color;
+    }
+
+    private void SetAnchorToColor(Color color)
+    {
+        if(!anchorSpriteRenderer || !anchorIndicatorSpriteRender)
+            return;
+
+        anchorSpriteRenderer.color = color;
+        anchorIndicatorSpriteRender.color = color;
+    }
+
+    private void ResetAnchor(RaycastHit2D grappleRay)
+    {
+        //Resetting the anchor to null while not grappling 
+        //and the ray is not hit because its used to count the grapple button presses
+        if (!isGrappling && grappleRay.collider == null)
+            anchor = null;
+    }
+    #endregion
+
+    #region GRAPPLE ARROWS
+    private void DisplayGrapplingArrows(Vector2 inputDirection)
     {
         SpriteRenderer arrowSprite = null;
-        Color arrowColor;
+        Color arrowColor = Color.green;
 
         //if theres no input
-        if(inputDirection == Vector2.zero)
+        if (inputDirection == NoInput)
         {
-            //we loop over the arrows
-            foreach (GameObject arrow in GrapplingArrows)
-            {
-                //find the active one
-                if (arrow.GetComponent<SpriteRenderer>().color == Color.green)
-                {
-                    //Disable it
-                    arrowColor.a = 0.3f;
-                    arrowColor = Color.white;
-                    arrow.GetComponent<SpriteRenderer>().color = arrowColor;
-                }
-            }
-
-            return Vector2.zero;
+            arrowColor = DeactivateGrapplingArrows(arrowColor);
+            return;
         }
-
-        //Getting the arrow to activate based on the given direction
-        if (inputDirection.x == 1f && inputDirection.y == 0f) //Right
-            arrowSprite = GrapplingArrows[1].GetComponent<SpriteRenderer>();
-        else if (inputDirection.x == 1f && inputDirection.y == 1f) //Top Right
-            arrowSprite = GrapplingArrows[0].GetComponent<SpriteRenderer>();
-        else if (inputDirection.x == 1f && inputDirection.y == -1f) //Bottom Right
-            arrowSprite = GrapplingArrows[2].GetComponent<SpriteRenderer>();
-        else if (inputDirection.x == -1f && inputDirection.y == 0f) //Left
-            arrowSprite = GrapplingArrows[5].GetComponent<SpriteRenderer>();
-        else if (inputDirection.x == -1f && inputDirection.y == 1f) //Top Left
-            arrowSprite = GrapplingArrows[6].GetComponent<SpriteRenderer>();
-        else if (inputDirection.x == -1f && inputDirection.y == -1f) //Bottom Left
-            arrowSprite = GrapplingArrows[4].GetComponent<SpriteRenderer>();
-        else if (inputDirection.x == 0f && inputDirection.y == 1f) //Top
-            arrowSprite = GrapplingArrows[7].GetComponent<SpriteRenderer>();
-        else if (inputDirection.x == 0f && inputDirection.y == -1f) //Bottom
-            arrowSprite = GrapplingArrows[3].GetComponent<SpriteRenderer>();
-
-        //Debug.Log("Arrow color :: " + arrowSprite.color + " ::");
         
-        //The following part is uncessary if the input direction is the same
-        //Looping over the arrows
+        arrowSprite = GetActiveGrapplingArrow(inputDirection, arrowSprite);
+
+        // Deactivate all the arrows even the one we want
+        arrowColor = DeactivateGrapplingArrows(arrowColor);
+        // And because we're still in the same we can activate the one we want again
+        // Without even displaying the deavtivation
+        ActivateGrapplingArrow(arrowSprite);
+    }
+
+    private void ActivateGrapplingArrow(SpriteRenderer arrowSprite)
+    {
+        Color arrowColor;
+        arrowColor.a = 1f;
+        arrowColor = Color.green;
+        arrowSprite.color = arrowColor;
+    }
+
+    private Color DeactivateGrapplingArrows(Color arrowColor)
+    {
+        //we loop over the arrows
         foreach (GameObject arrow in GrapplingArrows)
         {
-            //disabling the one that is active
+            //find the active one
             if (arrow.GetComponent<SpriteRenderer>().color == Color.green)
             {
+                //Disable it
                 arrowColor.a = 0.3f;
                 arrowColor = Color.white;
                 arrow.GetComponent<SpriteRenderer>().color = arrowColor;
             }
         }
 
-        //Activating the arrow with the corresponding inputDirection
-        arrowColor.a = 1f;
-        arrowColor = Color.green;
-
-        arrowSprite.color = arrowColor;
-
-        return inputDirection;
+        return arrowColor;
     }
-
-    void MouseClicksCounter()
-    {
-        if(canGrapple)
+    private SpriteRenderer GetActiveGrapplingArrow(Vector2 inputDirection, SpriteRenderer arrowSprite)
         {
-            if (grappleButtonPresses == 0) // Letting the player grapple with only right click
-            {
-                if (Input.GetMouseButtonDown(1) && anchor != null) //Only add button presses if the grapple ray hits an anchor
-                    grappleButtonPresses++;
-            }
-            else if (grappleButtonPresses == 1)//Letting the player detach the grapple with either "Space" ket (or jumping button) or "right click" (or grappling button)
-            {
-                if ((Input.GetMouseButtonDown(1) || Input.GetKeyDown(KeyCode.Space)) && anchor != null)
-                {
-                    grappleButtonPresses++;
-                    //grappleButtonPresses = 0;
-                }
-            }
+            //Getting the arrow to activate based on the given direction
+            if (inputDirection.x == 1f && inputDirection.y == 0f) //Right
+                arrowSprite = GrapplingArrows[1].GetComponent<SpriteRenderer>();
+            else if (inputDirection.x == 1f && inputDirection.y == 1f) //Top Right
+                arrowSprite = GrapplingArrows[0].GetComponent<SpriteRenderer>();
+            else if (inputDirection.x == 1f && inputDirection.y == -1f) //Bottom Right
+                arrowSprite = GrapplingArrows[2].GetComponent<SpriteRenderer>();
+            else if (inputDirection.x == -1f && inputDirection.y == 0f) //Left
+                arrowSprite = GrapplingArrows[5].GetComponent<SpriteRenderer>();
+            else if (inputDirection.x == -1f && inputDirection.y == 1f) //Top Left
+                arrowSprite = GrapplingArrows[6].GetComponent<SpriteRenderer>();
+            else if (inputDirection.x == -1f && inputDirection.y == -1f) //Bottom Left
+                arrowSprite = GrapplingArrows[4].GetComponent<SpriteRenderer>();
+            else if (inputDirection.x == 0f && inputDirection.y == 1f) //Top
+                arrowSprite = GrapplingArrows[7].GetComponent<SpriteRenderer>();
+            else if (inputDirection.x == 0f && inputDirection.y == -1f) //Bottom
+                arrowSprite = GrapplingArrows[3].GetComponent<SpriteRenderer>();
+            return arrowSprite;
+        }
+
+    #endregion
+
+    #region KNOCKBACK
+    void Knockback(Collider2D collider)
+    {
+        if (collider.gameObject.CompareTag("Flyer"))
+        {
+            Rigidbody2D foundRigidBody = collider.gameObject.GetComponent<Rigidbody2D>();
+            DisableFlyerScripts(collider);
+            ApplyKnockbackForceTo(collider, foundRigidBody);
+            collider.gameObject.GetComponent<EnemyFlyerController>().gotKnocked = true;
         }
     }
+    private void DisableFlyerScripts(Collider2D collider)
+    {
+        //Disabling scripts that can interfer with the force
+        collider.gameObject.GetComponent<AIPath>().enabled = false;
+        collider.gameObject.GetComponent<AIDestinationSetter>().enabled = false;
+    }
+    private void ApplyKnockbackForceTo(Collider2D collider, Rigidbody2D foundRigidBody)
+    {
+        //Deciding the direction of the force
+        if (transform.position.x < collider.gameObject.GetComponent<Transform>().position.x)
+            foundRigidBody.AddForce(enemyKnockForce, ForceMode2D.Impulse);
+        else
+            foundRigidBody.AddForce(new Vector2(enemyKnockForce.x * -1, enemyKnockForce.y), ForceMode2D.Impulse);
+
+        foundRigidBody.drag = enemyKnockLinearDrag;
+        foundRigidBody.gravityScale = enemyKnockGravity;
+    }
+
+    IEnumerator ResetKnock()
+    {
+        yield return new WaitForSeconds(0.3f);
+        isKnocked = false;
+    }
+    #endregion
+    
+    #region Miscellaneous
+    
 
     //Disbales palyers weapon
     void WeaponsSwitch(bool status) 
@@ -843,103 +1034,70 @@ public class PlayerController : MonoBehaviour
             companionAbilitiesController.enabled = false;
         }
     }
+    #endregion
 
-    void Knockback(Collider2D collider)
+    #region Checks
+    void GroundCheck()
     {
-        if (collider.gameObject.CompareTag("Flyer"))
+        if (Physics2D.OverlapBox(groundBoxCastPosition.position, groundBoxCastSize, 0, groundLayer))
         {
-            Rigidbody2D foundRigidBody = collider.gameObject.GetComponent<Rigidbody2D>();
+            isGrounded = true;
 
-            //Disabling scripts that can interfer with the force
-            collider.gameObject.GetComponent<AIPath>().enabled = false;
-            collider.gameObject.GetComponent<AIDestinationSetter>().enabled = false;
-
-            //Deciding the direction of the force
-            if (transform.position.x < collider.gameObject.GetComponent<Transform>().position.x)
-                foundRigidBody.AddForce(enemyKnockForce, ForceMode2D.Impulse);
-            else
-                foundRigidBody.AddForce(new Vector2(enemyKnockForce.x * -1, enemyKnockForce.y), ForceMode2D.Impulse);
-
-            foundRigidBody.drag = enemyKnockLinearDrag;
-            foundRigidBody.gravityScale = enemyKnockGravity;
-
-            collider.gameObject.GetComponent<EnemyFlyerController>().gotKnocked = true;
+            if(justLandedCache == null && !isDashing) //!isDashing in case dashing while grounded
+                justLandedCache = StartCoroutine(EnableThenDisable(_ => isJustLanded = _, 0.1f));
+        }
+        else
+        {
+            isGrounded = false;
+            justLandedCache = null;
         }
     }
 
-    Vector2 GetInputDirection(bool onHolding, bool onPress, bool onRelease)
+    //The global variable needs to be function in this form _ => globalVariable = _
+    void WallCheck(Vector3 boxPosition, Vector2 boxSize, Action<bool> globalVariable)
     {
-        Vector2 inputVector = Vector2.zero;
-
-        if (onHolding)
+        if (Physics2D.OverlapBox(boxPosition, boxSize, 0, groundLayer))
         {
-            if (Input.GetKey(KeyCode.W)) //UP
-                inputVector.y = 1;
-
-            if (Input.GetKey(KeyCode.S)) //DOWN
-                inputVector.y = -1;
-
-            if (Input.GetAxisRaw("Vertical") == 0)
-                inputVector.y = 0;
-
-            if (Input.GetKey(KeyCode.A)) //LEFT
-                inputVector.x = -1;
-
-            if (Input.GetKey(KeyCode.D)) //RIGHT
-                inputVector.x = 1;
-
-            if (Input.GetAxisRaw("Horizontal") == 0)
-                inputVector.x = 0;
+            globalVariable(true);
+            if(justHitWallCache == null && !isDashing) //!isDashing in case dashing while grounded
+                justHitWallCache = StartCoroutine(EnableThenDisable(_ => isJustHitWall = _, 0.1f));
         }
-        else if (onPress)
+        else
         {
-            if (Input.GetKeyDown(KeyCode.W)) //UP
-                inputVector.y = 1;
-
-            if (Input.GetKeyDown(KeyCode.S)) //DOWN
-                inputVector.y = -1;
-
-            if (Input.GetAxisRaw("Vertical") == 0)
-                inputVector.y = 0;
-
-            if (Input.GetKeyDown(KeyCode.A)) //LEFT
-                inputVector.x = -1;
-
-            if (Input.GetKeyDown(KeyCode.D)) //RIGHT
-                inputVector.x = 1;
-
-            if (Input.GetAxisRaw("Horizontal") == 0)
-                inputVector.x = 0;
+            globalVariable(false);
+            justHitWallCache = null;
         }
-        else if (onRelease)
-        {
-            if (Input.GetKeyUp(KeyCode.W)) //UP
-                inputVector.y = 1;
+    }
+    #endregion
 
-            if (Input.GetKeyUp(KeyCode.S)) //DOWN
-                inputVector.y = -1;
-
-            if (Input.GetAxisRaw("Vertical") == 0)
-                inputVector.y = 0;
-
-            if (Input.GetKeyUp(KeyCode.A)) //LEFT
-                inputVector.x = -1;
-
-            if (Input.GetKeyUp(KeyCode.D)) //RIGHT
-                inputVector.x = 1;
-
-            if (Input.GetAxisRaw("Horizontal") == 0)
-                inputVector.x = 0;
-        }
-        return inputVector;
+    #region Multiuse Functions
+    public void OnXHoldInput(InputAction.CallbackContext context)
+    {
+        directionHoldInputVector.x = context.ReadValue<float>();
     }
 
-    //For some reason the function doesnt start at all, find a fix later
-    //My dumbass used to start the coroutine by just typing in ResetKnock(); instead of StartCoroutine("ResetKnock");
-    IEnumerator ResetKnock()
+    public void OnYHoldInput(InputAction.CallbackContext context)
     {
-        yield return new WaitForSeconds(0.3f);
-        isKnocked = false;
+        directionHoldInputVector.y = context.ReadValue<float>();
+    }
+
+    public void ShiftModiferInput(InputAction.CallbackContext context)
+    {
+        shiftModifierInputReceived = context.started;
+    }
+
+    private void WhileGroundedVariablesReset()
+    {
+        if(isGrounded)
+        {
+            if(!isDashing)
+                dashesLeft = dashesCount;
+        }
+    }
+
+    private bool VelocityNearZero(float offsetMargin)
+    {
+        return -offsetMargin >= rigidBody.velocity.x && rigidBody.velocity.x <= offsetMargin;
     }
 
     //This function takes a function with a boolean argument as an alternative for pointers
@@ -957,4 +1115,15 @@ public class PlayerController : MonoBehaviour
         yield return new WaitForSeconds(time);
         switcher(true);
     }
+
+    void EnableGlobalVariable(Action<bool> switcher)
+    {
+        switcher(true);
+    }
+
+    void DisableGlobalVariable(Action<bool> switcher)
+    {
+        switcher(false);
+    }
+    #endregion
 }
