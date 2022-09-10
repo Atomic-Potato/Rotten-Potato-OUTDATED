@@ -528,16 +528,6 @@ PrefabInstance:
       propertyPath: m_Name
       value: Player
       objectReference: {fileID: 0}
-    - target: {fileID: 7048394263055264680, guid: 4354e52558793764c83e51d88875f217,
-        type: 3}
-      propertyPath: m_LocalScale.y
-      value: 2.1249037
-      objectReference: {fileID: 0}
-    - target: {fileID: 7048394263055264680, guid: 4354e52558793764c83e51d88875f217,
-        type: 3}
-      propertyPath: m_LocalPosition.y
-      value: -0.0272
-      objectReference: {fileID: 0}
     - target: {fileID: 7930449304466152122, guid: 4354e52558793764c83e51d88875f217,
         type: 3}
       propertyPath: m_Volume
