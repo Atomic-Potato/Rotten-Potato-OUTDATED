@@ -181,7 +181,6 @@ public class PlayerController : MonoBehaviour
     // ---------- Constants ----------
     const float NoGravity = 0f;
     readonly Vector2 NoInput = Vector2.zero;
-    
     #endregion
 
     #region Awake, Start, Update, OnX functions
@@ -514,7 +513,7 @@ public class PlayerController : MonoBehaviour
         if (wallHangTimer <= 0)
             ResetWallHangVariables();
         
-        if (jumpInputReceived && wallHangTimer <= (wallHangTime - 0.15f))
+        if (jumpInputReceived && wallHangTimer <= (wallHangTime - 0.18f))
             StartCoroutine(WallJump());
     }
 
