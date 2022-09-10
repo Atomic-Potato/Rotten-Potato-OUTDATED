@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using Pathfinding;
@@ -148,7 +147,7 @@ public class PlayerController : MonoBehaviour
     bool dashInputReceived;
     bool grappleInputReceived;
     bool rollInputReceived;
-    public bool shiftModifierInputReceived;
+    bool shiftModifierInputReceived;
 
     bool canceledGrapple; 
     bool grappleRayIsHit;
@@ -162,7 +161,7 @@ public class PlayerController : MonoBehaviour
     Vector2 finalGrapplingForceDirection = Vector2.zero;
     Vector2 finalGrapplingForceDirectionOld = Vector2.zero;
     Vector2 originalWallBoxCastSize = Vector2.zero;
-    public Vector2 directionHoldInputVector = Vector2.zero;
+    Vector2 directionHoldInputVector = Vector2.zero;
 
     PhysicsMaterial2D originalMaterial;
     GameObject anchor;
@@ -605,14 +604,9 @@ public class PlayerController : MonoBehaviour
             StopRoll();
     }
 
-    public void RollInput(InputAction.CallbackContext context)
-    {
-        rollInputReceived = context.performed;
-    }
-
     private bool RollingInitiated()
     {
-        return rollInputReceived && isJustLanded && !isDashing;
+        return directionHoldInputVector.y == -1 && isJustLanded && !isDashing;
     }
 
     private void ApplyRollForce()
@@ -998,7 +992,6 @@ public class PlayerController : MonoBehaviour
     }
     private void DisableFlyerScripts(Collider2D collider)
     {
-
         //Disabling scripts that can interfer with the force
         collider.gameObject.GetComponent<AIPath>().enabled = false;
         collider.gameObject.GetComponent<AIDestinationSetter>().enabled = false;

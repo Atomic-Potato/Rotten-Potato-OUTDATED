@@ -6,7 +6,7 @@
             "id": "52accf8e-a287-48a1-ac92-2767e09e8bc0",
             "actions": [
                 {
-                    "name": "X Axis",
+                    "name": "X Axis (Left & Right)",
                     "type": "Value",
                     "id": "a292c04c-e88d-4565-b2f9-23b2dda63e77",
                     "expectedControlType": "Axis",
@@ -15,7 +15,7 @@
                     "initialStateCheck": true
                 },
                 {
-                    "name": "Y Axis",
+                    "name": "Y Axis (Negative: Roll)",
                     "type": "Value",
                     "id": "9de0c87e-aa64-4617-a44b-9070ad60138c",
                     "expectedControlType": "Axis",
@@ -27,15 +27,6 @@
                     "name": "Jump",
                     "type": "Button",
                     "id": "7736b26d-45f3-49ba-88bd-3a0505f5df0b",
-                    "expectedControlType": "Button",
-                    "processors": "",
-                    "interactions": "",
-                    "initialStateCheck": false
-                },
-                {
-                    "name": "Roll",
-                    "type": "Button",
-                    "id": "2666ef41-18c5-45e8-b0cd-d52812dd9826",
                     "expectedControlType": "Button",
                     "processors": "",
                     "interactions": "",
@@ -92,17 +83,6 @@
                 },
                 {
                     "name": "",
-                    "id": "856b9561-be94-4be3-bd64-b7fa2fa3713b",
-                    "path": "<Keyboard>/s",
-                    "interactions": "Press",
-                    "processors": "",
-                    "groups": "",
-                    "action": "Roll",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "",
                     "id": "b2ef73a0-a55c-499d-900f-08f357ac341b",
                     "path": "<Mouse>/rightButton",
                     "interactions": "Tap",
@@ -152,7 +132,7 @@
                     "interactions": "Press",
                     "processors": "",
                     "groups": "",
-                    "action": "X Axis",
+                    "action": "X Axis (Left & Right)",
                     "isComposite": true,
                     "isPartOfComposite": false
                 },
@@ -163,7 +143,7 @@
                     "interactions": "",
                     "processors": "",
                     "groups": "",
-                    "action": "X Axis",
+                    "action": "X Axis (Left & Right)",
                     "isComposite": false,
                     "isPartOfComposite": true
                 },
@@ -174,7 +154,7 @@
                     "interactions": "",
                     "processors": "",
                     "groups": "",
-                    "action": "X Axis",
+                    "action": "X Axis (Left & Right)",
                     "isComposite": false,
                     "isPartOfComposite": true
                 },
@@ -196,7 +176,7 @@
                     "interactions": "Press",
                     "processors": "",
                     "groups": "",
-                    "action": "Y Axis",
+                    "action": "Y Axis (Negative: Roll)",
                     "isComposite": true,
                     "isPartOfComposite": false
                 },
@@ -207,7 +187,7 @@
                     "interactions": "",
                     "processors": "",
                     "groups": "",
-                    "action": "Y Axis",
+                    "action": "Y Axis (Negative: Roll)",
                     "isComposite": false,
                     "isPartOfComposite": true
                 },
@@ -218,7 +198,7 @@
                     "interactions": "",
                     "processors": "",
                     "groups": "",
-                    "action": "Y Axis",
+                    "action": "Y Axis (Negative: Roll)",
                     "isComposite": false,
                     "isPartOfComposite": true
                 }

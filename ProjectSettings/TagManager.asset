@@ -13,6 +13,7 @@ TagManager:
   - Rocketato
   - Start Line
   - Finish Line
+  - Flyer Bullet
   layers:
   - Default
   - TransparentFX
