@@ -15,20 +15,21 @@ A fast paced 2D semi open world wave survival game about fighting hordes of muta
 
 - A world to test the player controller, and a section to with a timer for speedrunning.
 
-## Goals of this project:
+## Goals of this project: (Subject to change)
 ### Goal #1: *`ENEMIES`*
-- Polish the `Flyer` enemy.
-- Change the `Rocket` enemy behavior so it would follow the player and can be mounted by the player.
-- A wave system.
-- Grounded enemies that patrol an area but are indeppendent of each wave
+- [ ] Polish the `Flyer` enemy.
+- [ ] Change the `Rocket` enemy behavior so it would follow the player and can be mounted by the player.
+- [ ] A wave system.
+- [ ] Grounded enemies that patrol an area but are indeppendent of each wave
 
 ### Goal #2: *`WORLD`*
-- 2 Biomes: Over the ground and under the ground (can be considered just as a single biome)
+- [ ] 2 Biomes: Over the ground and under the ground (can be considered just as a single biome)
 - Obstacles:
-  - Ground Flame: falme that comes out of the ground that is invoked by the player stepping over it.
-  - Rocket Highways: Basically a rocket enemy comes out from one end of the wall, and keeps going in a straight line into the other end of the wall
+  - [ ] Ground Flame: falme that comes out of the ground that is invoked by the player stepping over it.
+  - [ ] Rocket Highways: Basically a rocket enemy comes out from one end of the wall, and keeps going in a straight line into the other end of the wall
+  - [ ] Pools of radiation
 - Other Objects:
-  - A moving platform.
+  - [ ] A moving platform.
   
 *(The following goals are ambitious and may not be done)*
 ### Goal #3: *`Boss Fight`*
@@ -40,3 +41,16 @@ The Potato world has 2 Potato guardians that have protected the land for thousan
 One of the days, a meteorite carrying a virus crashes on the Potato Planet and luckily the virus doesnt spread, the Potato government captures the parasite and keeps it a secret from the world, and especially the Guardians. The scientists discover that these parasites give their hosts powerful abilities, but it needs a host that can whistand this power. And so they try to lure the guardians to ally with the potato government so they can use it on them, one of them refuses while the other accepts. After injecting the parasite into the guardian, it looses control, and starts mutating all the scientists and soldiers in the facility.
 
 Weeks pass and the world is a mess, no one can stop this spread. After the failure of the guardians, the gods send one brave powerful soul that sprouts out from the ground and they say to it: "Find the Guardians. Restore the balance."
+
+---
+
+To check the current ToDo list that includes `Features, Enhancements, Bugs & Ideas` you can find them here: <br />
+https://github.com/users/Atomic-Potato/projects/2
+
+_Currently just accepting help in Bugs, like why this is happening, and Ideas, whats an easy way to implement this. Will most likely allow for actual contributions in the future, but so far I'm still using this project to learn game development._
+
+---
+
+For contact you can reach me here:
+- medyanmehiddine@gmail.com
+- Atomic Potato#1947 (Discord)
