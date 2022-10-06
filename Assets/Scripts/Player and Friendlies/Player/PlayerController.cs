@@ -666,11 +666,8 @@ public class PlayerController : MonoBehaviour
     {
         float grappleInput = context.ReadValue<float>();
 
-        if(canGrapple && !isGrappling)
-        {
-            if(grappleInput == 1)
-                grappleInputReceived = true;
-        }
+        if(grappleInput == 1 && canGrapple && !isGrappling)
+            grappleInputReceived = true;
         else
             grappleInputReceived = false;
     }
@@ -747,7 +744,7 @@ public class PlayerController : MonoBehaviour
 
     void GrappleLoaded()
     {
-        //Used to detect when the moment the player can grapple
+        //Used to detect the moment the player can grapple
         if(canGrapple && justCanGrappleCache == null)
             justCanGrappleCache = StartCoroutine(EnableThenDisable(_ => grapplingLoaded = _, 0.1f));
     }
