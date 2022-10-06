@@ -53,14 +53,6 @@ public class BulletController : MonoBehaviour
             return;
         }
 
-        //Collision with Rocketato
-        if (colInfo.gameObject.CompareTag("Rocketato") && (gameObject.tag == "Player Bullet" || gameObject.tag == "Companion Bullet"))
-        {
-            Destroy(gameObject);
-            colInfo.gameObject.GetComponent<RocketatoController>().OnHitEffect(rocketSpeedAddition);
-            return;
-        }
-
         //Companion Bullets
         if (colInfo.gameObject.CompareTag(flyerTag) && gameObject.tag == "Companion Bullet")
         {

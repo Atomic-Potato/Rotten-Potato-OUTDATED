@@ -37,7 +37,7 @@ public class AudioManager : MonoBehaviour
         
         if(s == null)
         {
-            Debug.Log("Clip " + name + " not found in AudioManager.PlayClip()");
+            //Debug.Log("Clip " + name + " not found in AudioManager.PlayClip()");
             return 0;
         }
 
@@ -82,7 +82,7 @@ public class AudioManager : MonoBehaviour
 
         if(s == null)
         {
-            Debug.Log("Clip " + name + " not found in AudioManager.PauseClip()");
+            //Debug.Log("Clip " + name + " not found in AudioManager.PauseClip()");
             return 0;
         }
 
@@ -118,7 +118,7 @@ public class AudioManager : MonoBehaviour
         //CHECKING FOR ERRORS
         if(s == null)
         {
-            Debug.Log("Clip " + name + " not found in AudioManager.FadeOut()");
+            //Debug.Log("Clip " + name + " not found in AudioManager.FadeOut()");
             yield break;
         }
 
@@ -165,7 +165,7 @@ public class AudioManager : MonoBehaviour
         //ERROR CHECKING
         if(s == null)
         {
-            Debug.Log("Clip " + name + " not found in AudioManager.FadeIn()");
+            //Debug.Log("Clip " + name + " not found in AudioManager.FadeIn()");
             yield break;
         }
 
@@ -219,7 +219,7 @@ public class AudioManager : MonoBehaviour
         //ERROR CHECKING
         if(s == null)
         {
-            Debug.Log("Clip " + s.name + " not found in AudioManager.FadeIn(Sound s)");
+            //Debug.Log("Clip " + s.name + " not found in AudioManager.FadeIn(Sound s)");
             yield break;
         }
         

@@ -6,7 +6,7 @@ using Pathfinding;
 public class RocketatoController : MonoBehaviour
 {
     public float speed = 10f;
-    public float maxSpeed = 20f;
+    [SerializeField] float initialRotationSpeed = 20f;
     [Space]
     [SerializeField] float enemyKnockLinearDrag = 1f;
     public static float timeToDisableKnock = 1f;
@@ -14,30 +14,41 @@ public class RocketatoController : MonoBehaviour
     [Space]
     [SerializeField] Vector2 playerKnockForce;
     [SerializeField] Vector2 enemyKnockForce;
+    
 
     [Space]
     [Space]
     
     public Rigidbody2D rigidBody;
 
-
+    #region Private Variables
     float originalSpeed;
+    Transform playerTransform;
+    #endregion
 
     private void Start()
     {
-        speed *= (-1);
-        maxSpeed *= (-1);
+        //Finding required components
+        playerTransform = GameObject.FindGameObjectWithTag("Player").transform;
     }
 
     private void FixedUpdate()
     {
-        Move(speed);
+        Move(speed, initialRotationSpeed);
     }
 
-    private void Move(float velocity)
+
+    #region  Movement
+    private void Move(float velocity, float rotationSpeed)
     {
-        rigidBody.velocity = new Vector2(0f, velocity * Time.deltaTime);
+        Vector3 direction = (playerTransform.position - transform.position).normalized;
+        float rotationMultiplier = Vector3.Cross(direction, transform.right).z;
+
+        rigidBody.angularVelocity = -rotationMultiplier * initialRotationSpeed;
+        rigidBody.velocity = transform.right * velocity * Time.deltaTime;
     }
+
+    #endregion
 
     private void OnTriggerEnter2D(Collider2D collider)
     {
@@ -60,14 +71,6 @@ public class RocketatoController : MonoBehaviour
             speed = originalSpeed;
     }
 
-    public void OnHitEffect(float speedToAdd)
-    {
-        if(speed > maxSpeed) //Its greater because we're working on the negative axis
-        {
-            speed -= speedToAdd;
-            speed = Mathf.Max(speed, maxSpeed);
-        }
-    }
 
     void Knockback(Collider2D collider)
     {

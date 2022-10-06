@@ -5,41 +5,16 @@ using UnityEngine.InputSystem;
 
 public class DELETEME : MonoBehaviour
 {
-    [SerializeField] PlayerInput playerInput;
-
-
-    // Update is called once per frame
-    void Update()
-    {
+    public Rigidbody2D rb;
+    public float velocity;
+    Transform pt;
+    private void Start() {
+        pt = GameObject.FindGameObjectWithTag("Player").transform;
     }
 
-    public void Move(InputAction.CallbackContext context)
+    private void FixedUpdate() 
     {
-        //Debug.Log("Move: " + context.phase  + " " + context.ReadValue<float>());
-    }
-
-    public void Jump(InputAction.CallbackContext context)
-    {
-        Debug.Log("Jump: " + context.phase  + " " + context.ReadValue<float>());
-    }
-
-    public void Dash(InputAction.CallbackContext context)
-    {
-        Debug.Log("Dash: " + context.phase  + " " + context.ReadValue<float>());
-    }
-
-    public void Grapple(InputAction.CallbackContext context)
-    {
-        Debug.Log("Grapple: " + context.phase  + " " + context.ReadValue<float>());
-    }
-
-    public void OnXHoldInput(InputAction.CallbackContext context)
-    {
-        Debug.Log("X: " + context.ReadValue<float>());
-    }
-
-    public void OnYHoldInput(InputAction.CallbackContext context)
-    {
-        Debug.Log("Y: " + context.ReadValue<float>());
+        Vector3 direction = (pt.position - transform.position).normalized;
+        rb.velocity = new Vector2(-direction.x * velocity, direction.y * velocity * Time.deltaTime);
     }
 }
