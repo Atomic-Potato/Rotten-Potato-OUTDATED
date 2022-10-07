@@ -24,8 +24,8 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1721055852999763925}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: -0.95, z: 0}
+  m_LocalRotation: {x: 0, y: 0, z: 0.7071068, w: 0.7071068}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 1721055853896791876}
@@ -127,14 +127,21 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c2e3756ff69deee45a449cf6aa1bf5d0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  speed: 350
-  maxSpeed: 1000
-  initialRotationSpeed: 20
+  targetTag: Player
+  speed: 10
+  initialRotationSpeed: 100
+  timeToCook: 2
+  distanceToCook: 7
+  cookingTime: 2.5
+  launchedSpeed: 250
   enemyKnockLinearDrag: 3.5
   enemyKnockGravityForce: 5
   playerKnockForce: {x: 10, y: 8}
   enemyKnockForce: {x: 15, y: 20}
   rigidBody: {fileID: 1721055853896791878}
+  isMoving: 0
+  isCooking: 0
+  isLaunched: 0
 --- !u!50 &1721055853896791878
 Rigidbody2D:
   serializedVersion: 4
@@ -155,7 +162,7 @@ Rigidbody2D:
   m_Interpolate: 0
   m_SleepingMode: 1
   m_CollisionDetection: 0
-  m_Constraints: 5
+  m_Constraints: 0
 --- !u!61 &1721055853896791881
 BoxCollider2D:
   m_ObjectHideFlags: 0
