@@ -5,6 +5,7 @@ using Pathfinding;
 
 public class RocketatoController : MonoBehaviour
 {
+    #region Public Variables
     public string targetTag = "Player";
     public float speed = 10f;
     [SerializeField] float initialRotationSpeed = 20f;
@@ -15,6 +16,12 @@ public class RocketatoController : MonoBehaviour
     [SerializeField] float distanceToCook = 7f;
     [SerializeField] float cookingTime = 2.5f;
     [SerializeField] float launchedSpeed = 100f;
+
+    [Header("Riding")]
+    [SerializeField] float exitJumpForce;
+    [SerializeField] Transform playerRidePositionLeft;
+    [SerializeField] Transform playerRidePositionRight;
+    [SerializeField] CapsuleCollider2D rideTrigger;
 
     [Header("Knockback")]
     [SerializeField] float enemyKnockLinearDrag = 1f;
@@ -35,11 +42,16 @@ public class RocketatoController : MonoBehaviour
     
     [Header("Settings")]
     [SerializeField] bool showLogs;
+    #endregion
 
     #region Private Variables
     float originalSpeed;
     Transform targetTransform;
     Logger logger = null;
+    PlayerController playerController;
+    GameObject playerObject;
+    Collider2D mouseCollider;
+    Collider2D playerCollider;
 
     // State booleans
     bool isMoving;
@@ -51,6 +63,7 @@ public class RocketatoController : MonoBehaviour
     //Coroutine cache
     Coroutine cookTimeCache = null;
     Coroutine destructCache = null;
+    Coroutine rocketDashCache = null;
 
     //References
     float xVelocityRef = 0f;
@@ -68,6 +81,15 @@ public class RocketatoController : MonoBehaviour
         //Finding required components
         targetTransform = GameObject.FindGameObjectWithTag(targetTag).transform;
         logger = GameObject.FindGameObjectWithTag("Logger").GetComponent<Logger>();
+        playerObject = GameObject.FindGameObjectWithTag("Player");
+        playerController = playerObject.GetComponent<PlayerController>();
+        playerCollider = playerObject.GetComponent<Collider2D>();
+        mouseCollider = GameObject.FindGameObjectWithTag("Mouse").GetComponent<Collider2D>();
+    }
+
+    private void Update()
+    {
+        CheckRideInteraction();    
     }
 
     private void FixedUpdate()
@@ -176,6 +198,58 @@ public class RocketatoController : MonoBehaviour
     }
     #endregion
 
+    #region Riding
+    private void CheckRideInteraction()
+    {
+        if(CanRideRocket())
+        {
+            Log("Player rotation: " + playerObject.transform.rotation.z * Mathf.Rad2Deg);
+            if(rideTrigger.IsTouching(mouseCollider) && playerController.interactInputReceived)
+            {
+                Log("Clicked on rocket");
+                playerController.isBusy = true;
+                rocketDashCache = StartCoroutine(DashToRocket());
+            }
+        }
+    }
+
+    private bool CanRideRocket()
+    {
+        return  mouseCollider != null && rocketDashCache == null 
+                && isCooking && !playerController.isRidingRocket
+                && !playerController.isBusy;
+    }
+
+    private IEnumerator DashToRocket()
+    {
+        Vector2 direction = (transform.position - playerController.transform.position).normalized;
+        playerController.CustomDash(direction);
+
+        while(!playerCollider.IsTouching(rideTrigger))
+            yield return null;
+
+        playerController.StopCustomDash();
+        rocketDashCache = null;
+        EnterRocket();
+    }
+
+    private void EnterRocket()
+    {
+        playerController.isRidingRocket = true;
+        playerController.RemoveGravity();
+
+        //Adjusting angle
+        playerController.rigidBody.velocity = new Vector2(0f, 0f);
+        playerObject.transform.parent = gameObject.transform;
+        //Get the higher ride position
+        Vector2 ridePos = playerRidePositionLeft.position.y >= playerRidePositionRight.position.y ?
+                            playerRidePositionLeft.position : playerRidePositionRight.position;
+        playerController.transform.position = new Vector3(ridePos.x, ridePos.y, playerController.transform.position.z); 
+        playerObject.transform.rotation = Quaternion.AngleAxis(0f, Vector3.forward);
+    }
+
+    #endregion
+
     #region Self Destruct
     private void CheckForSelfDestructCollision()
     {
@@ -191,9 +265,21 @@ public class RocketatoController : MonoBehaviour
     
     private IEnumerator DestroySelf(float animationLength)
     {
+        if(playerController.isRidingRocket)
+            FreePlayer();
+            
         isDestroyed = true;
         yield return new WaitForSeconds(animationLength);
         Destroy(gameObject);
+    }
+
+    private void FreePlayer()
+    {
+        playerController.isBusy = false;
+        playerController.isRidingRocket = false;
+        playerObject.transform.parent = null;
+        playerController.RestoreGravity();
+        playerController.ApplyJump(exitJumpForce);
     }
     #endregion
 
@@ -242,7 +328,7 @@ public class RocketatoController : MonoBehaviour
             collider.GetComponent<EnemyFlyerController>().gotKnocked = true;
         }
 
-
+        /*
         if (collider.CompareTag("Player"))
         {
             Rigidbody2D playerRigidBody = collider.GetComponent<Rigidbody2D>();
@@ -256,6 +342,7 @@ public class RocketatoController : MonoBehaviour
             else
                 playerRigidBody.AddForce(new Vector2(playerKnockForce.x * -1f * 100f, playerKnockForce.y), ForceMode2D.Force);
         }
+        */
     }
     #endregion
 

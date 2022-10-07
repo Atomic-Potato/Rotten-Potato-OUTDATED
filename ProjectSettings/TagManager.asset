@@ -15,6 +15,7 @@ TagManager:
   - Finish Line
   - Flyer Bullet
   - Logger
+  - Mouse
   layers:
   - Default
   - TransparentFX
@@ -33,7 +34,7 @@ TagManager:
   - Camera
   - Post Processing
   - Particles
-  - test
+  - Mouse
   - 
   - 
   - 

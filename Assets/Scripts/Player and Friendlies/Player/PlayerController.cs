@@ -108,6 +108,7 @@ public class PlayerController : MonoBehaviour
     [HideInInspector] public static GameObject player;
     [HideInInspector] public static bool isKnocked;
     [HideInInspector] public bool canGrapple = true;
+    [HideInInspector] public Transform playerTransform;
 
     // ---------- States ----------
     [HideInInspector] public bool isRolling;
@@ -127,6 +128,8 @@ public class PlayerController : MonoBehaviour
     [HideInInspector] public bool isCollidingWithCollider; // Basically walls and ground
     [HideInInspector] public bool isCollidingWithLeftWall;
     [HideInInspector] public bool isCollidingWithRightWall;
+    [HideInInspector] public bool isRidingRocket;
+    [HideInInspector] public bool isBusy;
     #endregion
 
     #region Private Variables
@@ -145,7 +148,7 @@ public class PlayerController : MonoBehaviour
     // ---------- Input ----------
     bool jumpInputReceived;
     bool dashInputReceived;
-    bool grappleInputReceived;
+    [HideInInspector] public bool interactInputReceived;
     bool rollInputReceived;
     bool shiftModifierInputReceived;
 
@@ -187,6 +190,7 @@ public class PlayerController : MonoBehaviour
     private void Start()
     {
         player = gameObject;
+        playerTransform = transform;
 
         originalCoyoteTime = coyoteTime;
         originalGravityScale = rigidBody.gravityScale;
@@ -216,19 +220,23 @@ public class PlayerController : MonoBehaviour
         GrappleRay();
         WhileGroundedVariablesReset();
 
-        if(!(isKnocked || isGrappling))    
-            Roll();
+        if(!isBusy)
+        {
+            if(!(isKnocked || isGrappling))    
+                Roll();
 
-        if(!isGrappling && !isKnocked)
-            GetDashInput();
+            if(!isGrappling && !isKnocked)
+                GetDashInput();
 
-        if (isKnocked)
-            StartCoroutine("ResetKnock");
+            if (isKnocked)
+                StartCoroutine("ResetKnock");
 
-        if (isKnocked || isRolling || isDashing)
-            WeaponsSwitch(false);
-        else
-            WeaponsSwitch(true);
+            if (isKnocked || isRolling || isDashing)
+                WeaponsSwitch(false);
+            else
+                WeaponsSwitch(true);
+        }
+        
 
         ///umm, these shouldnt be here, they should have their own functions, fix it at some point
         //Coyote and jump buffering timers for jumping
@@ -282,6 +290,9 @@ public class PlayerController : MonoBehaviour
     {
         CapFallingVelocity();
         
+        if(isBusy)
+            return;
+
         if (isWallHanging)
             WallHang();
 
@@ -396,7 +407,7 @@ public class PlayerController : MonoBehaviour
             jumpInputReceived = false;
     }
 
-    void ApplyJump(float jumpForce)
+    public void ApplyJump(float jumpForce)
     {
         //why the hell i barely commented this
         if (coyoteTime > 0f && jumpBufferTime > 0f && !isJumping && !isWallHanging)
@@ -414,7 +425,7 @@ public class PlayerController : MonoBehaviour
     #endregion
 
     #region DASH
-    void Dash(Vector2 direction) 
+    void NormalDash(Vector2 direction) 
     {
         if (rigidBody.gravityScale != NoGravity)
         {
@@ -424,6 +435,21 @@ public class PlayerController : MonoBehaviour
         }
 
         StartCoroutine(StopDashInTime(dashingTime, direction));
+    }
+
+    public void CustomDash(Vector2 direction)
+    {
+        if(rigidBody.gravityScale != NoGravity)
+        {
+            rigidBody.gravityScale = NoGravity;
+            ApplyDashForce(direction);
+        }
+    }
+
+    public void StopCustomDash()
+    {
+        if(rigidBody.gravityScale == NoGravity)
+            rigidBody.gravityScale = originalGravityScale;
     }
 
     void SetupDash()
@@ -437,7 +463,7 @@ public class PlayerController : MonoBehaviour
             Physics2D.IgnoreLayerCollision(LayerMask.NameToLayer(playerLayer), LayerMask.NameToLayer(flyerLayer), false);
 
             SetupDashVariables();
-            Dash(dashingDirection);
+            NormalDash(dashingDirection);
         }
     }
 
@@ -667,9 +693,9 @@ public class PlayerController : MonoBehaviour
         float grappleInput = context.ReadValue<float>();
 
         if(grappleInput == 1 && canGrapple && !isGrappling)
-            grappleInputReceived = true;
+            interactInputReceived = true;
         else
-            grappleInputReceived = false;
+            interactInputReceived = false;
     }
 
     public void CancelGrappleInput(InputAction.CallbackContext context)
@@ -739,7 +765,7 @@ public class PlayerController : MonoBehaviour
 
     bool StartedGrapple()
     {
-        return grappleInputReceived && grappleRayIsHit && !isGrappling; // !isGrappling so it wouldnt be spammed while grappling
+        return interactInputReceived && grappleRayIsHit && !isGrappling; // !isGrappling so it wouldnt be spammed while grappling
     }
 
     void GrappleLoaded()
@@ -1010,10 +1036,8 @@ public class PlayerController : MonoBehaviour
         isKnocked = false;
     }
     #endregion
-    
-    #region Miscellaneous
-    
 
+    #region Miscellaneous
     //Disbales palyers weapon
     void WeaponsSwitch(bool status) 
     {
@@ -1068,6 +1092,17 @@ public class PlayerController : MonoBehaviour
     #endregion
 
     #region Multiuse Functions
+    
+    public void RemoveGravity()
+    {
+        rigidBody.gravityScale = NoGravity;
+    }
+
+    public void RestoreGravity()
+    {
+        rigidBody.gravityScale = originalGravityScale;
+    }
+
     public void OnXHoldInput(InputAction.CallbackContext context)
     {
         directionHoldInputVector.x = context.ReadValue<float>();
