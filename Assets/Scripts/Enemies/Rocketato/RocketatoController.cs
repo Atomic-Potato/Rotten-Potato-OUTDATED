@@ -15,29 +15,34 @@ public class RocketatoController : MonoBehaviour
     [SerializeField] float distanceToCook = 7f;
     [SerializeField] float cookingTime = 2.5f;
     [SerializeField] float launchedSpeed = 100f;
+
     [Space]
+    [Header("Knockback")]
     [SerializeField] float enemyKnockLinearDrag = 1f;
     public static float timeToDisableKnock = 1f;
     [SerializeField] float enemyKnockGravityForce = 7f;
     [Space]
     [SerializeField] Vector2 playerKnockForce;
     [SerializeField] Vector2 enemyKnockForce;
-    
 
     [Space]
-    [Space]
-    
+    [Header("Required Components")]    
     public Rigidbody2D rigidBody;
+    
+    [Space]
+    [Header("Settings")]
+    [SerializeField] bool showLogs;
 
     #region Private Variables
     float originalSpeed;
     Transform targetTransform;
+    Logger logger = null;
 
     // State booleans
-    public bool isMoving;
-    public bool isCooking;
-    public bool isLaunched;
-    public bool isJustStopped;
+    bool isMoving;
+    bool isCooking;
+    bool isLaunched;
+    bool isJustStopped;
 
     //Coroutine cache
     Coroutine cookTimeCache = null;
@@ -57,6 +62,7 @@ public class RocketatoController : MonoBehaviour
 
         //Finding required components
         targetTransform = GameObject.FindGameObjectWithTag(targetTag).transform;
+        logger = GameObject.FindGameObjectWithTag("Logger").GetComponent<Logger>();
     }
 
     private void FixedUpdate()
@@ -67,13 +73,13 @@ public class RocketatoController : MonoBehaviour
             {
                 if(cookTimeCache == null)
                 {
-                    Debug.Log("Started coroutine");
+                    Log("Started cook time check");
                     cookTimeCache = StartCoroutine(CookInTime());
                 }
             }
             else
             {
-                Debug.Log("Started cook distance check");
+                Log("Started cook distance check");
                 CookInDistance((Vector2)targetTransform.position);
             }
         }
@@ -109,7 +115,7 @@ public class RocketatoController : MonoBehaviour
     #region  Cooking
     private IEnumerator Cook()
     {
-        Debug.Log("Started Cooking");
+        Log("Started Cooking");
 
         isCooking = true;
         isMoving = false;
@@ -147,7 +153,7 @@ public class RocketatoController : MonoBehaviour
     {
         while(rigidBody.angularVelocity < -0.1f || rigidBody.angularVelocity > 0.1f)
         {
-            Debug.Log("Stopping");
+            Log("Stopping");
             //normal velocity reduction
             rigidBody.velocity = new Vector2(   Mathf.SmoothDamp(rigidBody.velocity.x, 0f, ref xVelocityRef, 0.25f),
                                                 Mathf.SmoothDamp(rigidBody.velocity.y, 0f, ref yVelocityRef, 0.25f));
@@ -223,4 +229,12 @@ public class RocketatoController : MonoBehaviour
                 playerRigidBody.AddForce(new Vector2(playerKnockForce.x * -1f * 100f, playerKnockForce.y), ForceMode2D.Force);
         }
     }
+
+    #region Miscellanous
+    private void Log(string message)
+    {
+        if(logger != null && showLogs)
+            logger.Log(message, this);
+    }
+    #endregion
 }
