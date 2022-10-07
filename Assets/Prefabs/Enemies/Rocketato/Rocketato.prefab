@@ -93,6 +93,7 @@ GameObject:
   - component: {fileID: 1721055853896791879}
   - component: {fileID: 1721055853896791878}
   - component: {fileID: 1721055853896791881}
+  - component: {fileID: 8359277489066894107}
   m_Layer: 12
   m_Name: Rocketato
   m_TagString: Rocketato
@@ -138,10 +139,13 @@ MonoBehaviour:
   enemyKnockGravityForce: 5
   playerKnockForce: {x: 10, y: 8}
   enemyKnockForce: {x: 15, y: 20}
+  destructTriggeringLayers:
+    serializedVersion: 2
+    m_Bits: 1792
+  destructAnimation: {fileID: 0}
+  selfDestructCollider: {fileID: 8359277489066894107}
   rigidBody: {fileID: 1721055853896791878}
-  isMoving: 0
-  isCooking: 0
-  isLaunched: 0
+  showLogs: 0
 --- !u!50 &1721055853896791878
 Rigidbody2D:
   serializedVersion: 4
@@ -187,5 +191,31 @@ BoxCollider2D:
     adaptiveTiling: 0
   m_AutoTiling: 0
   serializedVersion: 2
-  m_Size: {x: 0.75, y: 2}
+  m_Size: {x: 2, y: 0.75}
+  m_EdgeRadius: 0
+--- !u!61 &8359277489066894107
+BoxCollider2D:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1721055853896791880}
+  m_Enabled: 1
+  m_Density: 1
+  m_Material: {fileID: 0}
+  m_IsTrigger: 1
+  m_UsedByEffector: 0
+  m_UsedByComposite: 0
+  m_Offset: {x: 0.45, y: 0}
+  m_SpriteTilingProperty:
+    border: {x: 0, y: 0, z: 0, w: 0}
+    pivot: {x: 0, y: 0}
+    oldSize: {x: 0, y: 0}
+    newSize: {x: 0, y: 0}
+    adaptiveTilingThreshold: 0
+    drawMode: 0
+    adaptiveTiling: 0
+  m_AutoTiling: 0
+  serializedVersion: 2
+  m_Size: {x: 0.3, y: 0.75}
   m_EdgeRadius: 0

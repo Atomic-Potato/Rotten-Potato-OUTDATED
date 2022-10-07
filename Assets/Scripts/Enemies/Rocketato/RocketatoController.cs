@@ -16,7 +16,6 @@ public class RocketatoController : MonoBehaviour
     [SerializeField] float cookingTime = 2.5f;
     [SerializeField] float launchedSpeed = 100f;
 
-    [Space]
     [Header("Knockback")]
     [SerializeField] float enemyKnockLinearDrag = 1f;
     public static float timeToDisableKnock = 1f;
@@ -25,11 +24,15 @@ public class RocketatoController : MonoBehaviour
     [SerializeField] Vector2 playerKnockForce;
     [SerializeField] Vector2 enemyKnockForce;
 
-    [Space]
+    [Header("Self Destruct")]
+    [SerializeField] LayerMask destructTriggeringLayers;
+    [SerializeField] Animation destructAnimation;
+    [SerializeField] BoxCollider2D selfDestructCollider;
+
+
     [Header("Required Components")]    
     public Rigidbody2D rigidBody;
     
-    [Space]
     [Header("Settings")]
     [SerializeField] bool showLogs;
 
@@ -43,9 +46,11 @@ public class RocketatoController : MonoBehaviour
     bool isCooking;
     bool isLaunched;
     bool isJustStopped;
+    bool isDestroyed;
 
     //Coroutine cache
     Coroutine cookTimeCache = null;
+    Coroutine destructCache = null;
 
     //References
     float xVelocityRef = 0f;
@@ -89,7 +94,7 @@ public class RocketatoController : MonoBehaviour
     }
     #endregion
 
-    #region  Movement
+    #region Movement
     private void Move(Vector3 targetPosition, float velocity, float rotationSpeed)
     {
         isMoving = true;
@@ -106,13 +111,14 @@ public class RocketatoController : MonoBehaviour
         isLaunched = true;
         while(isLaunched)
         {
+            CheckForSelfDestructCollision();
             rigidBody.velocity = transform.right * velocity * Time.deltaTime;
             yield return null;
         }
     }
     #endregion
 
-    #region  Cooking
+    #region Cooking
     private IEnumerator Cook()
     {
         Log("Started Cooking");
@@ -170,6 +176,28 @@ public class RocketatoController : MonoBehaviour
     }
     #endregion
 
+    #region Self Destruct
+    private void CheckForSelfDestructCollision()
+    {
+        if(destructCache == null)
+        {
+            if(selfDestructCollider.IsTouchingLayers(destructTriggeringLayers))
+            {
+                float animLen = destructAnimation != null ?  destructAnimation.clip.length : 0f;
+                destructCache = StartCoroutine(DestroySelf(animLen));
+            }
+        }
+    }
+    
+    private IEnumerator DestroySelf(float animationLength)
+    {
+        isDestroyed = true;
+        yield return new WaitForSeconds(animationLength);
+        Destroy(gameObject);
+    }
+    #endregion
+
+    #region Unorganized
     private void OnTriggerEnter2D(Collider2D collider)
     {
         originalSpeed = speed;
@@ -229,6 +257,7 @@ public class RocketatoController : MonoBehaviour
                 playerRigidBody.AddForce(new Vector2(playerKnockForce.x * -1f * 100f, playerKnockForce.y), ForceMode2D.Force);
         }
     }
+    #endregion
 
     #region Miscellanous
     private void Log(string message)
