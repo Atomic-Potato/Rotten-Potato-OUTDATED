@@ -24,7 +24,7 @@ A fast paced 2D semi open world wave survival game about fighting hordes of muta
 
 ![rocket gif](https://user-images.githubusercontent.com/55362397/195275522-35950a9b-0b1d-408a-854a-6e7c58d0c63a.gif)
 
-- A world to test the player controller, and a section to with a timer for speedrunning.
+- A world to test the player controller, and a section with a timer for speedrunning.
 
 ![course gif](https://user-images.githubusercontent.com/55362397/195274245-5f329c1b-b7fb-4904-844c-dc8673497581.gif)
 
