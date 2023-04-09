@@ -34796,11 +34796,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bfeb516e124d8ba4b8e3c3ff10e42938, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  speed: 10
-  accelerationTime: 10
+  speed: 20
+  accelerationTime: 0.25
   closureDistance: 1.5
-  closureSpeed: 15
-  distanceToAttach: 1
+  closureSpeed: 2.5
+  distanceToAttach: 0.75
+  attachOffset: {x: 0, y: 0}
   anchorLayer:
     serializedVersion: 2
     m_Bits: 8192

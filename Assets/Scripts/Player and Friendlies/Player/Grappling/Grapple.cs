@@ -22,6 +22,8 @@ public class Grapple : MonoBehaviour{
     [Tooltip("When the distance is less than this, the player will stop"+ 
              "and gets attached to the anchor")]
     [SerializeField] float distanceToAttach = 1f;
+    [Tooltip("How much to offset the player position after being attached")]
+    [SerializeField] Vector2 attachOffset;
 
     [Space]
     [Header("Required Components")]
@@ -72,7 +74,7 @@ public class Grapple : MonoBehaviour{
 
     void Update(){
         // Not grappling -> Grappling -> Reached Anchor
-        if(!isGrappling){
+        if(!isGrappling){ // TODO: Allow grappling to multiple anchors
             ANCHOR = FindAnchor();
             if(ANCHOR == null)
                 return;
@@ -87,7 +89,7 @@ public class Grapple : MonoBehaviour{
         else if(isGrappling){
             if(GetDistanceToAnchor() > distanceToAttach){
                 MoveTowardsAnchor();
-                /*
+                /*  TODO
                 if dash input received:
                     EnableOtherMovementMechanics();
                     EnableAnchorDetection();
@@ -104,14 +106,10 @@ public class Grapple : MonoBehaviour{
                 */
             }
             else{ // Reached the anchor
-                rigidBody.velocity = new Vector3(0f,0f,0f);
-                /*
-                if reached anchor:
-                    Stop at anchor
-                    isGrappling = false
-                    isOnAnchor = true
-                    return
-                */  
+                AttachToAnchor();
+                isGrappling = false;
+                isOnAnchor = true;
+                return;
             }
         }
         else if(isOnAnchor){
@@ -187,12 +185,16 @@ public class Grapple : MonoBehaviour{
 
     void ApplyVelocityTowardsAnchor(){
         Vector2 direction = GetAnchorDirection();
-        // TODO: Fix dis shit
         rigidBody.velocity = Vector2.SmoothDamp(rigidBody.velocity, GetAnchorDirection() * speed, ref refVelocity, accelerationTime);
     }
     #endregion
 
     #region OTHER
+    void AttachToAnchor(){
+        rigidBody.velocity = new Vector3(0f,0f,0f);
+        transform.position = ANCHOR.transform.position + (Vector3)attachOffset;
+    }
+
     float GetScreenDiagonalLength(){
         // TODO
         return 100f;
