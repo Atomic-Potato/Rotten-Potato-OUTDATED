@@ -34699,6 +34699,8 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 7048394261642957588}
+  - component: {fileID: 1659856478938414131}
+  - component: {fileID: 1598332831565718973}
   - component: {fileID: 7048394261642957590}
   - component: {fileID: 8476856365992745798}
   - component: {fileID: 4198629616593638373}
@@ -34751,6 +34753,59 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1659856478938414131
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7048394261642957608}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fbb75011cad287a4dbdf0a688d144000, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  horizontalVelocity: 5
+  maxFallingVelocity: -20
+  groundedAccelerationTime: 0.05
+  groundedDecelerationTime: 0.05
+  jumpForce: 20
+  coyoteTime: 0.5
+  jumpBufferTime: 0.5
+  jumpCooldownTime: 0.1
+  groundBoxCastSize: {x: 1, y: 1}
+  groundBoxCastPosition: {fileID: 7048394261235162282}
+  groundLayer:
+    serializedVersion: 2
+    m_Bits: 256
+  rigidBody: {fileID: 7048394261642957610}
+  boxCollider: {fileID: 7048394261642957609}
+  fullFrictionMaterial: {fileID: 6200000, guid: 3f711147c66b3644b8fb2b1ee5a4d4e3,
+    type: 2}
+  zeroFrictionMaterial: {fileID: 6200000, guid: 9caa2176edf51584781d36311d10f50b,
+    type: 2}
+--- !u!114 &1598332831565718973
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7048394261642957608}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bfeb516e124d8ba4b8e3c3ff10e42938, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  speed: 10
+  accelerationTime: 10
+  closureDistance: 1.5
+  closureSpeed: 15
+  distanceToAttach: 1
+  anchorLayer:
+    serializedVersion: 2
+    m_Bits: 8192
+  rigidBody: {fileID: 7048394261642957610}
+  basicMovement: {fileID: 1659856478938414131}
 --- !u!114 &7048394261642957590
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -34763,14 +34818,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c142cbb0a3a673c4c9e5a195db8a84ef, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  horizontalVelocity: 10
-  maxFallingVelocity: -25
-  groundedAccelerationTime: 0.25
-  groundedDecelerationTime: 0.15
-  jumpForce: 20
-  coyoteTime: 0.15
-  jumpBufferTime: 0.2
-  jumpCooldownTime: 0.4
   dashesCount: 1
   dashForce: 25
   dashingTime: 0.15
@@ -34900,13 +34947,13 @@ MonoBehaviour:
   dashesLeft: 0
   dashDelayTimer: 0
   canGrapple: 1
+  isGrounded: 0
   isRolling: 0
   isDashing: 0
   isJustDashing: 0
-  isGrounded: 0
   isJustLanded: 0
-  isJustHitWall: 0
   isMoving: 0
+  isJustHitWall: 0
   isJumping: 0
   isGrappling: 0
   isJustGrappling: 0
@@ -34945,7 +34992,7 @@ MonoBehaviour:
   m_ActionEvents:
   - m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 7048394261642957590}
+      - m_Target: {fileID: 1659856478938414131}
         m_MethodName: OnXHoldInput
         m_Mode: 0
         m_Arguments:
@@ -34960,7 +35007,7 @@ MonoBehaviour:
     m_ActionName: Player/Move[/Keyboard/a,/Keyboard/d]
   - m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 7048394261642957590}
+      - m_Target: {fileID: 1659856478938414131}
         m_MethodName: JumpInput
         m_Mode: 0
         m_Arguments:
@@ -34975,8 +35022,8 @@ MonoBehaviour:
     m_ActionName: Player/Jump[/Keyboard/space]
   - m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 7048394261642957590}
-        m_MethodName: GrappleInput
+      - m_Target: {fileID: 1598332831565718973}
+        m_MethodName: GetInput
         m_Mode: 0
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -35035,7 +35082,7 @@ MonoBehaviour:
     m_ActionName: Player/Shift Modifier[/Keyboard/shift]
   - m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 7048394261642957590}
+      - m_Target: {fileID: 1659856478938414131}
         m_MethodName: OnYHoldInput
         m_Mode: 0
         m_Arguments:
