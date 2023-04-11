@@ -1,7 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.InputSystem;
+using UnityEngine.InputSystem;  
 
 public class Grapple : MonoBehaviour{
 
@@ -24,6 +24,8 @@ public class Grapple : MonoBehaviour{
     [SerializeField] float distanceToAttach = 1f;
     [Tooltip("How much to offset the player position after being attached")]
     [SerializeField] Vector2 attachOffset;
+    [Tooltip("The ammount of force the player will be launced in after jumping off the anchor")]
+    [SerializeField] float detachForce;
 
     [Space]
     [Header("Required Components")]
@@ -37,20 +39,24 @@ public class Grapple : MonoBehaviour{
     #endregion
 
     #region PRIVATE VARAIBALES
-    bool inputReceived;
     float AnchorDetectionDistance;
     GameObject ANCHOR;
 
+    // ---- INPUT ----
+    bool inputReceived;
+    bool jumpInputReceived;
+
     // ---- CONSTANTS ----
     const float NO_GRAVITY = 0f;
+
+    // ---- References ----
+    Vector2 refVelocity; 
     #endregion
 
     #region STATE VARIABLES
     static bool isGrappling;
     static bool isOnAnchor;
 
-    // ---- References ----
-    Vector2 refVelocity; 
     #endregion
 
     #region GETTERS & SETTERS
@@ -68,13 +74,13 @@ public class Grapple : MonoBehaviour{
     #endregion
 
     #region EXECUTION METHODS
-    void Start(){
+    private void Start(){
         AnchorDetectionDistance = GetScreenDiagonalLength();
     }
 
-    void Update(){
+    private void Update(){
         // Not grappling -> Grappling -> Reached Anchor
-        if(!isGrappling){ // TODO: Allow grappling to multiple anchors
+        if(!isGrappling && !isOnAnchor){ // TODO: Allow grappling to multiple anchors
             ANCHOR = FindAnchor();
             if(ANCHOR == null)
                 return;
@@ -84,11 +90,11 @@ public class Grapple : MonoBehaviour{
             
             DisableAnchorDetection();
             DisableOtherMovementMechanics();
+            basicMovement.RemoveFriction();
             isGrappling = true;
         }
-        else if(isGrappling){
+        else if(isGrappling && !isOnAnchor){
             if(GetDistanceToAnchor() > distanceToAttach){
-                MoveTowardsAnchor();
                 /*  TODO
                 if dash input received:
                     EnableOtherMovementMechanics();
@@ -113,17 +119,19 @@ public class Grapple : MonoBehaviour{
             }
         }
         else if(isOnAnchor){
-            /*
-            get player aiming direction
-
-            if jump input received:
-                launch player in aiming direction
-                EnableAnchorDetection();
-                EnableOtherMovementMechanics();
-                EnableGavity();
-            */
+            if(jumpInputReceived){
+                DetachFromAnchor();
+                isOnAnchor = false;
+                isGrappling = false;
+            }
         }
         
+    }
+    
+    private void FixedUpdate() {
+        if(isGrappling){
+            MoveTowardsAnchor();
+        }
     }
     #endregion
     
@@ -189,12 +197,28 @@ public class Grapple : MonoBehaviour{
     }
     #endregion
 
-    #region OTHER
+    #region ATTACHING AND DETACHING FROM ANCHOR
     void AttachToAnchor(){
         rigidBody.velocity = new Vector3(0f,0f,0f);
         transform.position = ANCHOR.transform.position + (Vector3)attachOffset;
     }
 
+    void DetachFromAnchor(){
+        EnableGravity();
+        EnableAnchorDetection();
+
+        Vector3 direction = GetPlayerToMouseDirection();
+        ImpulsePlayerInDirection(direction);
+
+        EnableOtherMovementMechanics();
+    }
+
+    void ImpulsePlayerInDirection(Vector3 direction){
+        rigidBody.AddForce(direction * (detachForce - rigidBody.gravityScale), ForceMode2D.Impulse);
+    }
+    #endregion
+
+    #region OTHER
     float GetScreenDiagonalLength(){
         // TODO
         return 100f;
@@ -252,6 +276,10 @@ public class Grapple : MonoBehaviour{
     public void GetInput(InputAction.CallbackContext context){
         float input = context.ReadValue<float>();
         inputReceived = input == 1 ? true : false; 
+    }
+
+    public void GetJumpInput(InputAction.CallbackContext context){
+        jumpInputReceived = context.started ? true : false; 
     }
     #endregion
 }

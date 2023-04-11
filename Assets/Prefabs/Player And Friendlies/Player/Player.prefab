@@ -34481,7 +34481,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 7048394261235162281}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: -0.65, z: 0}
+  m_LocalPosition: {x: 0, y: -0.5, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 7048394261642957588}
@@ -34771,9 +34771,9 @@ MonoBehaviour:
   groundedDecelerationTime: 0.05
   jumpForce: 20
   coyoteTime: 0.5
-  jumpBufferTime: 0.5
+  jumpBufferTime: 0.1
   jumpCooldownTime: 0.1
-  groundBoxCastSize: {x: 1, y: 1}
+  groundBoxCastSize: {x: 0.95, y: 0.25}
   groundBoxCastPosition: {fileID: 7048394261235162282}
   groundLayer:
     serializedVersion: 2
@@ -34802,6 +34802,7 @@ MonoBehaviour:
   closureSpeed: 2.5
   distanceToAttach: 0.75
   attachOffset: {x: 0, y: 0}
+  detachForce: 30
   anchorLayer:
     serializedVersion: 2
     m_Bits: 8192
@@ -35010,6 +35011,17 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 1659856478938414131}
         m_MethodName: JumpInput
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 1598332831565718973}
+        m_MethodName: GetJumpInput
         m_Mode: 0
         m_Arguments:
           m_ObjectArgument: {fileID: 0}

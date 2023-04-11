@@ -93,6 +93,9 @@ public class BasicMovement : MonoBehaviour
         GroundCheck();
         DecreaseCoyoteTime();
         DecreaseJumpBufferTime();
+        if(jumpInputReceived){
+            jumpBufferTime = ORIGINAL_JUMP_BUFFER_TIME;
+        }
     }
 
     void FixedUpdate(){
@@ -130,13 +133,23 @@ public class BasicMovement : MonoBehaviour
     void HandleFirction(){
         //Setting the x velocity to 0 while idle
         if (NoHorizontalMovement()){
-            boxCollider.sharedMaterial = fullFrictionMaterial;
+            SetFullFriction();
             isMovingOnGround = false; 
         }
         else{
-            boxCollider.sharedMaterial = zeroFrictionMaterial;
+            RemoveFriction();
             isMovingOnGround = isGrounded;
         }
+    }
+
+    public void SetFullFriction(){
+        if(boxCollider.sharedMaterial != fullFrictionMaterial)
+            boxCollider.sharedMaterial = fullFrictionMaterial;
+    }
+    
+    public void RemoveFriction(){
+        if(boxCollider.sharedMaterial != zeroFrictionMaterial)
+            boxCollider.sharedMaterial = zeroFrictionMaterial;
     }
 
     bool NoHorizontalMovement(){
@@ -207,7 +220,6 @@ public class BasicMovement : MonoBehaviour
     public void JumpInput(InputAction.CallbackContext context){
         if(context.started){
             jumpInputReceived = true;
-            jumpBufferTime = ORIGINAL_JUMP_BUFFER_TIME;
         }
         else
             jumpInputReceived = false;
