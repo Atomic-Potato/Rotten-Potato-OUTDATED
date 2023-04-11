@@ -35050,8 +35050,8 @@ MonoBehaviour:
     m_ActionName: Player/Grapple[/Mouse/rightButton]
   - m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 7048394261642957590}
-        m_MethodName: CancelGrappleInput
+      - m_Target: {fileID: 1598332831565718973}
+        m_MethodName: GetCancelInput
         m_Mode: 0
         m_Arguments:
           m_ObjectArgument: {fileID: 0}

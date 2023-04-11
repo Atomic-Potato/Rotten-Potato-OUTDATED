@@ -45,6 +45,7 @@ public class Grapple : MonoBehaviour{
     // ---- INPUT ----
     bool inputReceived;
     bool jumpInputReceived;
+    bool cancelInputReceived;
 
     // ---- CONSTANTS ----
     const float NO_GRAVITY = 0f;
@@ -103,19 +104,21 @@ public class Grapple : MonoBehaviour{
                     isGrappling = false;
 
                     dash.Dash();
-                
-                if cancled grappling:
+                */
+
+                // if cancled grappling:
+                if(cancelInputReceived){
                     EnableOtherMovementMechanics();
                     EnableAnchorDetection();
                     EnableGravity();
                     isGrappling = false;
-                */
+                    return;
+                }
             }
             else{ // Reached the anchor
                 AttachToAnchor();
                 isGrappling = false;
                 isOnAnchor = true;
-                return;
             }
         }
         else if(isOnAnchor){
@@ -274,12 +277,16 @@ public class Grapple : MonoBehaviour{
 
     #region INPUT
     public void GetInput(InputAction.CallbackContext context){
-        float input = context.ReadValue<float>();
-        inputReceived = input == 1 ? true : false; 
+        inputReceived = context.started ? true : false;
+        
     }
 
     public void GetJumpInput(InputAction.CallbackContext context){
         jumpInputReceived = context.started ? true : false; 
+    }
+
+    public void GetCancelInput(InputAction.CallbackContext context){
+        cancelInputReceived = context.started ? true : false;
     }
     #endregion
 }
