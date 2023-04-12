@@ -8,6 +8,8 @@ public class Grapple : MonoBehaviour{
     #region INSPECTOR VARIABLES
     [SerializeField] float speed = 10f;
     [SerializeField] float accelerationTime = 10f;
+    [Range(0f,5f)] [Tooltip("Delay before the player can grapple again")]
+    [SerializeField] float delayTime = 0.75f;
     [Space]
     [Tooltip("When the distance between the player and the anchor is less than" + 
              "the \"Closure Distance\", then the player is translated straight to the anchor."+
@@ -44,12 +46,15 @@ public class Grapple : MonoBehaviour{
 
     // ---- INPUT ----
     bool inputReceived;
+    bool inputHoldReceived;
     bool jumpInputReceived;
     bool cancelInputReceived;
 
     // ---- CONSTANTS ----
     const float NO_GRAVITY = 0f;
 
+    // ---- CACHE ----
+    Coroutine delayCache;
     // ---- References ----
     Vector2 refVelocity; 
     #endregion
@@ -57,7 +62,7 @@ public class Grapple : MonoBehaviour{
     #region STATE VARIABLES
     static bool isGrappling;
     static bool isOnAnchor;
-
+    static bool canGrapple = true;
     #endregion
 
     #region GETTERS & SETTERS
@@ -72,14 +77,26 @@ public class Grapple : MonoBehaviour{
             return isOnAnchor;
         }
     }
+
+    public static bool CAN_GRAPPLE{
+        get{
+            return canGrapple;
+        }
+    }
     #endregion
 
     #region EXECUTION METHODS
     private void Start(){
         AnchorDetectionDistance = GetScreenDiagonalLength();
+
+        PlayerInputManager.Maps.Player.Grapple.performed += _ => inputHoldReceived = true;
+        PlayerInputManager.Maps.Player.Grapple.canceled += _ => inputHoldReceived = false;
     }
 
     private void Update(){
+        if(!canGrapple)
+            return;
+            
         // Not grappling -> Grappling -> Reached Anchor
         if(!isGrappling && !isOnAnchor){ // TODO: Allow grappling to multiple anchors
             ANCHOR = FindAnchor();
@@ -107,15 +124,15 @@ public class Grapple : MonoBehaviour{
                 */
 
                 // if cancled grappling:
-                if(cancelInputReceived){
-                    EnableOtherMovementMechanics();
-                    EnableAnchorDetection();
-                    EnableGravity();
-                    isGrappling = false;
-                    return;
-                }
+                if(cancelInputReceived)
+                    Reset();
             }
             else{ // Reached the anchor
+                if(inputHoldReceived){
+                    Reset();
+                    return;
+                }
+            
                 AttachToAnchor();
                 isGrappling = false;
                 isOnAnchor = true;
@@ -207,6 +224,7 @@ public class Grapple : MonoBehaviour{
     }
 
     void DetachFromAnchor(){
+        StartDelay();
         EnableGravity();
         EnableAnchorDetection();
 
@@ -222,6 +240,26 @@ public class Grapple : MonoBehaviour{
     #endregion
 
     #region OTHER
+    void Reset(){
+        StartDelay();
+        EnableOtherMovementMechanics();
+        EnableAnchorDetection();
+        EnableGravity();
+        isGrappling = false;
+    }
+
+    void StartDelay(){
+        if(delayCache == null)
+            delayCache = StartCoroutine(StartDelayHandler());
+    }
+
+    IEnumerator StartDelayHandler(){
+        canGrapple = false;
+        yield return new WaitForSeconds(delayTime); 
+        canGrapple = true;
+
+        delayCache = null;
+    }
     float GetScreenDiagonalLength(){
         // TODO
         return 100f;
@@ -277,8 +315,7 @@ public class Grapple : MonoBehaviour{
 
     #region INPUT
     public void GetInput(InputAction.CallbackContext context){
-        inputReceived = context.started ? true : false;
-        
+        inputReceived = context.performed ? true : false;
     }
 
     public void GetJumpInput(InputAction.CallbackContext context){
