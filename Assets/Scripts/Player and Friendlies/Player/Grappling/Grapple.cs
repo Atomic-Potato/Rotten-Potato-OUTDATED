@@ -102,7 +102,6 @@ public class Grapple : MonoBehaviour{
             ANCHOR = FindAnchor();
             if(ANCHOR == null)
                 return;
-            
             if(!inputReceived)
                 return;
             
@@ -143,7 +142,20 @@ public class Grapple : MonoBehaviour{
                 DetachFromAnchor();
                 isOnAnchor = false;
                 isGrappling = false;
+                return;
             }
+
+            GameObject nextAnchor = FindAnchor();
+            if(nextAnchor == null)
+                return;
+            if(!inputReceived)
+                return;
+
+            EnableAnchorDetection();
+            ANCHOR = nextAnchor;
+            DisableAnchorDetection();
+            isOnAnchor = false;
+            isGrappling = true;
         }
         
     }
