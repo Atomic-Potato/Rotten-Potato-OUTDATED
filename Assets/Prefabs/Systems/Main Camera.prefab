@@ -3455,6 +3455,7 @@ GameObject:
   m_Component:
   - component: {fileID: 8339544364708082190}
   - component: {fileID: 8339544364708082416}
+  - component: {fileID: 3718070076543286177}
   - component: {fileID: 8339544364708082417}
   - component: {fileID: 8339544364708082419}
   - component: {fileID: 8339544364708082191}
@@ -3512,6 +3513,20 @@ MonoBehaviour:
   - {fileID: 0}
   - {fileID: 0}
   - {fileID: 0}
+--- !u!114 &3718070076543286177
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8339544364708082418}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 456667ace9b9a1243ab83cc4c4610e5a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  camera: {fileID: 8339544364708082417}
+  bordersCollider: {fileID: 8339544364708082191}
 --- !u!20 &8339544364708082417
 Camera:
   m_ObjectHideFlags: 0
