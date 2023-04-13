@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -17,7 +16,10 @@ public class BasicMovement : MonoBehaviour
     [SerializeField] float jumpForce = 15f;
     [SerializeField] float coyoteTime = 0.5f;
     [SerializeField] float jumpBufferTime = 0.5f;
-    [SerializeField] float jumpCooldownTime = 0.1f;
+    [Tooltip("The time before the jumping state variable is reset. "+
+             "This state doesnt affect jumping, but rather other classes "+
+             "checking for the state of the jump.")]
+    [SerializeField] float jumpingStateCooldownTime = 0.1f;
 
     [Space]
     [Header("Required Components & Values")]
@@ -41,17 +43,15 @@ public class BasicMovement : MonoBehaviour
     Coroutine justLandedCache = null;
     Vector2 inputDirection = Vector2.zero;
     float refVelocity = 0f;
+    float? lastGroundedTime;
+    float? jumpInputReceivedTime;
 
+    // ---- INPUT ----
     bool jumpInputReceived;
-
     #endregion
 
     #region CONSTANTS
     const int NO_INPUT = 0;
-    // TODO: see how you can assign a value to these once
-    float ORIGNIAL_COYOTE_TIME;
-    float ORIGINAL_JUMP_BUFFER_TIME;
-    float ORIGNAL_JUMP_FORCE;
     #endregion
 
     #region GETTERS & SETTERS
@@ -82,20 +82,10 @@ public class BasicMovement : MonoBehaviour
 
     #region EXECUTION METHODS
     void Start(){
-        ORIGNIAL_COYOTE_TIME = coyoteTime;
-        ORIGNAL_JUMP_FORCE = jumpForce;
-        ORIGINAL_JUMP_BUFFER_TIME = jumpBufferTime;
-
-        jumpBufferTime = 0f;
     }
 
     void Update(){
         GroundCheck();
-        DecreaseCoyoteTime();
-        DecreaseJumpBufferTime();
-        if(jumpInputReceived){
-            jumpBufferTime = ORIGINAL_JUMP_BUFFER_TIME;
-        }
     }
 
     void FixedUpdate(){
@@ -159,27 +149,18 @@ public class BasicMovement : MonoBehaviour
 
     #region JUMPING
     void ApplyJump(float jumpForce){
-        //why the hell i barely commented this
-        if (coyoteTime > 0f && jumpBufferTime > 0f && !isJumping){
-            rigidBody.velocity = new Vector2(rigidBody.velocity.x, jumpForce);
-            jumpBufferTime = 0f;
-            StartCoroutine(EnableThenDisable(_ => isJumping = _, jumpCooldownTime));
-        }
+        if(lastGroundedTime == null || jumpInputReceivedTime == null)
+            return;
+        if(Time.time - lastGroundedTime > coyoteTime)
+            return;
+        if(Time.time - jumpInputReceivedTime > jumpBufferTime)
+            return;
 
-        if(jumpInputReceived && rigidBody.velocity.y > 0f)
-            coyoteTime = 0f;
-    }
+        rigidBody.velocity = new Vector2(rigidBody.velocity.x, jumpForce);
+        StartCoroutine(EnableThenDisable(_ => isJumping = _, jumpingStateCooldownTime));
 
-    void DecreaseCoyoteTime(){
-        if (isGrounded)
-            coyoteTime = ORIGNIAL_COYOTE_TIME;
-        else
-            coyoteTime -= Time.deltaTime;
-    }
-
-    void DecreaseJumpBufferTime(){
-        if (jumpBufferTime > 0f)
-            jumpBufferTime -= Time.deltaTime;
+        lastGroundedTime = null;
+        jumpInputReceivedTime = null;
     }
     #endregion
 
@@ -187,6 +168,8 @@ public class BasicMovement : MonoBehaviour
     void GroundCheck(){
         if (Physics2D.OverlapBox(groundBoxCastPosition.position, groundBoxCastSize, 0, groundLayer)){
             isGrounded = true;
+
+            lastGroundedTime = Time.time;
 
             // TODO: REMEMBER TO DO THIS ONCE YOU IMPLEMENT DASHING
             // if(justLandedCache == null && !isDashing) //!isDashing in case dashing while grounded
@@ -220,6 +203,7 @@ public class BasicMovement : MonoBehaviour
     public void JumpInput(InputAction.CallbackContext context){
         if(context.started){
             jumpInputReceived = true;
+            jumpInputReceivedTime = Time.time;
         }
         else
             jumpInputReceived = false;
