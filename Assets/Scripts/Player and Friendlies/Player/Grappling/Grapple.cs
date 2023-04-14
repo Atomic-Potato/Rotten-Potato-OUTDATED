@@ -200,7 +200,19 @@ public class Grapple : MonoBehaviour{
         if(grappleRay.collider.gameObject.layer != anchorLayerNumber)
             return false; 
 
+        if(!CheckIfAnchorIsVisible(grappleRay.collider.gameObject))
+            return false;
+
         return true;
+    }
+
+    bool CheckIfAnchorIsVisible(GameObject anchor){
+        Plane[] planes = GeometryUtility.CalculateFrustumPlanes(Camera.main);
+        Collider2D anchorCollider = anchor.GetComponent<Collider2D>();
+
+        if (GeometryUtility.TestPlanesAABB(planes, anchorCollider.bounds))
+            return true;
+        return false;
     }
     #endregion
 
