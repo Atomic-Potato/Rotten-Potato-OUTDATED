@@ -38,8 +38,11 @@ public class Grapple : MonoBehaviour{
 
     [Space]
     [SerializeField] BasicMovement basicMovement;
-    // [SerializeField] Roll roll;
-    // [SerializeField] Dash dash;
+
+    [Space]
+    [Header("Debugging")]
+    [SerializeField] bool enableDebugging;
+    [SerializeField] bool drawDetectionLine;
     #endregion
 
     #region PRIVATE VARAIBALES
@@ -174,7 +177,9 @@ public class Grapple : MonoBehaviour{
         Vector3 direction  = GetPlayerToMouseDirection(); 
         RaycastHit2D grappleRay = Physics2D.Raycast(transform.position, direction, AnchorDetectionDistance, collisionLayers);
         
-        Debug.DrawLine(transform.position, grappleRay.point, Color.yellow);
+        // DEBUGGING
+        if(enableDebugging && drawDetectionLine)
+            Debug.DrawLine(transform.position, grappleRay.point, Color.yellow);
 
         if (AnchorDetected(grappleRay)){
             return grappleRay.collider.gameObject;
