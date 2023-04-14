@@ -32,6 +32,8 @@ public class Grapple : MonoBehaviour{
     [Space]
     [Header("Required Components")]
     [SerializeField] LayerMask anchorLayer;
+    [Tooltip("The layers that will block the detection of the anchor (including the anchor layer)")]
+    [SerializeField] LayerMask collisionLayers;
     [SerializeField] Rigidbody2D rigidBody;
 
     [Space]
@@ -170,8 +172,10 @@ public class Grapple : MonoBehaviour{
     #region FINDING THE ANCHOR
     GameObject FindAnchor(){
         Vector3 direction  = GetPlayerToMouseDirection(); 
-        RaycastHit2D grappleRay = Physics2D.Raycast(transform.position, direction, AnchorDetectionDistance, anchorLayer);
+        RaycastHit2D grappleRay = Physics2D.Raycast(transform.position, direction, AnchorDetectionDistance, collisionLayers);
         
+        Debug.DrawLine(transform.position, grappleRay.point, Color.yellow);
+
         if (AnchorDetected(grappleRay)){
             return grappleRay.collider.gameObject;
         }
@@ -188,7 +192,15 @@ public class Grapple : MonoBehaviour{
     }
 
     bool AnchorDetected(RaycastHit2D grappleRay){
-        return grappleRay.collider != null;
+        if(grappleRay.collider == null)
+            return false;
+
+        // layer.value = 1 << layerNumber = 2^layerNumber
+        int anchorLayerNumber = (int)Mathf.Log(anchorLayer.value, 2);
+        if(grappleRay.collider.gameObject.layer != anchorLayerNumber)
+            return false; 
+
+        return true;
     }
     #endregion
 

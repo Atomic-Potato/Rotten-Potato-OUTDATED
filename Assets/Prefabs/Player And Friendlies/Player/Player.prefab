@@ -34773,7 +34773,7 @@ MonoBehaviour:
   jumpForce: 20
   coyoteTime: 0.5
   jumpBufferTime: 0.1
-  jumpCooldownTime: 0.1
+  jumpingStateCooldownTime: 0.1
   groundBoxCastSize: {x: 0.95, y: 0.25}
   groundBoxCastPosition: {fileID: 7048394261235162282}
   groundLayer:
@@ -34799,6 +34799,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   speed: 20
   accelerationTime: 0.25
+  delayTime: 0.75
   closureDistance: 1.5
   closureSpeed: 2.5
   distanceToAttach: 0.75
@@ -34807,6 +34808,9 @@ MonoBehaviour:
   anchorLayer:
     serializedVersion: 2
     m_Bits: 8192
+  collisionLayers:
+    serializedVersion: 2
+    m_Bits: 8448
   rigidBody: {fileID: 7048394261642957610}
   basicMovement: {fileID: 1659856478938414131}
 --- !u!114 &7048394261642957590
