@@ -51,6 +51,9 @@ public class Grapple : MonoBehaviour{
 
     #region PRIVATE VARAIBALES
     float AnchorDetectionDistance;
+    static Vector2 grappleEndPoint;
+    static Vector2 grappleStartPoint;
+    static Vector2 anchorPosition;
     GameObject ANCHOR;
 
     // ---- INPUT ----
@@ -79,6 +82,7 @@ public class Grapple : MonoBehaviour{
     #endregion
 
     #region GETTERS & SETTERS
+    // ---- STATES ----
     public static bool IS_GRAPPLING{
         get{
             return isGrappling;
@@ -94,6 +98,25 @@ public class Grapple : MonoBehaviour{
     public static bool CAN_GRAPPLE{
         get{
             return canGrapple;
+        }
+    }
+
+    // ---- OTHERS ----
+    public static Vector2 GRAPPLE_END_POINT{
+        get{
+            return grappleEndPoint;
+        }
+    }
+
+    public static Vector2 GRAPPLE_START_POINT{
+        get{
+            return grappleStartPoint;
+        }
+    }
+
+    public static Vector2 ANCHOR_POSITION{
+        get{
+            return anchorPosition;
         }
     }
     #endregion
@@ -127,6 +150,8 @@ public class Grapple : MonoBehaviour{
             isGrappling = true;
         }
         else if(isGrappling && !isOnAnchor){
+            grappleStartPoint = transform.position;
+
             if(GetDistanceToAnchor() > distanceToAttach){
                 /*  TODO
                 if dash input received:
@@ -194,6 +219,8 @@ public class Grapple : MonoBehaviour{
             Debug.DrawLine(transform.position, grappleRay.point, Color.yellow);
 
         if (AnchorDetected(grappleRay)){
+            grappleEndPoint = grappleRay.point;
+            anchorPosition = grappleRay.collider.gameObject.transform.position;
             return grappleRay.collider.gameObject;
         }
 

@@ -34804,7 +34804,9 @@ MonoBehaviour:
   closureSpeed: 2.5
   distanceToAttach: 0.75
   attachOffset: {x: 0, y: 0}
-  detachForce: 30
+  highDetachForce: 25
+  lowDetachForce: 3
+  maxDetachSpeed: 10
   anchorLayer:
     serializedVersion: 2
     m_Bits: 8192
@@ -34950,7 +34952,7 @@ MonoBehaviour:
   bouncyMaterial: {fileID: 6200000, guid: d418f359617053848b7b3c1cc66fe2d0, type: 2}
   rigidBody: {fileID: 7048394261642957610}
   weaponSprite: {fileID: 7048394263055264681}
-  stringController: {fileID: 2857503388254315332}
+  stringController: {fileID: 0}
   cameraController: {fileID: 0}
   companionAbilitiesController: {fileID: 7048394261525025893}
   dashesLeft: 0
@@ -40667,7 +40669,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 2980316114785062316}
-  - component: {fileID: 2857503388254315332}
+  - component: {fileID: 3455703972044667168}
   - component: {fileID: 2691394317619495326}
   m_Layer: 0
   m_Name: Grappling String
@@ -40675,7 +40677,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &2980316114785062316
 Transform:
   m_ObjectHideFlags: 0
@@ -40690,7 +40692,7 @@ Transform:
   m_Father: {fileID: 7048394261642957588}
   m_RootOrder: 12
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &2857503388254315332
+--- !u!114 &3455703972044667168
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -40699,13 +40701,17 @@ MonoBehaviour:
   m_GameObject: {fileID: 9116690898851880854}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d5b5421cf62787248b99fd93366a3f09, type: 3}
+  m_Script: {fileID: 11500000, guid: 2073405b2ba0c7b43b28977297739005, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  startPoint: {fileID: 5564585357948696385}
+  endPointOffset: {x: 0, y: 0}
   lineRenderer: {fileID: 2691394317619495326}
-  grapplingStringFrames:
-  - {fileID: 2800000, guid: 7b2d5aa1806fff94e92d886b4455982f, type: 3}
+  animated: 0
   animationFPS: 30
+  frames:
+  - {fileID: 2800000, guid: 7b2d5aa1806fff94e92d886b4455982f, type: 3}
+  nonAnimatedSprite: {fileID: 2800000, guid: 7b2d5aa1806fff94e92d886b4455982f, type: 3}
 --- !u!120 &2691394317619495326
 LineRenderer:
   m_ObjectHideFlags: 0

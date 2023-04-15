@@ -84,7 +84,7 @@ public class PlayerController : MonoBehaviour
 
     [Header("Scripts")]
     [Space]
-    [SerializeField] GrapplingStringController stringController;
+    [SerializeField] GrappleRenderer stringController;
     [SerializeField] CameraController cameraController;
     [SerializeField] CompanionAbilitiesController companionAbilitiesController;
     #endregion
