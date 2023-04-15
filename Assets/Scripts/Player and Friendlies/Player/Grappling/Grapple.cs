@@ -288,6 +288,8 @@ public class Grapple : MonoBehaviour{
     }
 
     void TranslateToAnchor(){
+        if(rigidBody.velocity != Vector2.zero)
+            rigidBody.velocity = Vector2.zero;
         transform.Translate(GetAnchorDirection() * Time.deltaTime * closureSpeed);
     }
 
