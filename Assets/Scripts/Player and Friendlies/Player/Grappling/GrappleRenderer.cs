@@ -7,7 +7,7 @@
 public class GrappleRenderer : MonoBehaviour
 {
     #region INSPECTOR VARIABLES
-    [Tooltip("An offset for the start point of the rendered line")]
+    [Tooltip("An offset for the start point of the rendered line (The start point is the game object this script is attached to)")]
     [SerializeField] Vector2 startPointOffset;
     [Tooltip("An offset for the end point of the rendered line")]
     [SerializeField] Vector2 endPointOffset;
@@ -79,8 +79,8 @@ public class GrappleRenderer : MonoBehaviour
     #endregion
 
     void SetRendererEndPoints(){
-        lineRenderer.SetPosition(0, Grapple.GRAPPLE_START_POINT + startPointOffset);
-        lineRenderer.SetPosition(1, Grapple.GRAPPLE_END_POINT + endPointOffset);
+        lineRenderer.SetPosition(0, (Vector2)transform.position + startPointOffset);
+        lineRenderer.SetPosition(1, Grapple.ANCHOR_POSITION + endPointOffset);
     }
 
     void HideLineRenderer(){
