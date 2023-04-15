@@ -165,13 +165,13 @@ public class AudioManager : MonoBehaviour
         //ERROR CHECKING
         if(s == null)
         {
-            Debug.Log("Clip " + name + " not found in AudioManager.FadeIn()");
+            // Debug.Log("Clip " + name + " not found in AudioManager.FadeIn()");
             yield break;
         }
 
         if(entity == null)
         {
-            Debug.Log("Entity cannot be null in AudioManager.FadeIn()");
+            // Debug.Log("Entity cannot be null in AudioManager.FadeIn()");
             yield break;
         }
         

@@ -34766,8 +34766,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fbb75011cad287a4dbdf0a688d144000, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  horizontalVelocity: 5
-  maxFallingVelocity: -20
+  horizontalVelocity: 7.8
+  maxFallingVelocity: -30
   groundedAccelerationTime: 0.05
   groundedDecelerationTime: 0.05
   jumpForce: 20
@@ -34813,6 +34813,8 @@ MonoBehaviour:
     m_Bits: 8448
   rigidBody: {fileID: 7048394261642957610}
   basicMovement: {fileID: 1659856478938414131}
+  enableDebugging: 0
+  drawDetectionLine: 0
 --- !u!114 &7048394261642957590
 MonoBehaviour:
   m_ObjectHideFlags: 0

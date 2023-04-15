@@ -26,8 +26,12 @@ public class Grapple : MonoBehaviour{
     [SerializeField] float distanceToAttach = 1f;
     [Tooltip("How much to offset the player position after being attached")]
     [SerializeField] Vector2 attachOffset;
-    [Tooltip("The ammount of force the player will be launced in after jumping off the anchor")]
-    [SerializeField] float detachForce;
+    [Tooltip("The detach force that will be used when player speed is less than Max Detach Speed")]
+    [SerializeField] float highDetachForce;
+    [Tooltip("The detach force that will be used when player speed is greater than Max Detach Speed")]
+    [SerializeField] float lowDetachForce;
+    [Tooltip("At which speed will Low Detach Force be used instead of High Detach Force")]
+    [SerializeField] float maxDetachSpeed; // Cant think of more descriptive name
 
     [Space]
     [Header("Required Components")]
@@ -57,9 +61,13 @@ public class Grapple : MonoBehaviour{
 
     // ---- CONSTANTS ----
     const float NO_GRAVITY = 0f;
+    // ---- CONSTANTS-ish ----
+    float ORIGINAL_GRAVITY_SCALE;
 
     // ---- CACHE ----
     Coroutine delayCache;
+    float speedBeforeGrapple = 0f;
+
     // ---- References ----
     Vector2 refVelocity; 
     #endregion
@@ -92,6 +100,8 @@ public class Grapple : MonoBehaviour{
 
     #region EXECUTION METHODS
     private void Start(){
+        ORIGINAL_GRAVITY_SCALE = rigidBody.gravityScale;
+
         AnchorDetectionDistance = GetScreenDiagonalLength();
 
         PlayerInputManager.Maps.Player.Grapple.performed += _ => inputHoldReceived = true;
@@ -101,7 +111,7 @@ public class Grapple : MonoBehaviour{
     private void Update(){
         if(!canGrapple)
             return;
-            
+
         // Not grappling -> Grappling -> Reached Anchor
         if(!isGrappling && !isOnAnchor){ // TODO: Allow grappling to multiple anchors
             ANCHOR = FindAnchor();
@@ -113,6 +123,7 @@ public class Grapple : MonoBehaviour{
             DisableAnchorDetection();
             DisableOtherMovementMechanics();
             basicMovement.RemoveFriction();
+            speedBeforeGrapple = GetSpeedIgnoringFallVelocity();
             isGrappling = true;
         }
         else if(isGrappling && !isOnAnchor){
@@ -133,6 +144,7 @@ public class Grapple : MonoBehaviour{
             }
             else{ // Reached the anchor
                 if(inputHoldReceived){
+                    ImpulsePlayerInDirection(rigidBody.velocity.normalized, CalculateDetachForce() + speedBeforeGrapple);
                     Reset();
                     return;
                 }
@@ -265,27 +277,34 @@ public class Grapple : MonoBehaviour{
     }
 
     void DetachFromAnchor(){
-        StartDelay();
-        EnableGravity();
-        EnableAnchorDetection();
-
         Vector3 direction = GetPlayerToMouseDirection();
-        ImpulsePlayerInDirection(direction);
-
-        EnableOtherMovementMechanics();
+        ImpulsePlayerInDirection(direction, CalculateDetachForce() + speedBeforeGrapple);
+        Reset();
     }
 
-    void ImpulsePlayerInDirection(Vector3 direction){
-        rigidBody.AddForce(direction * (detachForce - rigidBody.gravityScale), ForceMode2D.Impulse);
+    void ImpulsePlayerInDirection(Vector2 direction, float force){
+        rigidBody.velocity = direction * force;
+    }
+
+    float CalculateDetachForce(){
+        return speedBeforeGrapple <= maxDetachSpeed ? highDetachForce : maxDetachSpeed + lowDetachForce;
     }
     #endregion
 
     #region OTHER
+    float GetSpeedIgnoringFallVelocity(){
+        Vector2 velocity = Vector2.zero;
+        velocity.x = rigidBody.velocity.x;
+        velocity.y = rigidBody.velocity.y > 0.0f ? rigidBody.velocity.y : 0.0f;
+        return velocity.magnitude;
+    }
+
     void Reset(){
         StartDelay();
         EnableOtherMovementMechanics();
         EnableAnchorDetection();
         EnableGravity();
+        speedBeforeGrapple = 0f;
         isGrappling = false;
     }
 
@@ -349,8 +368,7 @@ public class Grapple : MonoBehaviour{
     }
 
     void EnableGravity(){
-        // TO DO
-        rigidBody.gravityScale = 5f;
+        rigidBody.gravityScale = ORIGINAL_GRAVITY_SCALE;
     }
     #endregion
 
