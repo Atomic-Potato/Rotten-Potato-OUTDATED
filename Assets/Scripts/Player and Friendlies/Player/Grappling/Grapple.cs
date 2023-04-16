@@ -54,6 +54,8 @@ public class Grapple : MonoBehaviour{
     static Vector2 grappleEndPoint;
     static Vector2 grappleStartPoint;
     static Vector2 anchorPosition;
+    Vector2 movementDirection;
+    bool velocityRemoved;
     GameObject ANCHOR;
 
     // ---- INPUT ----
@@ -69,7 +71,10 @@ public class Grapple : MonoBehaviour{
 
     // ---- CACHE ----
     Coroutine delayCache;
+    Coroutine movementDirectionCache;
     float speedBeforeGrapple = 0f;
+    Vector2 previousPosition;
+    Vector2 currentPosition;
 
     // ---- References ----
     Vector2 refVelocity; 
@@ -143,6 +148,11 @@ public class Grapple : MonoBehaviour{
             if(!inputReceived)
                 return;
             
+            StartCoroutine(DelayInputHold()); // In case if the player clicks right next to the anchor
+                                              // This way they are given time to react if the dont
+                                              // wanna get launched straight out of the anchor
+                                              // or just get attached to it
+            DisableGravity();
             DisableAnchorDetection();
             DisableOtherMovementMechanics();
             basicMovement.RemoveFriction();
@@ -151,6 +161,13 @@ public class Grapple : MonoBehaviour{
         }
         else if(isGrappling && !isOnAnchor){
             grappleStartPoint = transform.position;
+
+            if(GetDistanceToAnchor() > closureDistance){
+                // This is done before we reach the colsure distance
+                // since the direction can change quite drastically
+                // and we just want the general movement direction
+                CalculateMovementDirection();
+            }
 
             if(GetDistanceToAnchor() > distanceToAttach){
                 /*  TODO
@@ -169,7 +186,7 @@ public class Grapple : MonoBehaviour{
             }
             else{ // Reached the anchor
                 if(inputHoldReceived){
-                    ImpulsePlayerInDirection(rigidBody.velocity.normalized, CalculateDetachForce() + speedBeforeGrapple);
+                    ImpulsePlayerInDirection(movementDirection, CalculateDetachForce() + speedBeforeGrapple);
                     Reset();
                     return;
                 }
@@ -203,7 +220,7 @@ public class Grapple : MonoBehaviour{
     }
     
     private void FixedUpdate() {
-        if(isGrappling){
+        if(isGrappling && !isOnAnchor){
             MoveTowardsAnchor();
         }
     }
@@ -218,7 +235,7 @@ public class Grapple : MonoBehaviour{
         if(enableDebugging && drawDetectionLine)
             Debug.DrawLine(transform.position, grappleRay.point, Color.yellow);
 
-        if (AnchorDetected(grappleRay)){
+        if (AnchorDetected(grappleRay.collider)){
             grappleEndPoint = grappleRay.point;
             anchorPosition = grappleRay.collider.gameObject.transform.position;
             return grappleRay.collider.gameObject;
@@ -235,16 +252,16 @@ public class Grapple : MonoBehaviour{
         return direction;
     }
 
-    bool AnchorDetected(RaycastHit2D grappleRay){
-        if(grappleRay.collider == null)
+    bool AnchorDetected(Collider2D collider){
+        if(collider == null)
             return false;
 
         // layer.value = 1 << layerNumber = 2^layerNumber
         int anchorLayerNumber = (int)Mathf.Log(anchorLayer.value, 2);
-        if(grappleRay.collider.gameObject.layer != anchorLayerNumber)
+        if(collider.gameObject.layer != anchorLayerNumber)
             return false; 
 
-        if(!CheckIfAnchorIsVisible(grappleRay.collider.gameObject))
+        if(!CheckIfAnchorIsVisible(collider.gameObject))
             return false;
 
         return true;
@@ -288,8 +305,11 @@ public class Grapple : MonoBehaviour{
     }
 
     void TranslateToAnchor(){
-        if(rigidBody.velocity != Vector2.zero)
+        if(!velocityRemoved){
+            Debug.Log("Removing velocity");
             rigidBody.velocity = Vector2.zero;
+            velocityRemoved = true;
+        }
         transform.Translate(GetAnchorDirection() * Time.deltaTime * closureSpeed);
     }
 
@@ -301,7 +321,7 @@ public class Grapple : MonoBehaviour{
 
     #region ATTACHING AND DETACHING FROM ANCHOR
     void AttachToAnchor(){
-        rigidBody.velocity = new Vector3(0f,0f,0f);
+        rigidBody.velocity = Vector2.zero;
         transform.position = ANCHOR.transform.position + (Vector3)attachOffset;
     }
 
@@ -312,6 +332,7 @@ public class Grapple : MonoBehaviour{
     }
 
     void ImpulsePlayerInDirection(Vector2 direction, float force){
+        Debug.Log("Direction : " + direction + " Force " + force);
         rigidBody.velocity = direction * force;
     }
 
@@ -321,6 +342,17 @@ public class Grapple : MonoBehaviour{
     #endregion
 
     #region OTHER
+    void CalculateMovementDirection(){
+        if((Vector2)transform.position == previousPosition)
+            return;
+        movementDirection = ((Vector2)transform.position - previousPosition).normalized;
+        previousPosition = transform.position;
+    }
+    IEnumerator DelayInputHold(){
+        inputHoldReceived = false;
+        yield return new WaitForSeconds(0.2f);
+        inputHoldReceived = PlayerInputManager.Maps.Player.Grapple.ReadValue<float>() > 0.0f;
+    }
     float GetSpeedIgnoringFallVelocity(){
         Vector2 velocity = Vector2.zero;
         velocity.x = rigidBody.velocity.x;
@@ -334,6 +366,7 @@ public class Grapple : MonoBehaviour{
         EnableAnchorDetection();
         EnableGravity();
         speedBeforeGrapple = 0f;
+        velocityRemoved = false;
         isGrappling = false;
     }
 
@@ -381,6 +414,7 @@ public class Grapple : MonoBehaviour{
     }
 
     void DisableAnchorDetection(){
+        // Collider2D collider = ANCHOR.GetComponent<Collider2D>();
         CircleCollider2D collider = ANCHOR.GetComponent<CircleCollider2D>();
         if(collider.enabled)
             collider.enabled = false;
