@@ -86,7 +86,6 @@ public class PlayerController : MonoBehaviour
     [Space]
     [SerializeField] GrappleRenderer stringController;
     [SerializeField] CameraController cameraController;
-    [SerializeField] CompanionAbilitiesController companionAbilitiesController;
     #endregion
 
     #region Public And Hidden Varriables

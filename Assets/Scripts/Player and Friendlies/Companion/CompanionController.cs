@@ -22,7 +22,6 @@ public class CompanionController : MonoBehaviour
     public SpriteRenderer companionSprite;
 
     [SerializeField] PlayerController playerScript;
-    [SerializeField] PlayerAnimator playerAnimSp;
 
     //Privates
     [HideInInspector] public float mouseAngle;
@@ -70,26 +69,18 @@ public class CompanionController : MonoBehaviour
         
     }
 
-    private void HorizontalMovement()
-    {
-        if (playerScript.rigidBody.velocity.x < -1f)     //when going left
-            transform.localPosition = new Vector3(Mathf.Lerp(transform.localPosition.x, rightOffset, switchSpeedHorizontal * Time.deltaTime), transform.localPosition.y, transform.localPosition.z);
-        else if (playerScript.rigidBody.velocity.x > 1f)      //when going right
-            transform.localPosition = new Vector3(Mathf.Lerp(transform.localPosition.x, leftOffset, switchSpeedHorizontal * Time.deltaTime), transform.localPosition.y, transform.localPosition.z);
-        else // when idle
-        {
-            if (playerSprite.flipX == false) //if facing right
-            {
-                transform.localPosition = new Vector3(Mathf.Lerp(transform.localPosition.x, leftOffIdle, switchSpeedIdle * Time.deltaTime), transform.localPosition.y, transform.localPosition.z);
-                Rotation(0f);
-                companionSprite.flipY = false;
-            }
-            else //if facing left
-            {
-                transform.localPosition = new Vector3(Mathf.Lerp(transform.localPosition.x, rightOffIdle, switchSpeedIdle * Time.deltaTime), transform.localPosition.y, transform.localPosition.z);
-                Rotation(180f);
-                companionSprite.flipY = true;
-            }
+    private void HorizontalMovement(){
+        if (playerSprite.flipX == false){ //if facing right
+            transform.localPosition = new Vector3(Mathf.Lerp(transform.localPosition.x, leftOffIdle, switchSpeedIdle * Time.deltaTime), transform.localPosition.y, transform.localPosition.z);
+            Rotation(0f);
+            companionSprite.flipY = false;
+            Debug.Log("Rotating right");
+        }
+        else{ //if facing left
+            transform.localPosition = new Vector3(Mathf.Lerp(transform.localPosition.x, rightOffIdle, switchSpeedIdle * Time.deltaTime), transform.localPosition.y, transform.localPosition.z);
+            Rotation(180f);
+            companionSprite.flipY = true;
+            Debug.Log("Rotating left");
         }
         
     }

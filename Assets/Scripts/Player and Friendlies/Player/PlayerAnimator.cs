@@ -11,26 +11,12 @@ public class PlayerAnimator : MonoBehaviour
 
     [Space]
     [Header("Calculated Animations")]
-    //Variables
-    [SerializeField] float flippedAngle;
-
-    [Space]
-
-    //GameObjects
-    [SerializeField] GameObject playerBody;
-    [SerializeField] GameObject pivot1;
-
-    [Space]
 
     //Components
     [SerializeField] SpriteRenderer playerSprite;
-    [SerializeField] SpriteRenderer weaponSprite;
-
-    [Space]
 
     //Scripts
     [SerializeField] PlayerController playerScript;
-    [SerializeField] PivotController pivotController;
     
     [Space]
 
@@ -40,12 +26,7 @@ public class PlayerAnimator : MonoBehaviour
     [SerializeField] GameObject DashingLeftParticles;
     [SerializeField] GameObject DashingUpParticles;
     [SerializeField] GameObject DashingDownParticles;
-
-    [Space]
     
-    //Privates
-    float oldAngle;
-
     Vector3 oldPos;
     Vector3 newPos;
 
@@ -53,14 +34,12 @@ public class PlayerAnimator : MonoBehaviour
 
     void Start()
     {
-        oldAngle = pivotController.pivotMax;
-
         oldPos = transform.position;
     }
 
     void Update()
     {
-        SpriteFlipping(pivot1);
+        SpriteFlipping();
         playerLastPos();
         MovementAnimations();
         MovementParticles();
@@ -149,7 +128,7 @@ public class PlayerAnimator : MonoBehaviour
         oldPos = newPos;
     }
 
-    void SpriteFlipping(GameObject pivot)
+    void SpriteFlipping()
     {
         //Flipping with Velocity
         if (playerScript.rigidBody.velocity.x < 0)
@@ -159,37 +138,6 @@ public class PlayerAnimator : MonoBehaviour
         else if (playerScript.rigidBody.velocity.x > 0)
         {
             playerSprite.flipX = false;
-        }
-
-        if (pivotController.rotationAngle < pivotController.pivotMin || pivotController.rotationAngle > pivotController.pivotMax)
-        {
-            playerSprite.flipX = true;
-            pivotController.pivotMax = flippedAngle;
-            pivotController.pivotMin = flippedAngle * -1; //When flipped, the agnles dont flip as well, for example, when it flips on 120 it will flip back on 120 wich is not when the pivot is behind the back 
-        }
-        else if (pivotController.rotationAngle > pivotController.pivotMin || pivotController.rotationAngle < pivotController.pivotMax)
-        {
-            playerSprite.flipX = false;
-            pivotController.pivotMax = oldAngle;
-            pivotController.pivotMin = oldAngle * -1;
-        }
-
-        //Flipping arm sprite
-        if (playerSprite.flipX == false)
-            weaponSprite.flipY = false;
-        else if (playerSprite.flipX == true)
-            weaponSprite.flipY = true;
-
-        //Flipping the pivot angle when moving
-        if (playerScript.rigidBody.velocity.x > 0)
-        {
-            pivotController.pivotMax = oldAngle;
-            pivotController.pivotMin = oldAngle * -1;
-        }
-        else if (playerScript.rigidBody.velocity.x < 0)
-        {
-            pivotController.pivotMax = flippedAngle;
-            pivotController.pivotMin = flippedAngle * -1;
         }
     }
 }
