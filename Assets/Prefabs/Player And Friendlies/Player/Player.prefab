@@ -34574,7 +34574,6 @@ MonoBehaviour:
   playerSprite: {fileID: 7048394262051335672}
   companionSprite: {fileID: 7048394263009543853}
   playerScript: {fileID: 7048394261642957590}
-  playerAnimSp: {fileID: 7048394261642957611}
   mouseAngle: 0
 --- !u!114 &7048394261525025892
 MonoBehaviour:
@@ -34600,6 +34599,7 @@ GameObject:
   m_Component:
   - component: {fileID: 7048394261642957588}
   - component: {fileID: 1659856478938414131}
+  - component: {fileID: 7531523375051426394}
   - component: {fileID: 1598332831565718973}
   - component: {fileID: 7048394261642957590}
   - component: {fileID: 3400764495885019932}
@@ -34684,6 +34684,29 @@ MonoBehaviour:
     type: 2}
   zeroFrictionMaterial: {fileID: 6200000, guid: 9caa2176edf51584781d36311d10f50b,
     type: 2}
+--- !u!114 &7531523375051426394
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7048394261642957608}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: baee506467e34784b9ba3fabd97fd89f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  maximumDashes: 0
+  length: 4
+  collisionOffset: 0.75
+  force: 0
+  holdTime: 1.25
+  groundLayer:
+    serializedVersion: 2
+    m_Bits: 256
+  rigidbody: {fileID: 7048394261642957610}
+  basicMovement: {fileID: 1659856478938414131}
+  grapple: {fileID: 1598332831565718973}
 --- !u!114 &1598332831565718973
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -34700,8 +34723,8 @@ MonoBehaviour:
   accelerationTime: 0.25
   delayTime: 0.75
   closureDistance: 1.5
-  closureSpeed: 2.5
-  distanceToAttach: 0.75
+  closureSpeed: 15
+  distanceToAttach: 0.25
   attachOffset: {x: 0, y: 0}
   highDetachForce: 25
   lowDetachForce: 3
@@ -34853,7 +34876,6 @@ MonoBehaviour:
   weaponSprite: {fileID: 0}
   stringController: {fileID: 0}
   cameraController: {fileID: 0}
-  companionAbilitiesController: {fileID: 0}
   dashesLeft: 0
   dashDelayTimer: 0
   canGrapple: 1
@@ -35060,13 +35082,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   animator: {fileID: 4351136647102149135}
-  flippedAngle: 60
-  playerBody: {fileID: 7048394262051335678}
-  pivot1: {fileID: 0}
   playerSprite: {fileID: 7048394262051335672}
-  weaponSprite: {fileID: 0}
   playerScript: {fileID: 7048394261642957590}
-  pivotController: {fileID: 0}
   WalkingRightParticles: {fileID: 5996099729062037621}
   WalkingLeftParticles: {fileID: 3196858743773513582}
   DashingRightParticles: {fileID: 1360136287270097566}

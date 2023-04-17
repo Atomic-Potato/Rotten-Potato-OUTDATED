@@ -151,7 +151,7 @@
                     "name": "",
                     "id": "20cc4e17-3f43-49f5-979a-8d4f56332ac4",
                     "path": "<Keyboard>/shift",
-                    "interactions": "",
+                    "interactions": "Tap",
                     "processors": "",
                     "groups": "",
                     "action": "Dash",
