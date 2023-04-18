@@ -34697,14 +34697,18 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   maximumDashes: 0
-  length: 4
+  length: 10
   collisionOffset: 0.75
-  force: 0
-  holdTime: 1.25
+  force: 10
+  dashingTime: 0.1
+  holdTime: 0.75
   groundLayer:
     serializedVersion: 2
     m_Bits: 256
   rigidbody: {fileID: 7048394261642957610}
+  collider: {fileID: 7048394261642957609}
+  playerSpriteRenderer: {fileID: 7048394262051335672}
+  companionSpriteRenderer: {fileID: 7048394263009543853}
   basicMovement: {fileID: 1659856478938414131}
   grapple: {fileID: 1598332831565718973}
 --- !u!114 &1598332831565718973

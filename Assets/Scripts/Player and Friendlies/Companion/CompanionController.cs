@@ -74,13 +74,11 @@ public class CompanionController : MonoBehaviour
             transform.localPosition = new Vector3(Mathf.Lerp(transform.localPosition.x, leftOffIdle, switchSpeedIdle * Time.deltaTime), transform.localPosition.y, transform.localPosition.z);
             Rotation(0f);
             companionSprite.flipY = false;
-            Debug.Log("Rotating right");
         }
         else{ //if facing left
             transform.localPosition = new Vector3(Mathf.Lerp(transform.localPosition.x, rightOffIdle, switchSpeedIdle * Time.deltaTime), transform.localPosition.y, transform.localPosition.z);
             Rotation(180f);
             companionSprite.flipY = true;
-            Debug.Log("Rotating left");
         }
         
     }

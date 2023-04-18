@@ -14,6 +14,9 @@ public class Dash : MonoBehaviour{
     [SerializeField] float collisionOffset;
     [Tooltip("How much force is added to the player momentum at the end of the dash")]
     [SerializeField] float force;
+    [Tooltip("How much time before the player will appear at the end point of the dash")]
+    [Range(0f, 5f)]
+    [SerializeField] float dashingTime; 
     [Tooltip("How much time before the player restores movement")]
     [Range(0f, 5f)]
     [SerializeField] float holdTime;
@@ -22,19 +25,25 @@ public class Dash : MonoBehaviour{
     [Header("Required Componenets & Parameters")]
     [SerializeField] LayerMask groundLayer;
     [SerializeField] Rigidbody2D rigidbody;
+    [SerializeField] Collider2D collider;
+    [SerializeField] SpriteRenderer playerSpriteRenderer;
+    [SerializeField] SpriteRenderer companionSpriteRenderer;
     [SerializeField] BasicMovement basicMovement;
     [SerializeField] Grapple grapple;
     #endregion
     
     #region STATES
+    bool isDashing;
     bool isHolding; // when the player is holding in the air waiting for either the delay or cancel input
     #endregion
 
     #region PRIVATE VARIABLES
+    Vector2 direction;
+    float lastSpeed;
     float delayCurrentTime = 0f;
 
     // ---- CACHE ----
-    Coroutine delayCache;
+    Coroutine dashingTimeCache;
     float ORIGINAL_GRAVITY_SCALE;
     Vector2 ORIGINAL_VELOCITY;
     #endregion
@@ -48,45 +57,72 @@ public class Dash : MonoBehaviour{
 
     void Update(){
         if(PlayerInputManager.Maps.Player.Dash.triggered){
+            direction = GetPlayerToMouseDirection();
+            lastSpeed = GetSpeed();
+            
             RemoveVelocity();
             DisableGravity();
             DisableOtherMovementMechanics();
+            HidePlayer();
+            HideCompanion();
+            DisableCollision();
 
-            ApplyDash();
+
+            StartDashTime();
             isHolding = false; // allows us to dash while we are still holding
-            SetDelay();
         }
 
         if(isHolding)
-            Delay();
+            HoldDelay();
     }
     #endregion
 
     #region DASH
     void ApplyDash(){
-        Vector2 direction = GetPlayerToMouseDirection();
-        RaycastHit2D ray = CastRayInDirection(direction);
-        transform.position = GetEndPoint(ray, direction);
+        RaycastHit2D ray = CastRayInDirection();
+        transform.position = GetEndPoint(ray);
     }
 
-    RaycastHit2D CastRayInDirection(Vector2 direction){
+    RaycastHit2D CastRayInDirection(){
         return Physics2D.Raycast(transform.position, direction, length, groundLayer);
     }
 
-    Vector2 GetEndPoint(RaycastHit2D ray, Vector2 direction){
+    Vector2 GetEndPoint(RaycastHit2D ray){
         return ray.collider == null ? (Vector2)transform.position + direction * length : ray.point - direction * collisionOffset;
     }
 
     Vector2 GetPlayerToMouseDirection(){
-        Vector3 direction = Camera.main.ScreenToWorldPoint(Input.mousePosition) - transform.position;
-        direction.z = 0f;
-        direction.Normalize();
-        return direction;
+        Vector3 dir = Camera.main.ScreenToWorldPoint(Input.mousePosition) - transform.position;
+        dir.z = 0f;
+        dir.Normalize();
+        return dir;
     }
     #endregion
 
-    #region DELAY
-    void SetDelay(){
+    #region DASHING TIME
+    void StartDashTime(){
+        if(dashingTimeCache == null)
+            dashingTimeCache = StartCoroutine(DashTime());
+    }
+
+    IEnumerator DashTime(){
+
+        isDashing = true;
+        yield return new WaitForSeconds(dashingTime);
+        isDashing = false;
+        dashingTimeCache = null;
+        
+        ApplyDash();
+        
+        SetHoldDelay();
+        ShowPlayer();
+        ShowCompanion();
+        EnableCollision();
+    }
+    #endregion
+
+    #region HOLD DELAY
+    void SetHoldDelay(){
         if(isHolding)
             return;
 
@@ -94,16 +130,31 @@ public class Dash : MonoBehaviour{
         delayCurrentTime = holdTime;
     }
 
-    void Delay(){
-        // Debug.Log("time :" + delayCurrentTime);
+    void HoldDelay(){
         if(delayCurrentTime > 0.0f){
             delayCurrentTime -= Time.deltaTime;
             return;
         }
 
+        ImpulsePlayerInDirection();
+        
         EnableGravity();
-        EnableOtherMovementMechanics();        
+        EnableOtherMovementMechanics();
         isHolding = false;
+    }
+    #endregion
+
+    #region IMPULSE
+    void ImpulsePlayerInDirection(){
+        Debug.Log(force + lastSpeed);
+        rigidbody.velocity =  direction * (force + lastSpeed);
+    }
+
+    float GetSpeed(){
+        Vector2 velocity = rigidbody.velocity;
+        if(velocity.y < 0f)
+            velocity.y = 0f;
+        return velocity.magnitude;
     }
     #endregion
 
@@ -132,6 +183,36 @@ public class Dash : MonoBehaviour{
 
     void RemoveVelocity(){
         rigidbody.velocity = Vector2.zero;
+    }
+
+    void HidePlayer(){
+        if(playerSpriteRenderer.enabled)
+            playerSpriteRenderer.enabled = false;
+    }
+
+    void ShowPlayer(){
+        if(!playerSpriteRenderer.enabled)
+            playerSpriteRenderer.enabled = true;
+    }
+
+    void HideCompanion(){
+        if(companionSpriteRenderer.enabled)
+            companionSpriteRenderer.enabled = false;
+    }
+
+    void ShowCompanion(){
+        if(!companionSpriteRenderer.enabled)
+            companionSpriteRenderer.enabled = true;
+    }
+
+    void DisableCollision(){
+        if(collider.enabled)
+            collider.enabled = false;
+    }
+
+    void EnableCollision(){
+        if(!collider.enabled)
+            collider.enabled = true;
     }
     #endregion
 }
