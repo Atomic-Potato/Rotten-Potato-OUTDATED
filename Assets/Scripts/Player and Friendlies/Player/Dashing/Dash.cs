@@ -33,8 +33,8 @@ public class Dash : MonoBehaviour{
     #endregion
     
     #region STATES
-    bool isDashing;
-    bool isHolding; // when the player is holding in the air waiting for either the delay or cancel input
+    static bool isDashing;
+    static bool isHolding; // when the player is holding in the air waiting for either the delay or cancel input
     #endregion
 
     #region PRIVATE VARIABLES
@@ -48,6 +48,19 @@ public class Dash : MonoBehaviour{
     Vector2 ORIGINAL_VELOCITY;
     #endregion
 
+    #region GETTERS & SETTERS
+    public static bool IS_DASHING{
+        get{
+            return isDashing;
+        }
+    }
+
+    public static bool IS_HOLDING{
+        get{
+            return isHolding;
+        }
+    }
+    #endregion
 
     #region EXECUTION
     void Awake() {
