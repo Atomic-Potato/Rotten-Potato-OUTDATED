@@ -1,6 +1,7 @@
 using UnityEngine;
 
 public class CameraBasicFollow : MonoBehaviour, CameraStrategy{
+    #region INSPECTOR VARIABLES
     [Header("WINDOW")]
     [SerializeField] bool enableWindow = true;
     [Tooltip("The size of the window that the camera will not allow the player to go out of its bounds."+
@@ -28,15 +29,23 @@ public class CameraBasicFollow : MonoBehaviour, CameraStrategy{
     [Range(0f, 5f)]
     [SerializeField] float timeToSnapToAnchor = 0.75f;
 
+    [Space]
     [Header("TOOLS")]
     [SerializeField] bool enableTools;
     [SerializeField] bool drawWindow;
     [SerializeField] bool drawPlatformSnapLine;
     [SerializeField] bool drawAnchorSnapLine;
 
+    [Space]
+    [Header("REQUIRED COMPONENTS")]
+    [SerializeField] LayerMask groundLayer;
+    #endregion
+
+    #region PRIVATE VARIABLES
     float? groundPos = null;
     Vector3 refPlatfromSnapVelocity;
     Vector3 refAnchorSnapVelocity;
+    #endregion
 
     #region EXECUTION
     public void Execute(){
@@ -94,8 +103,6 @@ public class CameraBasicFollow : MonoBehaviour, CameraStrategy{
         if(groundPos == null)
             return;
 
-        Debug.Log("grounded status : " + BasicMovement.IS_GROUNDED);
-
         // ToDo: Fix smooth damp not moving to exactly the desired location
         transform.position = Vector3.SmoothDamp(transform.position, 
             new Vector3(transform.position.x, (float)groundPos - (platformSnapOffset + windowOffset.y), transform.position.z), 
@@ -106,9 +113,12 @@ public class CameraBasicFollow : MonoBehaviour, CameraStrategy{
         // ToDo: use the collider bounds to get the platform position
         // Bounds colliderBounds = Player.Instance.GetComponent<BoxCollider2D>().bounds;
         
-        if(BasicMovement.IS_GROUNDED)
-            if(groundPos == null)
-                groundPos = Player.Instance.transform.position.y - 0.5f;
+        if(BasicMovement.IS_GROUNDED){
+            if(groundPos == null){
+                RaycastHit2D ray = Physics2D.Raycast(Player.Instance.transform.position, Vector2.down, 10f, groundLayer);
+                groundPos = ray.point.y;
+            }
+        }
         
         if(GotOutOfVerticalBounds() || !BasicMovement.IS_GROUNDED){
             groundPos = null;
