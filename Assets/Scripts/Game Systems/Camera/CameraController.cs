@@ -8,7 +8,7 @@ public class CameraController : MonoBehaviour{
     [SerializeField] CameraDash cameraDash;
 
     CameraStrategy strategy;
-
+    
     void Awake(){
         strategy = cameraBasicFollow;
     }
@@ -17,7 +17,7 @@ public class CameraController : MonoBehaviour{
         strategy.Execute();
     }
 
-    void Update(){
+    void LateUpdate(){
         strategy = GetStrategy();
         strategy.Execute();        
     }

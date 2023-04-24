@@ -80,7 +80,7 @@ public class GrappleRenderer : MonoBehaviour
 
     void SetRendererEndPoints(){
         lineRenderer.SetPosition(0, (Vector2)transform.position + startPointOffset);
-        lineRenderer.SetPosition(1, Grapple.ANCHOR_POSITION + endPointOffset);
+        lineRenderer.SetPosition(1, (Vector2)Grapple.ANCHOR_POSITION + endPointOffset);
     }
 
     void HideLineRenderer(){

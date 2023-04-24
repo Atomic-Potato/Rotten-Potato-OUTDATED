@@ -32,11 +32,15 @@ public class BasicMovement : MonoBehaviour
     [SerializeField] PhysicsMaterial2D zeroFrictionMaterial;
     #endregion
 
-    #region STATE VARIABLES
+    #region STATE VARIABLES & OTHER STATIC VARIABLES
     [HideInInspector] private static bool isGrounded;
     [HideInInspector] private static bool isMovingOnGround;
     [HideInInspector] private static bool isJustLanded;
     [HideInInspector] private static bool isJumping;
+
+    // ---- OTHER ----
+    [HideInInspector] public static bool movementActive = true;
+    [HideInInspector] public static bool jumpingActive = true;
     #endregion
 
     #region PRIVATE VARAIBLES
@@ -90,8 +94,11 @@ public class BasicMovement : MonoBehaviour
 
     void FixedUpdate(){
         CapFallingVelocity();
-        ApplyMovement();
-        ApplyJump(jumpForce);
+
+        if(movementActive)
+            ApplyMovement();
+        if(jumpingActive)
+            ApplyJump(jumpForce);
     }
     #endregion
 

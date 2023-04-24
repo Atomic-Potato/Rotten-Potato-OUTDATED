@@ -55,7 +55,7 @@ public class Grapple : MonoBehaviour{
     static Vector2 anchorPosition;
     Vector2 movementDirection;
     bool velocityRemoved;
-    GameObject ANCHOR;
+    static GameObject ANCHOR;
 
     // ---- INPUT ----
     bool inputReceived;
@@ -118,9 +118,11 @@ public class Grapple : MonoBehaviour{
         }
     }
 
-    public static Vector2 ANCHOR_POSITION{
+    public static Vector2? ANCHOR_POSITION{
         get{
-            return anchorPosition;
+            if(ANCHOR == null)
+                return null;
+            return ANCHOR.transform.position;
         }
     }
     #endregion
@@ -236,7 +238,6 @@ public class Grapple : MonoBehaviour{
 
         if (AnchorDetected(grappleRay.collider)){
             grappleEndPoint = grappleRay.point;
-            anchorPosition = grappleRay.collider.gameObject.transform.position;
             return grappleRay.collider.gameObject;
         }
 
@@ -305,7 +306,6 @@ public class Grapple : MonoBehaviour{
 
     void TranslateToAnchor(){
         if(!velocityRemoved){
-            Debug.Log("Removing velocity");
             rigidBody.velocity = Vector2.zero;
             velocityRemoved = true;
         }
@@ -331,7 +331,6 @@ public class Grapple : MonoBehaviour{
     }
 
     void ImpulsePlayerInDirection(Vector2 direction, float force){
-        Debug.Log("Direction : " + direction + " Force " + force);
         rigidBody.velocity = direction * force;
     }
 
@@ -387,8 +386,10 @@ public class Grapple : MonoBehaviour{
     }
 
     void DisableOtherMovementMechanics(){
-        if(basicMovement.enabled)
-            basicMovement.enabled = false;
+        if(BasicMovement.movementActive)
+            BasicMovement.movementActive = false;
+        if(BasicMovement.jumpingActive)
+            BasicMovement.jumpingActive = false;
 
         /* TODO:
         if(roll.enabled)
@@ -400,8 +401,10 @@ public class Grapple : MonoBehaviour{
     }
 
     void EnableOtherMovementMechanics(){
-       if(!basicMovement.enabled)
-            basicMovement.enabled = true;
+        if(!BasicMovement.movementActive)
+            BasicMovement.movementActive = true;
+        if(!BasicMovement.jumpingActive)
+            BasicMovement.jumpingActive = true;
 
         /* TODO:
         if(!roll.enabled)
