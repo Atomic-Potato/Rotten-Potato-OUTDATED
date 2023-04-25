@@ -45,10 +45,27 @@ public class CameraBasicFollow : MonoBehaviour, CameraStrategy{
     float? groundPos = null;
     Vector3 refPlatfromSnapVelocity;
     Vector3 refAnchorSnapVelocity;
+
+    // ---- Camera ----
+    float leftScreenEdge;
+    float bottomScreenEdge;
+    float cameraHeight;
+    float cameraWidth;
     #endregion
 
     #region EXECUTION
+    void Start(){
+        // How much the width of the screen is bigger than the height of the screen
+        float screenAspectRatio = 16f/9f;
+        // float screenAspectRatio = (float)Screen.height / (float)Screen.width;
+        cameraHeight = Camera.main.orthographicSize * 2f;
+        cameraWidth = cameraHeight * screenAspectRatio;
+    }
+
     public void Execute(){
+        leftScreenEdge = Camera.main.transform.position.x - (cameraWidth / 2f);
+        bottomScreenEdge = Camera.main.transform.position.y - (cameraHeight / 2f);
+
         if(enableWindow)
             ConstraintToWindow();
         if(enablePlatfromSnapping)
@@ -71,10 +88,10 @@ public class CameraBasicFollow : MonoBehaviour, CameraStrategy{
     void ConstraintToWindow(){
         Vector2 palyerPos = Player.Position;
 
-        float rightBorderPos = (transform.position.x + windowOffset.x) + windowSize.x;
-        float leftBorderPos = (transform.position.x + windowOffset.x) - windowSize.x;
-        float topBorderPos = (transform.position.y + windowOffset.y) + windowSize.y;
-        float bottomBorderPos = (transform.position.y + windowOffset.y) - windowSize.y;
+        float rightBorderPos = (leftScreenEdge + windowOffset.x) + windowSize.x;
+        float leftBorderPos = (leftScreenEdge + windowOffset.x);
+        float topBorderPos = (bottomScreenEdge + windowOffset.y) + windowSize.y;
+        float bottomBorderPos = (bottomScreenEdge + windowOffset.y);
 
         if(palyerPos.x > rightBorderPos)
             transform.position += new Vector3(palyerPos.x - rightBorderPos,0f,0f);
@@ -105,7 +122,7 @@ public class CameraBasicFollow : MonoBehaviour, CameraStrategy{
 
         // ToDo: Fix smooth damp not moving to exactly the desired location
         transform.position = Vector3.SmoothDamp(transform.position, 
-            new Vector3(transform.position.x, (float)groundPos - (platformSnapOffset + windowOffset.y), transform.position.z), 
+            new Vector3(transform.position.x, (float)groundPos + ((cameraHeight/2f) - (windowOffset.y + platformSnapOffset)), transform.position.z), 
             ref refPlatfromSnapVelocity, timeToSnapToPlatform);
     }
 
@@ -132,7 +149,7 @@ public class CameraBasicFollow : MonoBehaviour, CameraStrategy{
             return;
 
         transform.position = Vector3.SmoothDamp(transform.position, 
-            new Vector3(transform.position.x, ((Vector2)Grapple.ANCHOR_POSITION).y - (anchorSnapOffset + windowOffset.y), transform.position.z), 
+            new Vector3(transform.position.x, ((Vector2)Grapple.ANCHOR_POSITION).y + ((cameraHeight/2f) - (anchorSnapOffset + windowOffset.y)), transform.position.z), 
             ref refAnchorSnapVelocity, timeToSnapToPlatform);
     }
     #endregion
@@ -142,26 +159,35 @@ public class CameraBasicFollow : MonoBehaviour, CameraStrategy{
         if(!drawWindow)
             return;
         
+        // How much the width of the screen is bigger than the height of the screen
+        float screenAspectRatio = 16f/9f;
+        // float screenAspectRatio = (float)Screen.height / (float)Screen.width;
+        float cameraHeight = Camera.main.orthographicSize * 2f;
+        float cameraWidth = cameraHeight * screenAspectRatio;
+
+        leftScreenEdge = Camera.main.transform.position.x - (cameraWidth / 2f);
+        bottomScreenEdge = Camera.main.transform.position.y - (cameraHeight / 2f);
+        
         // top
-        Debug.DrawLine(new Vector2(transform.position.x + windowOffset.x - windowSize.x, transform.position.y + windowOffset.y + windowSize.y),
-            new Vector2(transform.position.x + windowOffset.x + windowSize.x, transform.position.y + windowOffset.y + windowSize.y), Color.yellow);
+        Debug.DrawLine(new Vector2(leftScreenEdge + windowOffset.x, bottomScreenEdge + windowOffset.y + windowSize.y),
+            new Vector2(leftScreenEdge + windowOffset.x + windowSize.x, bottomScreenEdge + windowOffset.y + windowSize.y), Color.yellow);
         // bottom
-        Debug.DrawLine(new Vector2(transform.position.x + windowOffset.x - windowSize.x, transform.position.y + windowOffset.y - windowSize.y),
-            new Vector2(transform.position.x + windowOffset.x + windowSize.x, transform.position.y + windowOffset.y - windowSize.y), Color.yellow);
+        Debug.DrawLine(new Vector2(leftScreenEdge + windowOffset.x, bottomScreenEdge + windowOffset.y),
+            new Vector2(leftScreenEdge + windowOffset.x + windowSize.x, bottomScreenEdge + windowOffset.y), Color.yellow);
 
         // left
-        Debug.DrawLine(new Vector2(transform.position.x + windowOffset.x - windowSize.x, transform.position.y + windowOffset.y - windowSize.y),
-            new Vector2(transform.position.x + windowOffset.x - windowSize.x, transform.position.y + windowOffset.y + windowSize.y), Color.yellow);
+        Debug.DrawLine(new Vector2(leftScreenEdge + windowOffset.x, bottomScreenEdge + windowOffset.y),
+            new Vector2(leftScreenEdge + windowOffset.x, bottomScreenEdge + windowOffset.y + windowSize.y), Color.yellow);
         // right
-        Debug.DrawLine(new Vector2(transform.position.x + windowOffset.x + windowSize.x, transform.position.y + windowOffset.y - windowSize.y),
-            new Vector2(transform.position.x + windowOffset.x + windowSize.x, transform.position.y + windowOffset.y + windowSize.y), Color.yellow);
+        Debug.DrawLine(new Vector2(leftScreenEdge + windowOffset.x + windowSize.x, bottomScreenEdge + windowOffset.y),
+            new Vector2(leftScreenEdge + windowOffset.x + windowSize.x, bottomScreenEdge + windowOffset.y + windowSize.y), Color.yellow);
     }
 
     void DrawSnapLine(bool active, float offset, Color color){
         if(!active)
             return;
-        Debug.DrawLine(new Vector2(transform.position.x + windowOffset.x - windowSize.x - 1f, transform.position.y + offset + windowOffset.y), 
-                       new Vector2(transform.position.x + windowOffset.x + windowSize.x + 1f, transform.position.y + offset + windowOffset.y), 
+        Debug.DrawLine(new Vector2(leftScreenEdge + windowOffset.x - .5f, bottomScreenEdge + windowOffset.y + offset), 
+                       new Vector2(leftScreenEdge + windowOffset.x + windowSize.x + .5f, bottomScreenEdge + windowOffset.y + offset), 
                        color);
     }
     #endregion

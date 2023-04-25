@@ -2238,7 +2238,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &6244722975038175115
 Transform:
   m_ObjectHideFlags: 0
@@ -3286,10 +3286,10 @@ MonoBehaviour:
   m_RefResolutionX: 640
   m_RefResolutionY: 360
   m_UpscaleRT: 0
-  m_PixelSnapping: 0
-  m_CropFrameX: 0
-  m_CropFrameY: 0
-  m_StretchFill: 0
+  m_PixelSnapping: 1
+  m_CropFrameX: 1
+  m_CropFrameY: 1
+  m_StretchFill: 1
 --- !u!114 &1199040025237070483
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3317,19 +3317,21 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   enableWindow: 1
-  windowSize: {x: 1.75, y: 2.5}
-  windowOffset: {x: 0, y: 0}
+  windowSize: {x: 3.5, y: 5}
+  windowOffset: {x: 3, y: 2.5}
   enablePlatfromSnapping: 1
-  platformSnapOffset: -1.5
+  platformSnapOffset: 1
   timeToSnapToPlatform: 0.05
   enableAnchorSnapping: 1
-  anchorSnapOffset: 0
+  anchorSnapOffset: 2.5
   timeToSnapToAnchor: 0.05
   enableTools: 1
   drawWindow: 1
   drawPlatformSnapLine: 1
   drawAnchorSnapLine: 1
-  obj: {fileID: 0}
+  groundLayer:
+    serializedVersion: 2
+    m_Bits: 256
 --- !u!114 &2984285087156078999
 MonoBehaviour:
   m_ObjectHideFlags: 0
