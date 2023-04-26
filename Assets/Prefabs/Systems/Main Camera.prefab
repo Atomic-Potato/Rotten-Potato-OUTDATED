@@ -3325,8 +3325,13 @@ MonoBehaviour:
   enableAnchorSnapping: 1
   anchorSnapOffset: 2.5
   timeToSnapToAnchor: 0.05
+  enableDualForwardFocus: 1
+  leftWindowOffset: {x: 3, y: 2.5}
+  rightWindowOffset: {x: 13.5, y: 2.5}
+  sideSwitchTime: 0
   enableTools: 1
   drawWindow: 1
+  drawDualForwardFocusWindows: 1
   drawPlatformSnapLine: 1
   drawAnchorSnapLine: 1
   groundLayer:

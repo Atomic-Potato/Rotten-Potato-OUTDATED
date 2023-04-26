@@ -30,9 +30,21 @@ public class CameraBasicFollow : MonoBehaviour, CameraStrategy{
     [SerializeField] float timeToSnapToAnchor = 0.75f;
 
     [Space]
+    [Header("DUAL FORWARD FOCUS")]
+    [SerializeField] bool enableDualForwardFocus = true;
+    [Tooltip("The offset where the window will be position to the left side of the screen.")]
+    [SerializeField] Vector2 leftWindowOffset;
+    [Tooltip("The offset where the window will be position to the right side of the screen.")]
+    [SerializeField] Vector2 rightWindowOffset;
+    [Tooltip("The time taken to switch to one of the offset windows side")]
+    [Range(0f, 5f)]
+    [SerializeField] float sideSwitchTime; 
+    
+    [Space]
     [Header("TOOLS")]
     [SerializeField] bool enableTools;
     [SerializeField] bool drawWindow;
+    [SerializeField] bool drawDualForwardFocusWindows;
     [SerializeField] bool drawPlatformSnapLine;
     [SerializeField] bool drawAnchorSnapLine;
 
@@ -41,16 +53,27 @@ public class CameraBasicFollow : MonoBehaviour, CameraStrategy{
     [SerializeField] LayerMask groundLayer;
     #endregion
 
+
     #region PRIVATE VARIABLES
+    int lastHorizontalBorderTouched; // -1 left border, 1 right border
+    int horizontalSideToSwitchTo;  // -1 left border, 1 right border
     float? groundPos = null;
-    Vector3 refPlatfromSnapVelocity;
-    Vector3 refAnchorSnapVelocity;
+    bool switchingSides;
 
     // ---- Camera ----
     float leftScreenEdge;
     float bottomScreenEdge;
     float cameraHeight;
     float cameraWidth;
+
+    // ---- Constants ---
+    const int LEFT = -1;
+    const int RIGHT = 1;
+
+    // ---- Cache ----
+    Vector3 refPlatfromSnapVelocity;
+    Vector3 refAnchorSnapVelocity;
+    Vector2 refWindowSwitchVelocity;
     #endregion
 
     #region EXECUTION
@@ -72,13 +95,17 @@ public class CameraBasicFollow : MonoBehaviour, CameraStrategy{
             SnapToPlatform();
         if(enableAnchorSnapping)
             SnapToAnchor();
+        if(enableDualForwardFocus)
+            MoveWindowToApproriateSide();
     }
 
     void OnDrawGizmos(){
         if(!enableTools)
             return;
 
-        DrawWindow();
+        DrawWindow(drawWindow, windowOffset, Color.yellow);
+        DrawWindow(drawDualForwardFocusWindows, leftWindowOffset, Color.red);
+        DrawWindow(drawDualForwardFocusWindows, rightWindowOffset, Color.green);
         DrawSnapLine(drawPlatformSnapLine, platformSnapOffset, Color.green);
         DrawSnapLine(drawAnchorSnapLine, anchorSnapOffset, Color.red);
     }
@@ -93,10 +120,14 @@ public class CameraBasicFollow : MonoBehaviour, CameraStrategy{
         float topBorderPos = (bottomScreenEdge + windowOffset.y) + windowSize.y;
         float bottomBorderPos = (bottomScreenEdge + windowOffset.y);
 
-        if(palyerPos.x > rightBorderPos)
+        if(palyerPos.x > rightBorderPos){
             transform.position += new Vector3(palyerPos.x - rightBorderPos,0f,0f);
-        else if(palyerPos.x < leftBorderPos)
+            lastHorizontalBorderTouched = RIGHT;
+        }
+        else if(palyerPos.x < leftBorderPos){
             transform.position -= new Vector3(leftBorderPos - palyerPos.x,0f,0f);
+            lastHorizontalBorderTouched = LEFT;
+        }
 
         if(palyerPos.y > topBorderPos)
             transform.position += new Vector3(0f, palyerPos.y - topBorderPos,0f);
@@ -154,9 +185,43 @@ public class CameraBasicFollow : MonoBehaviour, CameraStrategy{
     }
     #endregion
 
+    #region DUAL FORWARD FOCUS
+    void MoveWindowToApproriateSide(){
+        if(!switchingSides){
+            if(lastHorizontalBorderTouched == RIGHT)
+                horizontalSideToSwitchTo = LEFT;
+            else 
+                horizontalSideToSwitchTo = RIGHT;
+        }
+        
+        if(horizontalSideToSwitchTo == RIGHT)
+            MoveWindow(rightWindowOffset);
+        else
+            MoveWindow(leftWindowOffset);
+    }
+
+    void MoveWindow(Vector2 offset){
+        switchingSides = true;
+        
+        windowOffset = Vector2.SmoothDamp(windowOffset, offset, ref refWindowSwitchVelocity, sideSwitchTime);
+        
+        if(ApproximatelyEqualVectors(windowOffset, offset, 0.01f)){
+            switchingSides = false;
+            windowOffset = offset;
+        }
+    }
+
+    bool ApproximatelyEqualVectors(Vector2 a, Vector2 b, float floatingPointDifference){
+        if((b.x - floatingPointDifference < a.x && a.x < b.x + floatingPointDifference) &&
+           (b.y - floatingPointDifference < a.y && a.y < b.y + floatingPointDifference))
+            return true;
+        return false;
+    }
+    #endregion
+
     #region TOOLS
-    void DrawWindow(){
-        if(!drawWindow)
+    void DrawWindow(bool active, Vector2 offset, Color color){
+        if(!active)
             return;
         
         // How much the width of the screen is bigger than the height of the screen
@@ -169,18 +234,18 @@ public class CameraBasicFollow : MonoBehaviour, CameraStrategy{
         bottomScreenEdge = Camera.main.transform.position.y - (cameraHeight / 2f);
         
         // top
-        Debug.DrawLine(new Vector2(leftScreenEdge + windowOffset.x, bottomScreenEdge + windowOffset.y + windowSize.y),
-            new Vector2(leftScreenEdge + windowOffset.x + windowSize.x, bottomScreenEdge + windowOffset.y + windowSize.y), Color.yellow);
+        Debug.DrawLine(new Vector2(leftScreenEdge + offset.x, bottomScreenEdge + offset.y + windowSize.y),
+            new Vector2(leftScreenEdge + offset.x + windowSize.x, bottomScreenEdge + offset.y + windowSize.y), color);
         // bottom
-        Debug.DrawLine(new Vector2(leftScreenEdge + windowOffset.x, bottomScreenEdge + windowOffset.y),
-            new Vector2(leftScreenEdge + windowOffset.x + windowSize.x, bottomScreenEdge + windowOffset.y), Color.yellow);
+        Debug.DrawLine(new Vector2(leftScreenEdge + offset.x, bottomScreenEdge + offset.y),
+            new Vector2(leftScreenEdge + offset.x + windowSize.x, bottomScreenEdge + offset.y), color);
 
         // left
-        Debug.DrawLine(new Vector2(leftScreenEdge + windowOffset.x, bottomScreenEdge + windowOffset.y),
-            new Vector2(leftScreenEdge + windowOffset.x, bottomScreenEdge + windowOffset.y + windowSize.y), Color.yellow);
+        Debug.DrawLine(new Vector2(leftScreenEdge + offset.x, bottomScreenEdge + offset.y),
+            new Vector2(leftScreenEdge + offset.x, bottomScreenEdge + offset.y + windowSize.y), color);
         // right
-        Debug.DrawLine(new Vector2(leftScreenEdge + windowOffset.x + windowSize.x, bottomScreenEdge + windowOffset.y),
-            new Vector2(leftScreenEdge + windowOffset.x + windowSize.x, bottomScreenEdge + windowOffset.y + windowSize.y), Color.yellow);
+        Debug.DrawLine(new Vector2(leftScreenEdge + offset.x + windowSize.x, bottomScreenEdge + offset.y),
+            new Vector2(leftScreenEdge + offset.x + windowSize.x, bottomScreenEdge + offset.y + windowSize.y), color);
     }
 
     void DrawSnapLine(bool active, float offset, Color color){
