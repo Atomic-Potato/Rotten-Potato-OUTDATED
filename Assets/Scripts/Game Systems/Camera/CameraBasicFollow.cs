@@ -1,4 +1,6 @@
+using System.Collections;
 using UnityEngine;
+using UnityEngine.U2D;
 
 public class CameraBasicFollow : MonoBehaviour, CameraStrategy{
     #region INSPECTOR VARIABLES
@@ -41,6 +43,12 @@ public class CameraBasicFollow : MonoBehaviour, CameraStrategy{
     [SerializeField] float sideSwitchTime; 
     
     [Space]
+    [Header("ZOOM TO FIT ANCHORS")]
+    [SerializeField] bool enableZoomToFitAnchors = true;
+    [Range(0f,5f)]
+    [SerializeField] float timeToZoom = 1f;
+
+    [Space]
     [Header("TOOLS")]
     [SerializeField] bool enableTools;
     [SerializeField] bool drawWindow;
@@ -51,14 +59,21 @@ public class CameraBasicFollow : MonoBehaviour, CameraStrategy{
     [Space]
     [Header("REQUIRED COMPONENTS")]
     [SerializeField] LayerMask groundLayer;
+    [SerializeField] LayerMask anchorLayer;
+    [SerializeField] PixelPerfectCamera pixelPerfectCamera;
+    [SerializeField] BoxCollider2D cameraTrigger;
     #endregion
 
 
     #region PRIVATE VARIABLES
     int lastHorizontalBorderTouched; // -1 left border, 1 right border
     int horizontalSideToSwitchTo;  // -1 left border, 1 right border
+    
     float? groundPos = null;
+    
     bool switchingSides;
+    
+    ArrayList detectedAnchors = new ArrayList();
 
     // ---- Camera ----
     float leftScreenEdge;
@@ -71,6 +86,8 @@ public class CameraBasicFollow : MonoBehaviour, CameraStrategy{
     const int RIGHT = 1;
 
     // ---- Cache ----
+    float refResolutionX;
+    float refResolutionY;
     Vector3 refPlatfromSnapVelocity;
     Vector3 refAnchorSnapVelocity;
     Vector2 refWindowSwitchVelocity;
@@ -83,6 +100,8 @@ public class CameraBasicFollow : MonoBehaviour, CameraStrategy{
         // float screenAspectRatio = (float)Screen.height / (float)Screen.width;
         cameraHeight = Camera.main.orthographicSize * 2f;
         cameraWidth = cameraHeight * screenAspectRatio;
+
+        MatchTriggerSizeToCameraSize();
     }
 
     public void Execute(){
@@ -97,6 +116,18 @@ public class CameraBasicFollow : MonoBehaviour, CameraStrategy{
             SnapToAnchor();
         if(enableDualForwardFocus)
             MoveWindowToApproriateSide();
+        if(enableZoomToFitAnchors)
+            ZoomToFitAnchor();
+    }
+
+    void OnTriggerEnter2D(Collider2D other){
+        if(other.gameObject.layer == anchorLayer)
+            detectedAnchors.Add(other.gameObject);
+    }
+
+    void OnTriggerExit2D(Collider2D other){
+        if(other.gameObject.layer == anchorLayer)
+            detectedAnchors.Remove(other.gameObject);
     }
 
     void OnDrawGizmos(){
@@ -203,8 +234,11 @@ public class CameraBasicFollow : MonoBehaviour, CameraStrategy{
     void MoveWindow(Vector2 offset){
         switchingSides = true;
         
+        // TODO: lerp depending on player position / speeed instead of abbruptly switching sides 
+        // int lerpedPlayerPos
+        // windowOffset = Vector2.Lerp(windowOffset, offset, )
         windowOffset = Vector2.SmoothDamp(windowOffset, offset, ref refWindowSwitchVelocity, sideSwitchTime);
-        
+
         if(ApproximatelyEqualVectors(windowOffset, offset, 0.01f)){
             switchingSides = false;
             windowOffset = offset;
@@ -216,6 +250,34 @@ public class CameraBasicFollow : MonoBehaviour, CameraStrategy{
            (b.y - floatingPointDifference < a.y && a.y < b.y + floatingPointDifference))
             return true;
         return false;
+    }
+    #endregion
+
+    #region ZOOM TO FIT ANCHORS
+    void ZoomToFitAnchor(){
+        // Debug.Log(detectedAnchors.Count);
+        // Vector2 res = new Vector2(640f, 360);
+        // if(detectedAnchors.Count != 0){
+        //     ZoomCamera(32/2);
+        // }
+        // else
+        //     ZoomCamera(32);
+    }
+    void ZoomCamera(int pixelsPerUnit){
+        pixelPerfectCamera.assetsPPU = pixelsPerUnit;
+        // pixelPerfectCamera.assetsPPU = (int)Mathf.SmoothDamp(Camera.main.orthographicSize, pixelsPerUnit, ref refResolutionX, timeToZoom);
+        // pixelPerfectCamera.refResolutionX = (int)Mathf.SmoothDamp(Camera.main.orthographicSize, (int)resolution.x, ref refResolutionX, timeToZoom);
+        // pixelPerfectCamera.refResolutionY = (int)Mathf.SmoothDamp(Camera.main.orthographicSize, (int)resolution.y, ref refResolutionY, timeToZoom);
+        // Camera.main.orthographicSize = Mathf.SmoothDamp(Camera.main.orthographicSize, size, ref refOrthographicSize, timeToZoom);
+    }
+
+    void MatchTriggerSizeToCameraSize(){
+        float screenAspectRatio = 16f/9f;
+        // float screenAspectRatio = (float)Screen.height / (float)Screen.width;
+        float cameraHeight = Camera.main.orthographicSize * 2f;
+        float cameraWidth = cameraHeight * screenAspectRatio;
+
+        cameraTrigger.size = new Vector2(cameraWidth, cameraHeight);
     }
     #endregion
 

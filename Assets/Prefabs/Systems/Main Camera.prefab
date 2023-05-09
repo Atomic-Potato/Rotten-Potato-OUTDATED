@@ -2238,7 +2238,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &6244722975038175115
 Transform:
   m_ObjectHideFlags: 0
@@ -3196,6 +3196,7 @@ GameObject:
   - component: {fileID: 1199040025237070483}
   - component: {fileID: 3058300105114666796}
   - component: {fileID: 2984285087156078999}
+  - component: {fileID: 5754542309469322086}
   m_Layer: 14
   m_Name: Main Camera
   m_TagString: MainCamera
@@ -3229,7 +3230,7 @@ Camera:
   m_Enabled: 1
   serializedVersion: 2
   m_ClearFlags: 1
-  m_BackGroundColor: {r: 1, g: 0.6367924, b: 0.7267019, a: 0}
+  m_BackGroundColor: {r: 0.9215687, g: 0.72156864, b: 0.41960788, a: 1}
   m_projectionMatrixMode: 1
   m_GateFitMode: 2
   m_FOVAxisMode: 0
@@ -3328,7 +3329,9 @@ MonoBehaviour:
   enableDualForwardFocus: 1
   leftWindowOffset: {x: 3, y: 2.5}
   rightWindowOffset: {x: 13.5, y: 2.5}
-  sideSwitchTime: 0
+  sideSwitchTime: 0.25
+  enableZoomToFitAnchors: 1
+  timeToZoom: 1
   enableTools: 1
   drawWindow: 1
   drawDualForwardFocusWindows: 1
@@ -3337,6 +3340,11 @@ MonoBehaviour:
   groundLayer:
     serializedVersion: 2
     m_Bits: 256
+  anchorLayer:
+    serializedVersion: 2
+    m_Bits: 8192
+  pixelPerfectCamera: {fileID: 8339544364708082186}
+  cameraTrigger: {fileID: 5754542309469322086}
 --- !u!114 &2984285087156078999
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3349,6 +3357,32 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a2c2047580c58c14297d27e4df34109d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!61 &5754542309469322086
+BoxCollider2D:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8339544364708082418}
+  m_Enabled: 1
+  m_Density: 1
+  m_Material: {fileID: 0}
+  m_IsTrigger: 1
+  m_UsedByEffector: 0
+  m_UsedByComposite: 0
+  m_Offset: {x: 0, y: 0}
+  m_SpriteTilingProperty:
+    border: {x: 0, y: 0, z: 0, w: 0}
+    pivot: {x: 0, y: 0}
+    oldSize: {x: 0, y: 0}
+    newSize: {x: 0, y: 0}
+    adaptiveTilingThreshold: 0
+    drawMode: 0
+    adaptiveTiling: 0
+  m_AutoTiling: 0
+  serializedVersion: 2
+  m_Size: {x: 1, y: 1}
+  m_EdgeRadius: 0
 --- !u!1 &8339544364993156241
 GameObject:
   m_ObjectHideFlags: 0
