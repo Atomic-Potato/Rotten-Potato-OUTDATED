@@ -1,7 +1,8 @@
 using UnityEngine;
 
+[System.Serializable]
 public class CloudsManager : MonoBehaviour{
-    [SerialzieField] CloudChunckManager[] cloudChuncks;
+    [SerializeField] CloudChunckManager[] cloudChuncks;
     [SerializeField] CloudLayerManager[] cloudsLayers;
     
     #region CONSTANTS

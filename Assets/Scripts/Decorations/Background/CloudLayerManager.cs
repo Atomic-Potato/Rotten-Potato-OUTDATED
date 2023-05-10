@@ -26,6 +26,7 @@ public class CloudLayerManager : MonoBehaviour{
 
     #region EXECUTION
     void Awake(){
+        orderedClouds = new Cloud[cloudsInLayer.Length];
         exCloudPositionNotFound = new System.Exception("Cloud order position in layer " + layerNumber + "has no way to be handled");
     }
 
@@ -34,6 +35,7 @@ public class CloudLayerManager : MonoBehaviour{
     }
     #endregion
 
+    #region MOVING THE LAYER
     /// <summary>
     /// Moves all the clouds in the layer accorinding 
     /// to the layer direction and speed
@@ -42,7 +44,7 @@ public class CloudLayerManager : MonoBehaviour{
         if(travelDirection == CloudsManager.STILL)
             return;
 
-        Cloud frontCloud = orderedClouds[3];
+        Cloud frontCloud = orderedClouds[2];
         MoveCloud(frontCloud);
         
         ConnectClouds(orderedClouds[1], orderedClouds[2]);
@@ -52,6 +54,18 @@ public class CloudLayerManager : MonoBehaviour{
             ShiftCloudsOrder();
             ConnectClouds(frontCloud, orderedClouds[1]); // the frontCloud is at index 0 in the array after shifting
         }
+    }
+    
+    /// <summary>
+    /// Moves the cloud in the direction of the layer and its speed 
+    /// </summary>
+    void MoveCloud(Cloud cloud){
+        Debug.Log("Moving " + gameObject.name);
+        cloud.transform.position = new Vector3(
+            cloud.transform.position.x + Time.deltaTime * speed * travelDirection, 
+            cloud.transform.position.y,
+            cloud.transform.position.y
+        );
     }
 
     /// <summary>
@@ -89,12 +103,6 @@ public class CloudLayerManager : MonoBehaviour{
         UpdateCloudsOrderInArray();
     }
 
-    /// <summary>
-    /// Moves the cloud in the direction of the layer and its speed 
-    /// </summary>
-    void MoveCloud(Cloud cloud){
-        transform.position = new Vector3(transform.position.x + Time.deltaTime * speed * travelDirection, 0f, 0f);
-    }
 
     /// <summary>
     /// Rearranges the ordered array of the clouds
@@ -111,4 +119,5 @@ public class CloudLayerManager : MonoBehaviour{
                 throw  exCloudPositionNotFound;
         }
     }
+    #endregion
 }
