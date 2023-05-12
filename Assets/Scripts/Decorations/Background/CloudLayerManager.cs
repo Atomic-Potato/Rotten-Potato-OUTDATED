@@ -60,7 +60,6 @@ public class CloudLayerManager : MonoBehaviour{
     /// Moves the cloud in the direction of the layer and its speed 
     /// </summary>
     void MoveCloud(Cloud cloud){
-        Debug.Log("Moving " + gameObject.name);
         cloud.transform.position = new Vector3(
             cloud.transform.position.x + Time.deltaTime * speed * travelDirection, 
             cloud.transform.position.y,

@@ -11,7 +11,7 @@ public class CloudChunckManager : MonoBehaviour{
     [SerializeField] Cloud[] clouds;
 
 
-    void Start() {
+    void Awake() {
         SetCloudsOrder(orderPosition);
         SetChunkPosition(orderPosition);
     }
