@@ -32,23 +32,27 @@ public class CloudLayerManager : MonoBehaviour{
 
     void Start(){
         UpdateCloudsOrderInArray();
+        SetLayerDirection();
     }
     #endregion
 
     #region MOVING THE LAYER
     /// <summary>
     /// Moves all the clouds in the layer accorinding 
-    /// to the layer direction and speed
+    /// to the layer travel direction and speed
     /// </summary>
     public void MoveLayer(){
         if(travelDirection == CloudsManager.STILL)
             return;
 
-        Cloud frontCloud = orderedClouds[2];
+        Cloud frontCloud = GetFrontCloud();
         MoveCloud(frontCloud);
+
         
-        ConnectClouds(orderedClouds[1], orderedClouds[2]);
-        ConnectClouds(orderedClouds[0], orderedClouds[1]);
+        if(travelDirection == CloudsManager.RIGHT)
+            ConnectCloudsFromLeftToRight(frontCloud);
+        else
+            ConnectCloudsFromRightToLeft(frontCloud);
 
         if(CloudOutOfBounds(frontCloud)){
             ShiftCloudsOrder();
@@ -56,6 +60,16 @@ public class CloudLayerManager : MonoBehaviour{
         }
     }
     
+    /// <summary>
+    /// Gets the front cloud depending on the layer travel direction
+    /// </summary>
+    /// <returns></returns>
+    Cloud GetFrontCloud(){
+        if(travelDirection == CloudsManager.RIGHT)
+            return orderedClouds[orderedClouds.Length-1];
+        return orderedClouds[0];
+    }
+
     /// <summary>
     /// Moves the cloud in the direction of the layer and its speed 
     /// </summary>
@@ -68,36 +82,30 @@ public class CloudLayerManager : MonoBehaviour{
     }
 
     /// <summary>
-    /// Places "left" to the left of "right" with no gaps
-    /// </summary>
-    void ConnectClouds(Cloud left, Cloud right){
-        left.transform.position = new Vector3(
-            right.transform.position.x - right.Width,
-            right.transform.position.y,
-            right.transform.position.z
-        );
-    }
-
-    /// <summary>
     /// Checks if the given cloud is still inside the boundaries
     /// specified in the CloudsManager
     /// </summary>
     bool CloudOutOfBounds(Cloud cloud){
-        return cloud.transform.position.x > CloudsManager.RIGHT_BOUNDARY_POINT.x
-            || cloud.transform.position.x < CloudsManager.LEFT_BOUNDARY_POINT.x;
-    
+        if(travelDirection == CloudsManager.RIGHT)
+            return cloud.transform.position.x > CloudsManager.RIGHT_DIR_RIGHT_BOUNDARY_POINT.x
+                || cloud.transform.position.x < CloudsManager.RIGHT_DIR_LEFT_BOUNDARY_POINT.x;
+        else
+            return cloud.transform.position.x > CloudsManager.LEFT_DIR_RIGHT_BOUNDARY_POINT.x
+                || cloud.transform.position.x < CloudsManager.LEFT_DIR_LEFT_BOUNDARY_POINT.x;
     }
+    #endregion
 
+    #region SHIFTING CLOUDS
     /// <summary>
     ///  Shifts the clouds order by 1 for each cloud object
     /// </summary>
     void ShiftCloudsOrder(){
         foreach(Cloud cloud in cloudsInLayer){
-            if(cloud.Order_Position == CloudsManager.RIGHT){
-                cloud.Order_Position = CloudsManager.LEFT;
+            if(cloud.OrderPosition == travelDirection){
+                cloud.OrderPosition = travelDirection * -1;
                 continue;
             }
-            cloud.Order_Position += 1;
+            cloud.OrderPosition += travelDirection;
         }
         UpdateCloudsOrderInArray();
     }
@@ -108,14 +116,99 @@ public class CloudLayerManager : MonoBehaviour{
     /// </summary>
     void UpdateCloudsOrderInArray(){
         foreach(Cloud cloud in cloudsInLayer){
-            if(cloud.Order_Position == CloudsManager.RIGHT)
+            if(cloud.OrderPosition == CloudsManager.RIGHT)
                 orderedClouds[2] = cloud;
-            else if(cloud.Order_Position == CloudsManager.MIDDLE)
+            else if(cloud.OrderPosition == CloudsManager.MIDDLE)
                 orderedClouds[1] = cloud;
-            else if(cloud.Order_Position == CloudsManager.LEFT)
+            else if(cloud.OrderPosition == CloudsManager.LEFT)
                 orderedClouds[0] = cloud;
             else
                 throw  exCloudPositionNotFound;
+        }
+    }
+    #endregion
+
+    #region CONNECTING CLOUDS
+    /// <summary>
+    /// Places the a cloud and the b cloud next to eachother with no gaps
+    /// depending on the travel direction. 
+    /// If the direction is "right" : set a to left of b. 
+    /// If the direction is "left" : set b to right of a.
+    /// (Note: the important difference is which of the clouds position is one being set)
+    /// </summary>
+    void ConnectClouds(Cloud a, Cloud b){
+        if(travelDirection == CloudsManager.RIGHT){
+            a.transform.position = new Vector3(
+                b.transform.position.x - b.Width,
+                b.transform.position.y,
+                b.transform.position.z
+            );
+        }
+        else{
+            b.transform.position = new Vector3(
+                a.transform.position.x + a.Width,
+                a.transform.position.y,
+                a.transform.position.z
+            );
+        }
+    }
+
+    void ConnectCloudsFromLeftToRight(Cloud frontCloud){
+        ConnectClouds(orderedClouds[0], orderedClouds[1]);
+        ConnectClouds(orderedClouds[1], frontCloud);
+    }
+
+    void ConnectCloudsFromRightToLeft(Cloud frontCloud){
+        ConnectClouds(orderedClouds[1], orderedClouds[2]);
+        ConnectClouds(frontCloud, orderedClouds[1]);
+    }
+    #endregion
+
+    #region SETTING UP
+    /// <summary>
+    /// Sets the starting position of each cloud depening on the travel direction
+    /// </summary>
+    void SetLayerDirection(){
+        if(travelDirection == CloudsManager.RIGHT)
+            PositionLayerToTheLeft();
+        else if(travelDirection == CloudsManager.LEFT)
+            PositionLayerToTheRight();
+        else{
+            foreach(Cloud cloud in orderedClouds)
+                SetCloudHorizontalPos(cloud, 0f);
+        }
+    }
+
+    /// <summary>
+    /// Sets the cloud position on the x axis while keeping its y and z coordinates
+    /// </summary>
+    /// <param name="cloud"></param>
+    /// <param name="pos"></param>
+    void SetCloudHorizontalPos(Cloud cloud, float pos){
+        cloud.transform.position = new Vector3(pos, cloud.transform.position.y, cloud.transform.position.z);
+    }
+
+    /// <summary>
+    /// Sets all the clouds horizontal positions to the left of the camera in sequence
+    /// (Thats is next to each other)
+    /// </summary>
+    void PositionLayerToTheLeft(){
+        float horizontalPos = 0;
+        for(int i = orderedClouds.Length-1; i >= 0; i--){
+            SetCloudHorizontalPos(orderedClouds[i], horizontalPos);
+            horizontalPos -= 20f;
+        }
+    }
+
+    /// <summary>
+    /// Sets all the clouds horizontal positions to the right of the camera in sequence
+    /// (Thats is next to each other)
+    /// </summary>
+    void PositionLayerToTheRight(){
+        float horizontalPos = 0;
+        for(int i = 0; i < orderedClouds.Length; i++){
+            SetCloudHorizontalPos(orderedClouds[i], horizontalPos);
+            horizontalPos += 20f;
         }
     }
     #endregion

@@ -12,11 +12,13 @@ public class Cloud : MonoBehaviour{
 
     int orderPosition;
 
-    public int Order_Position{
+    public int OrderPosition{
         get{ 
             return orderPosition;
         }
         set{
+            if(value != CloudsManager.LEFT && value != CloudsManager.MIDDLE && value != CloudsManager.RIGHT)
+                throw new System.Exception("The cloud order position " + value + ", is not an accaptable value");
             orderPosition = value;
         }
     }
