@@ -2,7 +2,7 @@ using UnityEngine;
 
 public class pCameraController : MonoBehaviour {
     [SerializeField] Transform toFollow;
-    [SerializeField] pCameraPanningPoint firstPanningPoint;
+    public pCameraPanningPoint firstPanningPoint;
 
     public pCameraPanningPoint nextPanningPoint;
     public pCameraPanningPoint previousPanningPoint;
@@ -17,13 +17,7 @@ public class pCameraController : MonoBehaviour {
     float refcamSpeed;
 
     private void Awake() {
-        previousPanningPoint = firstPanningPoint;
-        nextPanningPoint = firstPanningPoint.getNextPoint;
-
-        transform.position = new Vector3 (previousPanningPoint.x, previousPanningPoint.y, transform.position.z);
-
-        CurrentPanningType = GetPanningType();
-        FlowDirection = GetFlowDirection(CurrentPanningType);
+        Initialize();
     }
 
     void FixedUpdate() {
@@ -46,6 +40,16 @@ public class pCameraController : MonoBehaviour {
         else if(CurrentPanningType == HorizontalPanning){
             LockCameraBetweenHorizontalPoints();
         }
+    }
+
+    public void Initialize(){
+        previousPanningPoint = firstPanningPoint;
+        nextPanningPoint = firstPanningPoint.getNextPoint;
+
+        transform.position = new Vector3 (previousPanningPoint.x, previousPanningPoint.y, transform.position.z);
+
+        CurrentPanningType = GetPanningType();
+        FlowDirection = GetFlowDirection(CurrentPanningType);
     }
 
     private void FollowVertically(){
@@ -196,7 +200,7 @@ public class pCameraController : MonoBehaviour {
                 if(previousPanningPoint.getPreviousPoint != null){
                     int nextPanningType = GetPanningType(previousPanningPoint, previousPanningPoint.getPreviousPoint);
                     if(nextPanningType == VerticalPanning)
-                        ShiftPointsWhenInNextPanningRegion(Vector2.right, nextPanningType, previousPanningPoint, previousPanningPoint.getPreviousPoint);
+                        ShiftPointsWhenInNextPanningRegion(Vector2.left, nextPanningType, previousPanningPoint, previousPanningPoint.getPreviousPoint);
                     else
                         ShiftToPreviousPanningPoints();
                 }
