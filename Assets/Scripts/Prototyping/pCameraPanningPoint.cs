@@ -1,10 +1,6 @@
 using UnityEngine;
 
 public class pCameraPanningPoint : MonoBehaviour {
-
-    [Tooltip("Marks this point as edge of the scene so the camera wont go past it")]
-    [SerializeField] bool isSceneEdge = true;
-
     [Space]
     [SerializeField] pCameraPanningPoint nextPoint;
     [Space]
@@ -25,6 +21,4 @@ public class pCameraPanningPoint : MonoBehaviour {
             return previousPoint;
         }
     }
-
-    public bool IsSceneEdgePoint{ get { return isSceneEdge; } }
 }

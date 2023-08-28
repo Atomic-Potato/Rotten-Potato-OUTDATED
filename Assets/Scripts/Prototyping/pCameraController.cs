@@ -4,8 +4,8 @@ public class pCameraController : MonoBehaviour {
     [SerializeField] Transform toFollow;
     [SerializeField] pCameraPanningPoint firstPanningPoint;
 
-    pCameraPanningPoint nextPanningPoint;
-    pCameraPanningPoint previousPanningPoint;
+    public pCameraPanningPoint nextPanningPoint;
+    public pCameraPanningPoint previousPanningPoint;
 
     public static int CurrentPanningType;
     public static int VerticalPanning{ get{ return 1; } }
@@ -13,6 +13,8 @@ public class pCameraController : MonoBehaviour {
 
     public static Vector2 FlowDirection;
     
+
+    float refcamSpeed;
 
     private void Awake() {
         previousPanningPoint = firstPanningPoint;
@@ -27,11 +29,9 @@ public class pCameraController : MonoBehaviour {
     void FixedUpdate() {
         if(CurrentPanningType == VerticalPanning){
             FollowVertically();
-            LockCameraBetweenVerticalPoints();
         }
         else if(CurrentPanningType == HorizontalPanning){
             FollowHorizontally();
-            LockCameraBetweenHorizontalPoints();
         }
         else{
             transform.position = toFollow.position; // Fail safe so in case it would happen the type will be fixed at the next point
@@ -49,42 +49,217 @@ public class pCameraController : MonoBehaviour {
     }
 
     private void FollowVertically(){
-        transform.position = new Vector3(transform.position.x, toFollow.transform.position.y, transform.position.z);
+        
+        transform.position = new Vector3(
+            transform.position.x, 
+            Mathf.SmoothDamp(transform.position.y, toFollow.transform.position.y, ref refcamSpeed, 0.1f), 
+            transform.position.z);
     }
 
     private void FollowHorizontally(){
-        transform.position = new Vector3(toFollow.transform.position.x, transform.position.y, transform.position.z);
+        transform.position = new Vector3(
+            Mathf.SmoothDamp(transform.position.x, toFollow.transform.position.x, ref refcamSpeed, 0.1f), 
+            transform.position.y, 
+            transform.position.z);
     }
 
     void LockCameraBetweenVerticalPoints(){
         if(FlowDirection == Vector2.up){
-            if(nextPanningPoint.IsSceneEdgePoint &&  transform.position.y >= nextPanningPoint.y)
-                transform.position = new Vector3 (nextPanningPoint.x, nextPanningPoint.y, transform.position.z);
-            if(previousPanningPoint.IsSceneEdgePoint &&  transform.position.y <= previousPanningPoint.y)
-                transform.position = new Vector3 (previousPanningPoint.x, previousPanningPoint.y, transform.position.z);
+            LockBetweenPreviousAndNext();
         }
         else{
-            if(nextPanningPoint.IsSceneEdgePoint &&  transform.position.y <= nextPanningPoint.y)
+            LockBetweenNextAndPrevious();
+        }
+
+        void LockBetweenPreviousAndNext(){
+            // Previous point is to the bottom of Next
+            // Next point is to the top of Previous
+
+            if(transform.position.y >= nextPanningPoint.y){
+                // Set camera position to the reached point
                 transform.position = new Vector3 (nextPanningPoint.x, nextPanningPoint.y, transform.position.z);
-            if(previousPanningPoint.IsSceneEdgePoint &&  transform.position.y >= previousPanningPoint.y)
+
+                if(nextPanningPoint.getNextPoint != null){
+                    int nextPanningType = GetPanningType(nextPanningPoint, nextPanningPoint.getNextPoint);
+                    if(nextPanningType == HorizontalPanning)
+                        ShiftPointsWhenInNextPanningRegion(Vector2.right, nextPanningType, nextPanningPoint, nextPanningPoint.getNextPoint);
+                    else
+                        ShiftToNextPanningPoints();
+                }
+            }
+            else if(transform.position.y <= previousPanningPoint.y){
+                // Set camera position to the reached point
                 transform.position = new Vector3 (previousPanningPoint.x, previousPanningPoint.y, transform.position.z);
+
+                if(previousPanningPoint.getPreviousPoint != null){
+                    int nextPanningType = GetPanningType(previousPanningPoint, previousPanningPoint.getPreviousPoint);
+                    if(nextPanningType == HorizontalPanning)
+                        ShiftPointsWhenInNextPanningRegion(Vector2.left, nextPanningType, previousPanningPoint, previousPanningPoint.getPreviousPoint);
+                    else
+                        ShiftToPreviousPanningPoints();
+                }
+            }
+        }
+
+        void LockBetweenNextAndPrevious(){
+            // Previous point is to the top of Next
+            // Next point is to the bottom of Previous
+
+            if(transform.position.y <= nextPanningPoint.y){
+                // Set camera position to the reached point
+                transform.position = new Vector3 (nextPanningPoint.x, nextPanningPoint.y, transform.position.z);
+
+                if(nextPanningPoint.getNextPoint != null){
+                    int nextPanningType = GetPanningType(nextPanningPoint, nextPanningPoint.getNextPoint);
+                    if(nextPanningType == HorizontalPanning)
+                        ShiftPointsWhenInNextPanningRegion(Vector2.right, nextPanningType, nextPanningPoint, nextPanningPoint.getNextPoint);
+                    else
+                        ShiftToNextPanningPoints();
+                }
+            }
+            else if(transform.position.y >= previousPanningPoint.y){
+                transform.position = new Vector3 (previousPanningPoint.x, previousPanningPoint.y, transform.position.z);
+
+                if(previousPanningPoint.getPreviousPoint != null){
+                    int nextPanningType = GetPanningType(previousPanningPoint, previousPanningPoint.getPreviousPoint);
+                    if(nextPanningType == HorizontalPanning)
+                        ShiftPointsWhenInNextPanningRegion(Vector2.left, nextPanningType, previousPanningPoint, previousPanningPoint.getPreviousPoint);
+                    else
+                        ShiftToPreviousPanningPoints();
+                }
+            }
         }
     }
 
     void LockCameraBetweenHorizontalPoints(){
         if(FlowDirection == Vector2.right){
-            if(nextPanningPoint.IsSceneEdgePoint &&  transform.position.x >= nextPanningPoint.x)
-                transform.position = new Vector3 (nextPanningPoint.x, nextPanningPoint.y, transform.position.z);
-            if(previousPanningPoint.IsSceneEdgePoint &&  transform.position.x <= previousPanningPoint.x)
-                transform.position = new Vector3 (previousPanningPoint.x, previousPanningPoint.y, transform.position.z);
+            LockBetweenPreviousAndNext();
         }
         else{
-            if(nextPanningPoint.IsSceneEdgePoint &&  transform.position.x <= nextPanningPoint.x)
+            LockBetweenNextAndPrevious();
+        }
+
+        void LockBetweenPreviousAndNext(){
+            // Previous point is to the left of Next
+            // Next point is to the right of Previous
+
+            if(transform.position.x >= nextPanningPoint.x){
+                // Normal case: Scene edge
+                // Set camera position to the reached point
                 transform.position = new Vector3 (nextPanningPoint.x, nextPanningPoint.y, transform.position.z);
-            if(previousPanningPoint.IsSceneEdgePoint &&  transform.position.x >= previousPanningPoint.x)
+
+                // Unusual case: Switch point
+                if(nextPanningPoint.getNextPoint != null){
+                    int nextPanningType = GetPanningType(nextPanningPoint, nextPanningPoint.getNextPoint);
+                    if(nextPanningType == VerticalPanning)
+                        ShiftPointsWhenInNextPanningRegion(Vector2.right, nextPanningType, nextPanningPoint, nextPanningPoint.getNextPoint);
+                    else
+                        ShiftToNextPanningPoints();
+                }
+            }
+            else if(transform.position.x <= previousPanningPoint.x){
+                // Normal case: Scene edge
+                // Set camera position to the reached point
                 transform.position = new Vector3 (previousPanningPoint.x, previousPanningPoint.y, transform.position.z);
+
+                // Unusual case: Switch point
+                if(previousPanningPoint.getPreviousPoint  != null){
+                    int nextPanningType = GetPanningType(previousPanningPoint, previousPanningPoint.getPreviousPoint);
+                    if(nextPanningType == VerticalPanning)
+                        ShiftPointsWhenInNextPanningRegion(Vector2.left, nextPanningType, previousPanningPoint, previousPanningPoint.getPreviousPoint);
+                    else
+                        ShiftToPreviousPanningPoints();
+                }
+            }
+        }
+
+        void LockBetweenNextAndPrevious(){
+            // Previous point is to the right of Next
+            // Next point is to the left of Previous
+
+            if(transform.position.x <= nextPanningPoint.x){
+                // Set camera position to the reached point
+                transform.position = new Vector3 (nextPanningPoint.x, nextPanningPoint.y, transform.position.z);
+
+                if(nextPanningPoint.getNextPoint != null){
+                    int nextPanningType = GetPanningType(nextPanningPoint, nextPanningPoint.getNextPoint);
+                    if(nextPanningType == VerticalPanning)
+                        ShiftPointsWhenInNextPanningRegion(Vector2.right, nextPanningType, nextPanningPoint, nextPanningPoint.getNextPoint);
+                    else
+                        ShiftToNextPanningPoints();
+                }
+            }
+            else if(transform.position.x >= previousPanningPoint.x){
+                // Set camera position to the reached point
+                transform.position = new Vector3 (previousPanningPoint.x, previousPanningPoint.y, transform.position.z);
+
+                if(previousPanningPoint.getPreviousPoint != null){
+                    int nextPanningType = GetPanningType(previousPanningPoint, previousPanningPoint.getPreviousPoint);
+                    if(nextPanningType == VerticalPanning)
+                        ShiftPointsWhenInNextPanningRegion(Vector2.right, nextPanningType, previousPanningPoint, previousPanningPoint.getPreviousPoint);
+                    else
+                        ShiftToPreviousPanningPoints();
+                }
+            }
         }
     }
+
+    void ShiftToNextPanningPoints(){
+        Debug.Log("Shifted to next");
+
+        previousPanningPoint = nextPanningPoint;
+        nextPanningPoint = nextPanningPoint.getNextPoint;
+
+        CurrentPanningType = GetPanningType();
+        FlowDirection = GetFlowDirection(CurrentPanningType);
+    }
+
+    void ShiftToPreviousPanningPoints(){
+        Debug.Log("Shifted to previous");
+        
+        nextPanningPoint = previousPanningPoint;
+        previousPanningPoint = nextPanningPoint.getPreviousPoint;
+
+        CurrentPanningType = GetPanningType();
+        FlowDirection = GetFlowDirection(CurrentPanningType);
+    }
+
+    void ShiftPointsWhenInNextPanningRegion(Vector2 shiftingDirection, int panningType, pCameraPanningPoint startPoint, pCameraPanningPoint endPoint){
+            Vector2 nextFlowDirection = GetFlowDirection(panningType, startPoint, endPoint);
+            
+            if(nextFlowDirection == Vector2.up){
+                if(toFollow.transform.position.y > startPoint.y){
+                    if(shiftingDirection == Vector2.right)
+                        ShiftToNextPanningPoints();
+                    else
+                        ShiftToPreviousPanningPoints();
+                }
+            }
+            else if(nextFlowDirection == Vector2.down){
+                if(toFollow.transform.position.y < startPoint.y){
+                    if(shiftingDirection == Vector2.right)
+                        ShiftToNextPanningPoints();
+                    else
+                        ShiftToPreviousPanningPoints();
+                }
+            }
+            else if(nextFlowDirection == Vector2.left){
+                if(toFollow.transform.position.x < startPoint.x){
+                    if(shiftingDirection == Vector2.right)
+                        ShiftToNextPanningPoints();
+                    else
+                        ShiftToPreviousPanningPoints();
+                }
+            }
+            else if(nextFlowDirection == Vector2.right){
+                if(toFollow.transform.position.x > startPoint.x){
+                    if(shiftingDirection == Vector2.right)
+                        ShiftToNextPanningPoints();
+                    else
+                        ShiftToPreviousPanningPoints();
+                }
+            }
+        }
 
     /// <summary>
     /// Checks the difference in height and width between the panning points
@@ -101,6 +276,16 @@ public class pCameraController : MonoBehaviour {
             return HorizontalPanning; 
     }
 
+    int GetPanningType(pCameraPanningPoint previous, pCameraPanningPoint next){
+        float differenceInHeight = Mathf.Abs(previous.y - next.y); 
+        float differenceInWidth = Mathf.Abs(previous.x - next.x);
+
+        if(differenceInHeight > differenceInWidth)
+            return VerticalPanning;
+        else
+            return HorizontalPanning; 
+    }
+
     Vector2 GetFlowDirection(int panningType){
         if(panningType == HorizontalPanning){
             if(previousPanningPoint.x < nextPanningPoint.x)
@@ -110,6 +295,21 @@ public class pCameraController : MonoBehaviour {
         }
         else{
              if(previousPanningPoint.y < nextPanningPoint.y)
+                return Vector2.up;
+            else
+                return Vector2.down;   
+        }
+    }
+
+    Vector2 GetFlowDirection(int panningType, pCameraPanningPoint previous, pCameraPanningPoint next){
+        if(panningType == HorizontalPanning){
+            if(previous.x < next.x)
+                return Vector2.right;
+            else
+                return Vector2.left;
+        }
+        else{
+             if(previous.y < next.y)
                 return Vector2.up;
             else
                 return Vector2.down;   
