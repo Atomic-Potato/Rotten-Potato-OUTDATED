@@ -1,0 +1,191 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1 &1445636940577667762
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1445636940577667767}
+  - component: {fileID: 1445636940577667764}
+  m_Layer: 0
+  m_Name: Sounds Manager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1445636940577667767
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1445636940577667762}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: -3.5499992, y: -15.25, z: 2.5}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1445636940577667764
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1445636940577667762}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ad5768c8a99ac7441b3ecf28e3bb94cf, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  playerAudioObject: {fileID: 0}
+  player:
+  - name: Grounded Movement
+    clip: {fileID: 8300000, guid: 5ccbc320429768444b87f18aaeac9b24, type: 3}
+    initialVolume: 0.25
+    minDistanceToHear: 3.5
+    pitch: 1
+    playOnAwake: 0
+    loop: 1
+    timeBeforePlayedAgain: 0
+    FadeInTime: 0.15
+    FadeOutTime: 0.25
+    parent: {fileID: 0}
+    source: {fileID: 0}
+  - name: Jump
+    clip: {fileID: 8300000, guid: ff8fc780723e74c4c9f7012b0effef9a, type: 3}
+    initialVolume: 0.1
+    minDistanceToHear: 3.5
+    pitch: 1
+    playOnAwake: 0
+    loop: 0
+    timeBeforePlayedAgain: 0
+    FadeInTime: 0
+    FadeOutTime: 0.25
+    parent: {fileID: 0}
+    source: {fileID: 0}
+  - name: On Grounded
+    clip: {fileID: 8300000, guid: f5e968959fe607849919b41df1481490, type: 3}
+    initialVolume: 1
+    minDistanceToHear: 3.5
+    pitch: 1
+    playOnAwake: 0
+    loop: 0
+    timeBeforePlayedAgain: 0
+    FadeInTime: 0
+    FadeOutTime: 0.25
+    parent: {fileID: 0}
+    source: {fileID: 0}
+  - name: Grappling
+    clip: {fileID: 8300000, guid: 0db2257d7de59d143bfd1dc1967f4fa5, type: 3}
+    initialVolume: 1
+    minDistanceToHear: 3.5
+    pitch: 1
+    playOnAwake: 0
+    loop: 1
+    timeBeforePlayedAgain: 0
+    FadeInTime: 1
+    FadeOutTime: 0.15
+    parent: {fileID: 0}
+    source: {fileID: 0}
+  - name: On Grappling
+    clip: {fileID: 8300000, guid: fc2a887fd4f7c6342918c6a3f31ade6d, type: 3}
+    initialVolume: 1
+    minDistanceToHear: 3.5
+    pitch: 1
+    playOnAwake: 0
+    loop: 0
+    timeBeforePlayedAgain: 0
+    FadeInTime: 0
+    FadeOutTime: 0
+    parent: {fileID: 0}
+    source: {fileID: 0}
+  - name: On Grappling Finish
+    clip: {fileID: 8300000, guid: 13c44f5a5276c7e429b9c57a935fe1a2, type: 3}
+    initialVolume: 1
+    minDistanceToHear: 3.5
+    pitch: 1
+    playOnAwake: 0
+    loop: 0
+    timeBeforePlayedAgain: 0
+    FadeInTime: 0
+    FadeOutTime: 0
+    parent: {fileID: 0}
+    source: {fileID: 0}
+  - name: On Grappling Break
+    clip: {fileID: 8300000, guid: 6b8ec0c64c4189741ae644b387a4336b, type: 3}
+    initialVolume: 0.3
+    minDistanceToHear: 3.5
+    pitch: 1
+    playOnAwake: 0
+    loop: 0
+    timeBeforePlayedAgain: 0
+    FadeInTime: 0
+    FadeOutTime: 0
+    parent: {fileID: 0}
+    source: {fileID: 0}
+  - name: Dashing
+    clip: {fileID: 8300000, guid: cbac4dcf0dd228244a6cd4409f13b159, type: 3}
+    initialVolume: 0.05
+    minDistanceToHear: 3.5
+    pitch: 1
+    playOnAwake: 0
+    loop: 1
+    timeBeforePlayedAgain: 0
+    FadeInTime: 0.25
+    FadeOutTime: 0.5
+    parent: {fileID: 0}
+    source: {fileID: 0}
+  - name: On Dashing
+    clip: {fileID: 8300000, guid: e5cd500a86e473643a34c12b47d5ddd2, type: 3}
+    initialVolume: 1
+    minDistanceToHear: 3.5
+    pitch: 1
+    playOnAwake: 0
+    loop: 0
+    timeBeforePlayedAgain: 0
+    FadeInTime: 0
+    FadeOutTime: 0
+    parent: {fileID: 0}
+    source: {fileID: 0}
+  - name: Rolling
+    clip: {fileID: 8300000, guid: 05d3f751ea049c94da60492def788d32, type: 3}
+    initialVolume: 0.25
+    minDistanceToHear: 3.5
+    pitch: 1
+    playOnAwake: 0
+    loop: 1
+    timeBeforePlayedAgain: 0
+    FadeInTime: 0.5
+    FadeOutTime: 0.25
+    parent: {fileID: 0}
+    source: {fileID: 0}
+  - name: Shooting
+    clip: {fileID: 8300000, guid: 541ce06ee2abaca48ad355b4f92767e2, type: 3}
+    initialVolume: 0.5
+    minDistanceToHear: 3.5
+    pitch: 1
+    playOnAwake: 0
+    loop: 0
+    timeBeforePlayedAgain: 0
+    FadeInTime: 0
+    FadeOutTime: 0
+    parent: {fileID: 0}
+    source: {fileID: 0}
+  - name: Grappling Ready
+    clip: {fileID: 8300000, guid: a01136e7bca116c44920810190aacdd5, type: 3}
+    initialVolume: 0.15
+    minDistanceToHear: 3.5
+    pitch: 1
+    playOnAwake: 0
+    loop: 0
+    timeBeforePlayedAgain: 0
+    FadeInTime: 0
+    FadeOutTime: 0
+    parent: {fileID: 0}
+    source: {fileID: 0}
