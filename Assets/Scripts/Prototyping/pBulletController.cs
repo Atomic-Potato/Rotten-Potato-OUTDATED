@@ -12,7 +12,7 @@ public class pBulletController : MonoBehaviour
 
     void OnEnable()
     {
-        rigidbody.AddForce(Vector2.right * launchForce, ForceMode2D.Impulse);
+        rigidbody.AddRelativeForce(Vector2.right * launchForce, ForceMode2D.Impulse);
 
         StartCoroutine(SelfDestructInTime());
     }
@@ -24,7 +24,7 @@ public class pBulletController : MonoBehaviour
             DamagePlayer();
             SelfDestroy();
         }
-        else
+        else if (other.gameObject.tag != "Projectile")
         {
             SelfDestroy();
         }
