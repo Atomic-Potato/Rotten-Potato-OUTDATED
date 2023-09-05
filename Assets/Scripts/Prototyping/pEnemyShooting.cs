@@ -21,7 +21,7 @@ public class pEnemyShooting : MonoBehaviour
 
         bool IsPlayerWithingAttackDistance()
         {
-            return Vector2.Distance(pPlayer.Instance.transform.position, transform.position) < distanceToAttack;
+            return Vector2.Distance(pPlayer.Instance.Object.transform.position, transform.position) < distanceToAttack;
         }
     }
 
@@ -48,7 +48,7 @@ public class pEnemyShooting : MonoBehaviour
 
         Quaternion GetRotationToPlayer()
         {
-            Vector2 res = pPlayer.Instance.transform.position - transform.position;
+            Vector2 res = pPlayer.Instance.Object.transform.position - transform.position;
             float angle = Mathf.Atan2(res.y, res.x) * Mathf.Rad2Deg;
             return Quaternion.Euler(new Vector3(0, 0, angle));
         }

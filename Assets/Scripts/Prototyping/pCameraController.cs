@@ -209,8 +209,6 @@ public class pCameraController : MonoBehaviour {
     }
 
     void ShiftToNextPanningPoints(){
-        Debug.Log("Shifted to next");
-
         previousPanningPoint = nextPanningPoint;
         nextPanningPoint = nextPanningPoint.getNextPoint;
 
@@ -219,8 +217,6 @@ public class pCameraController : MonoBehaviour {
     }
 
     void ShiftToPreviousPanningPoints(){
-        Debug.Log("Shifted to previous");
-        
         nextPanningPoint = previousPanningPoint;
         previousPanningPoint = nextPanningPoint.getPreviousPoint;
 

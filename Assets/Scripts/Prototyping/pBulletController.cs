@@ -3,6 +3,8 @@ using UnityEngine;
 
 public class pBulletController : MonoBehaviour
 {
+    [Range(0, 999)]
+    [SerializeField] int damagePoints;
     [SerializeField] float launchForce = 2f;
     [Range(0f, 30f)]
     [SerializeField] float lifeTime = 10f;
@@ -32,7 +34,7 @@ public class pBulletController : MonoBehaviour
 
     void DamagePlayer()
     {
-        
+        pPlayer.Instance.Damage?.Invoke(damagePoints);
     }
 
     void SelfDestroy()
