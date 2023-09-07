@@ -14,13 +14,13 @@ public class pUIManager : MonoBehaviour
 
     void OnEnable()
     {
-        pPlayer.Instance.Damage += (x) => UpdateHitPoints();
+        pPlayer.Instance.Damage += _ => UpdateHitPoints();
         UpdateHitPoints();
     }
 
     void OnDisable() 
     {
-        pPlayer.Instance.Damage -= (x) => UpdateHitPoints();
+        pPlayer.Instance.Damage -= _ => UpdateHitPoints();
     }
 
     void UpdateHitPoints()

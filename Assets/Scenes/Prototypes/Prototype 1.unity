@@ -3873,7 +3873,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &2129186631
 Transform:
   m_ObjectHideFlags: 0
@@ -4029,19 +4029,6 @@ Animator:
   m_HasTransformHierarchy: 1
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorControllerStateOnDisable: 0
---- !u!114 &4686942044820354585
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7048394262691945167}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 38f618690403684449c1bf0fcefbb832, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  center: {fileID: 7048394260952802328}
 --- !u!4 &4908004466534101484
 Transform:
   m_ObjectHideFlags: 0
@@ -4261,7 +4248,7 @@ BoxCollider2D:
   m_IsTrigger: 0
   m_UsedByEffector: 0
   m_UsedByComposite: 0
-  m_Offset: {x: 0.019929528, y: -0.06643188}
+  m_Offset: {x: 0, y: -0.08}
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0, y: 0}
@@ -4272,7 +4259,7 @@ BoxCollider2D:
     adaptiveTiling: 0
   m_AutoTiling: 0
   serializedVersion: 2
-  m_Size: {x: 0.5498358, y: 0.84213626}
+  m_Size: {x: 0.5498358, y: 0.84}
   m_EdgeRadius: 0
 --- !u!1 &7048394262691945167
 GameObject:
@@ -4283,13 +4270,13 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 7048394262691945203}
-  - component: {fileID: 4686942044820354585}
+  - component: {fileID: 7048394262691945168}
   - component: {fileID: 1659856477907056084}
+  - component: {fileID: 7048394262691945169}
   - component: {fileID: 3400764494836294395}
   - component: {fileID: 8476856364894212769}
   - component: {fileID: 7048394262691945165}
   - component: {fileID: 7048394262691945166}
-  - component: {fileID: 7048394262691945168}
   m_Layer: 9
   m_Name: Player
   m_TagString: Player
@@ -4310,6 +4297,33 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   hitPoints: 4
+--- !u!114 &7048394262691945169
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7048394262691945167}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 413292e5fd6274948854b126b5dc8237, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  count: 5
+  distance: 3
+  time: 0.1
+  holdTime: 1
+  holdJumpDistance: 0.1
+  holdJumpTime: 0.1
+  rigidbody: {fileID: 7048394262691945165}
+  collider: {fileID: 7048394262691945166}
+  noFrictionMaterial: {fileID: 6200000, guid: 9caa2176edf51584781d36311d10f50b, type: 2}
+  basicMovement: {fileID: 1659856477907056084}
+  gizmosDrawDistance: 1
+  gizmosUseDistanceDirectionToMouse: 0
+  gizmosDistanceDirection: {x: 0, y: 1}
+  _isDashing: 0
+  _isReceivingJumpInput: 0
 --- !u!4 &7048394262691945203
 Transform:
   m_ObjectHideFlags: 0
@@ -4504,8 +4518,8 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
-      - m_Target: {fileID: 0}
-        m_MethodName: GetJumpInput
+      - m_Target: {fileID: 7048394262691945169}
+        m_MethodName: DetectJumpInput
         m_Mode: 0
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -4564,8 +4578,8 @@ MonoBehaviour:
     m_ActionName: Player/Shoot[/Mouse/leftButton]
   - m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
-        m_MethodName: ShiftModiferInput
+      - m_Target: {fileID: 7048394262691945169}
+        m_MethodName: Dash
         m_Mode: 0
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
