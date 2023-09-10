@@ -1,5 +1,9 @@
 ﻿using UnityEngine;
 
+// TODO:
+// - Make indicator distance be the same distance as the dash
+// - Block indicator by solid objects
+
 public class pAimIndicator : MonoBehaviour
 {
     [Range(0f, 20f)]

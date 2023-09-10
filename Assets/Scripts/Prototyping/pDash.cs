@@ -40,13 +40,16 @@ public class pDash : MonoBehaviour
     int _dashesLeft;
     float _initialVelocity;
     float _initialGravity;
+    float _holdTimer;
     Vector2 _direction;
     Coroutine _dashCache;
     Coroutine _jumpCache;
 
-    public bool _isDashing;
+    bool _isCanHold;
+    bool _isHolding;
+    bool _isDashing;
     public bool IsDashing => _isDashing;
-    public bool _isReceivingJumpInput;
+    bool _isReceivingJumpInput;
 
     void OnDrawGizmos() 
     {
@@ -68,12 +71,17 @@ public class pDash : MonoBehaviour
 
     void Update()
     {
-        Debug.Log(_isReceivingJumpInput);
-
-        if (BasicMovement.IS_GROUNDED)
+        if (BasicMovement.IS_GROUNDED && (!_isDashing || !_isHolding))
         {
             _dashesLeft = count;
         }
+
+        if (_isCanHold)
+        {
+            Hold();
+        }
+
+        Debug.Log("Can hold: " + _isCanHold + "\nIs holding: " + _isHolding);
     }
 
     void OnTriggerEnter(Collider other) 
@@ -98,34 +106,19 @@ public class pDash : MonoBehaviour
 
         IEnumerator ExecuteDash()
         {
-            float holdTimer = 0f;
-
-            _isDashing = true;   
+            _isDashing = true;
+            _isCanHold = false;
             _direction = GetMouseDirection();
 
             DisableHostileCollision();
-            RemoveFriction();
             StopMovement();
 
             rigidbody.AddForce(_initialVelocity * _direction, ForceMode2D.Impulse);
             yield return new WaitForSeconds(time);
             rigidbody.velocity = Vector2.zero;
 
-            while (holdTimer < holdTime)
-            {
-                Debug.Log(holdTimer);
-                if (_isReceivingJumpInput)
-                {
-                    float initialJumpVelocity = GetInitialVelocity(holdJumpDistance, holdJumpTime);
-                    rigidbody.AddForce(initialJumpVelocity * Vector2.up, ForceMode2D.Impulse);
-                    break;
-                }
+            _isCanHold = true;
 
-                holdTimer += Time.deltaTime;
-                yield return null;
-            }
-
-            RestoreMovement();
             EnableHostileCollision();          
 
             _dashesLeft--;
@@ -133,6 +126,7 @@ public class pDash : MonoBehaviour
             _isDashing = false;
         }
 
+        #region Local Methods
         bool IsAbleToDash()
         {
             return _dashCache == null && context.performed && _dashesLeft > 0;
@@ -143,17 +137,6 @@ public class pDash : MonoBehaviour
             basicMovement.enabled = false;
             rigidbody.velocity = Vector2.zero;
             rigidbody.gravityScale = 0f;
-        }
-
-        void RestoreMovement()
-        {
-            rigidbody.gravityScale = _initialGravity;
-            basicMovement.enabled = true;
-        }
-
-        void RemoveFriction()
-        {
-            collider.sharedMaterial = noFrictionMaterial;
         }
 
         void DisableHostileCollision()
@@ -167,7 +150,72 @@ public class pDash : MonoBehaviour
             // TODO:
             // Enable collision with projectiles and enemies
         }
+        #endregion
     }
+
+    void Hold()
+    {
+        if (!_isHolding)
+        {
+            _holdTimer = 0f;
+            StopMovement();
+        }
+
+        _isHolding = true;
+
+        if (_isReceivingJumpInput)
+        {
+            Jump();
+            StopHolding();
+        }
+
+        if (_isHolding)
+        {
+            _holdTimer += Time.deltaTime;
+        }
+
+        if(_holdTimer >= holdTime)
+        {
+            StopHolding();
+            RemoveFriction();
+        }
+
+        #region Local Methods
+        void StopHolding()
+        {
+            _isHolding = false;
+            _isCanHold = false;
+            RestoreMovement();
+        } 
+
+        void RestoreMovement()
+        {
+            rigidbody.gravityScale = _initialGravity;
+            basicMovement.enabled = true;
+        }
+
+        void RemoveFriction()
+        {
+            collider.sharedMaterial = noFrictionMaterial;
+        }
+
+        void StopMovement()
+        {
+            basicMovement.enabled = false;
+            rigidbody.velocity = Vector2.zero;
+            rigidbody.gravityScale = 0f;
+        }
+
+        void Jump()
+        {
+            float initialJumpVelocity = GetInitialVelocity(holdJumpDistance, holdJumpTime);
+            rigidbody.AddForce(initialJumpVelocity * Vector2.up, ForceMode2D.Impulse);
+        }
+        #endregion
+    }
+
+
+
 
     public Vector2 GetMouseDirection()
     {
