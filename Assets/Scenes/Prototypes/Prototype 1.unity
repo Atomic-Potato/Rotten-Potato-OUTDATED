@@ -3948,13 +3948,14 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 2129186631}
+  - component: {fileID: 2129186632}
   m_Layer: 0
   m_Name: Enemy
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &2129186631
 Transform:
   m_ObjectHideFlags: 0
@@ -3971,6 +3972,28 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 7
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &2129186632
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2129186630}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fd7f8470b4832d846a91272c3c83ee50, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  path:
+  - isUsingRandom: 0
+    random:
+      pointsRange: 0
+      originPoint: {fileID: 0}
+      isUsingManualPoints: 0
+      points: []
+      isUsingRandomPoints: 0
+      numberOfPoints: 0
+    isUsingLinear: 0
 --- !u!1 &2130538263
 GameObject:
   m_ObjectHideFlags: 0
@@ -4405,8 +4428,6 @@ MonoBehaviour:
   gizmosDrawDistance: 1
   gizmosUseDistanceDirectionToMouse: 0
   gizmosDistanceDirection: {x: 0, y: 1}
-  _isDashing: 0
-  _isReceivingJumpInput: 0
 --- !u!114 &7048394262691945170
 MonoBehaviour:
   m_ObjectHideFlags: 0
