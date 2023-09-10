@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Xml;
 using UnityEngine;
 
 
@@ -164,14 +165,36 @@ public class EnemyPathSection
     [Serializable]
     class Linear : EnemyPathSectionBase
     {
+        [Tooltip("Enemy will move in the same order of the points")]
+        [SerializeField] Transform[] points;
+
+        int _currentIndex = -1;
+
         public override LinkedPoint GetNextPoint()
         {
-            throw new NotImplementedException();
+            if (points.Length == 0)
+            {
+                throw new Exception("Linear section contains no points");
+            }
+
+            _currentIndex++;
+            return _currentIndex == points.Length ? null : new LinkedPoint(points[_currentIndex].position);
         }
 
         public override LinkedPoint GetPreviousPoint()
         {
-            throw new NotImplementedException();
+            if (points.Length == 0)
+            {
+                throw new Exception("Linear section contains no points");
+            }
+
+            if (_currentIndex == -1)
+            {
+                throw new Exception("Enemy still did not go throught the linear section");
+            }
+
+            _currentIndex--;
+            return _currentIndex == -1 ? null : new LinkedPoint(points[_currentIndex].position);
         }
     }
 }
