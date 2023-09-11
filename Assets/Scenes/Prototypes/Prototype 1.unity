@@ -4508,13 +4508,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 413292e5fd6274948854b126b5dc8237, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  count: 100
+  count: 1
   distance: 3
   time: 0.1
-  holdTime: 5
+  holdTime: 2
   holdJumpDistance: 1
   holdJumpTime: 0.1
-  restoredDashesCount: 0
+  restoredDashesCount: 1
   rigidbody: {fileID: 7048394262691945165}
   collider: {fileID: 7048394262691945166}
   noFrictionMaterial: {fileID: 6200000, guid: 9caa2176edf51584781d36311d10f50b, type: 2}

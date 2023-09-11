@@ -1,4 +1,5 @@
 ﻿using System.Collections;
+using TMPro;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -21,14 +22,13 @@ public class pDash : MonoBehaviour
     [SerializeField] float holdJumpTime;
 
     [Space]
-    [Range(0, 1)]
+    [Range(0, 5)]
     [SerializeField] int restoredDashesCount;
 
     [Space]
     [SerializeField] Rigidbody2D rigidbody;
     [SerializeField] Collider2D collider;
     [SerializeField] PhysicsMaterial2D noFrictionMaterial;
-    [SerializeField] BasicMovement basicMovement;
 
     [Space]
     [Header("Gizmos")]
@@ -98,8 +98,8 @@ public class pDash : MonoBehaviour
         
         if (other.gameObject.tag == "Enemy")
         {
-            _dashesLeft += restoredDashesCount;
             StopDash();
+            _dashesLeft += restoredDashesCount;
         }    
     }
 
@@ -113,8 +113,12 @@ public class pDash : MonoBehaviour
         
         if (!_isDashing)
         {
+            if (_isHolding)
+            {
+                StopHolding();
+            }
+
             _isDashing = true;
-            _isCanHold = false;
             _dashTimer = 0f;
             _direction = GetMouseDirection();
 
@@ -132,12 +136,18 @@ public class pDash : MonoBehaviour
 
         StopDash();
 
-
         void StopMovement()
         {
-            basicMovement.enabled = false;
+            BasicMovement.MovementActive = false;
+            BasicMovement.JumpingActive = false;
             rigidbody.velocity = Vector2.zero;
             rigidbody.gravityScale = 0f;
+        }
+        
+        void StopHolding()
+        {
+            _isCanHold = false;
+            _isHolding = false;
         }
     }
     bool IsAbleToDash()
@@ -177,11 +187,10 @@ public class pDash : MonoBehaviour
     {
         if (!_isHolding)
         {
+            _isHolding = true;
             _holdTimer = 0f;
             StopMovement();
         }
-
-        _isHolding = true;
 
         if (_isReceivingJumpInput)
         {
@@ -211,7 +220,8 @@ public class pDash : MonoBehaviour
         void RestoreMovement()
         {
             rigidbody.gravityScale = _initialGravity;
-            basicMovement.enabled = true;
+            BasicMovement.MovementActive = true;
+            BasicMovement.JumpingActive = true;
         }
 
         void RemoveFriction()
@@ -221,7 +231,6 @@ public class pDash : MonoBehaviour
 
         void StopMovement()
         {
-            basicMovement.enabled = false;
             rigidbody.velocity = Vector2.zero;
             rigidbody.gravityScale = 0f;
         }
