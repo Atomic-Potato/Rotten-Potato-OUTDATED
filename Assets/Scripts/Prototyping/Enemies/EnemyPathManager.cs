@@ -75,16 +75,20 @@ public class EnemyPathManager : MonoBehaviour
     {
         if (path.Length <= 1)
         {
+            path[0].Initialize();
             return;
         }
 
         if (path.Length > 1)
         {
             path[0].NextPath = path[1];
+            path[0].Initialize();
         }
 
         for (int i=1; i < path.Length; i++)
         {
+            path[i].Initialize();
+
             if (i == path.Length - 1)
             {
                 path[i].PreviousPath = path[i-1];

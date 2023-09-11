@@ -22,7 +22,15 @@ public class EnemyPathSection
 
     public EnemyPathSection NextPath;
     public EnemyPathSection PreviousPath;
-
+    
+    // Equivalent to Awake
+    public void Initialize()
+    {
+        if (isUsingRandom && random != null)
+        {
+            random.Initialize();
+        }
+    }
 
     public LinkedPoint GetNextPoint()
     {
@@ -83,9 +91,32 @@ public class EnemyPathSection
         [Space]
         [Header("Other")]
         [SerializeField] Transform enemyTransform;
+        [SerializeField] Collider2D collider;
 
+        public bool IsUsingManualPoints => isUsingManualPoints;
+        public bool IsUsingRandomPoints => isUsingRandomPoints;
 
         int _manualPointsUsed = 0;
+        float _colliderMaxLength = 0f;
+
+        // Equivalent to Awake
+        public void Initialize() 
+        {
+            if (isUsingRandomPoints)
+            {
+                _colliderMaxLength = GetColliderMaximumLength();
+                
+                Debug.Log(_colliderMaxLength);
+
+                if (_colliderMaxLength > pointsRange)
+                {
+                    throw new Exception(
+                        "Points range cannot be saller the collider max length.\n" +
+                        "Decrease the collider size or increase the points range."
+                        );
+                }
+            }
+        }
 
         public override LinkedPoint GetNextPoint()
         {
@@ -158,20 +189,20 @@ public class EnemyPathSection
                 }
                 numberOfPoints--;
 
-                Vector2 playerDirectionSigns = (enemyTransform.position - pPlayer.Instance.transform.position).normalized;
-                playerDirectionSigns /= new Vector2(Mathf.Abs(playerDirectionSigns.x), Mathf.Abs(playerDirectionSigns.y));
+                Vector2 playerDirectionSigns = GetPlayerDirectionSigns();
+                Vector2 newPosition;
+                float distanceFromPlayer;
 
-                Vector2 unitVector = new Vector2(
-                    UnityEngine.Random.Range(0f, -1f * playerDirectionSigns.x),
-                    UnityEngine.Random.Range(0f, -1f * playerDirectionSigns.y)
-                    );
+                do{
+                    Vector2 unitVector = new Vector2(
+                        UnityEngine.Random.Range(0f, -1f * playerDirectionSigns.x),
+                        UnityEngine.Random.Range(0f, -1f * playerDirectionSigns.y)
+                        ).normalized;
+                    newPosition = (Vector2)originPoint.position + unitVector * pointsRange;
+                    distanceFromPlayer = Vector2.Distance(newPosition, pPlayer.Instance.transform.position);
+                }while (distanceFromPlayer < _colliderMaxLength);
 
-                unitVector.Normalize();
-
-                Debug.Log(playerDirectionSigns + "\n" + unitVector);
-
-                unitVector *= pointsRange;
-                return new LinkedPoint((Vector2)originPoint.position + unitVector, LinkedPoint.Types.Random);
+                return new LinkedPoint(newPosition, LinkedPoint.Types.Random);
             }
             
             void SwitchPointsInArray(int index1, int index2)
@@ -180,6 +211,13 @@ public class EnemyPathSection
                 points[index1] = points[index2];
                 points[index2] = auxilary;
             }
+            
+            Vector2 GetPlayerDirectionSigns()
+            {
+                Vector2 signs = (enemyTransform.position - pPlayer.Instance.transform.position).normalized;
+                signs /= new Vector2(Mathf.Abs(signs.x), Mathf.Abs(signs.y));
+                return signs;
+            }
             #endregion
         }
 
@@ -187,6 +225,30 @@ public class EnemyPathSection
         {
             return _previousPoint;
         }
+    
+        float GetColliderMaximumLength()
+            {
+                if (collider is BoxCollider2D)
+                {
+                    float x = ((BoxCollider2D)collider).size.x;
+                    float y = ((BoxCollider2D)collider).size.y;
+                    return Mathf.Sqrt(x*x + y*y);
+                }
+                else if(collider is CircleCollider2D)
+                {
+                    return ((CircleCollider2D)collider).radius * 2f;
+                }
+                else if(collider is CapsuleCollider2D)
+                {
+                    float x = ((CapsuleCollider2D)collider).size.x;
+                    float y = ((CapsuleCollider2D)collider).size.y;
+                    return Mathf.Sqrt(x*x + y*y);
+                }
+                else
+                {
+                    throw new Exception("Incompatible collider type");
+                }
+            }
     }
 
     [Serializable]
