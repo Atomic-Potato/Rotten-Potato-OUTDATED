@@ -15,6 +15,14 @@ public class Enemy : MonoBehaviour
     bool _isCanCounterAttack;
     bool _isCounterAttacking;
 
+    public Transform origin;
+
+    private void OnDrawGizmos() {
+        Gizmos.color = Color.white;
+        Vector2 dir = (transform.position - origin.transform.position).normalized;
+        Gizmos.DrawRay(origin.transform.position, dir * Vector2.Distance(transform.position, origin.transform.position));
+    }
+
     void OnTriggerEnter2D(Collider2D other) 
     {
         if (other.gameObject.tag == "Player")

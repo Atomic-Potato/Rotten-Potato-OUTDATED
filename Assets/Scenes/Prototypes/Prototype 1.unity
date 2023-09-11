@@ -709,7 +709,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 340326320}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: f97458e870a714d40ada7a16bdb5d438, type: 3}
   m_Name: 
@@ -736,14 +736,15 @@ MonoBehaviour:
     random:
       pointsRange: 1.5
       originPoint: {fileID: 1922010421}
-      isUsingManualPoints: 1
+      isUsingManualPoints: 0
       points:
       - {fileID: 170481040}
       - {fileID: 2090971175}
       - {fileID: 972578852}
       - {fileID: 1441252404}
-      isUsingRandomPoints: 0
-      numberOfPoints: 0
+      isUsingRandomPoints: 1
+      numberOfPoints: 100
+      enemyTransform: {fileID: 340326323}
     isUsingLinear: 0
     linear:
       points:
@@ -757,7 +758,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 340326320}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -3.09, y: 3.717156, z: 2.6426225}
+  m_LocalPosition: {x: 3.83, y: 2.84, z: 2.6426225}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 1833143276}
@@ -795,6 +796,7 @@ MonoBehaviour:
   timeToCounterAttack: 1
   pathManager: {fileID: 340326322}
   spriteRenderer: {fileID: 1833143277}
+  origin: {fileID: 1922010421}
 --- !u!1 &348513973
 GameObject:
   m_ObjectHideFlags: 0
@@ -4470,7 +4472,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 413292e5fd6274948854b126b5dc8237, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  count: 5
+  count: 100
   distance: 3
   time: 0.1
   holdTime: 5
@@ -4481,7 +4483,7 @@ MonoBehaviour:
   collider: {fileID: 7048394262691945166}
   noFrictionMaterial: {fileID: 6200000, guid: 9caa2176edf51584781d36311d10f50b, type: 2}
   basicMovement: {fileID: 1659856477907056084}
-  gizmosDrawDistance: 1
+  gizmosDrawDistance: 0
   gizmosUseDistanceDirectionToMouse: 0
   gizmosDistanceDirection: {x: 0, y: 1}
 --- !u!114 &7048394262691945170

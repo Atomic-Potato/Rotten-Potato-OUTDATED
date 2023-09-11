@@ -7,6 +7,7 @@ using UnityEngine;
 [Serializable]
 public class EnemyPathSection
 {
+    [Space]
     [Header("Random")]
     [SerializeField] bool isUsingRandom;
     [SerializeField] Random random;
@@ -15,6 +16,7 @@ public class EnemyPathSection
     [SerializeField] bool isUsingLinear;
     [SerializeField] Linear linear;
     
+
     [HideInInspector]
     public static readonly LinkedPoint END_OF_PATH = null;
 
@@ -78,6 +80,11 @@ public class EnemyPathSection
         [SerializeField] bool isUsingRandomPoints;
         [SerializeField] int numberOfPoints;
 
+        [Space]
+        [Header("Other")]
+        [SerializeField] Transform enemyTransform;
+
+
         int _manualPointsUsed = 0;
 
         public override LinkedPoint GetNextPoint()
@@ -137,7 +144,6 @@ public class EnemyPathSection
                 }
 
                 int index = UnityEngine.Random.Range(0, points.Count - _manualPointsUsed);
-                Debug.Log("Index: " + index + " Count: " + points.Count);
                 LinkedPoint point = new LinkedPoint(points[index].position, LinkedPoint.Types.Random);
                 SwitchPointsInArray(index, (points.Count - 1) - _manualPointsUsed);
                 _manualPointsUsed++;
@@ -152,10 +158,17 @@ public class EnemyPathSection
                 }
                 numberOfPoints--;
 
+                Vector2 playerDirectionSigns = (enemyTransform.position - pPlayer.Instance.transform.position).normalized;
+                playerDirectionSigns /= new Vector2(Mathf.Abs(playerDirectionSigns.x), Mathf.Abs(playerDirectionSigns.y));
+
                 Vector2 unitVector = new Vector2(
-                    UnityEngine.Random.Range(-1f, 1f),
-                    UnityEngine.Random.Range(-1f, 1f)
+                    UnityEngine.Random.Range(0f, -1f * playerDirectionSigns.x),
+                    UnityEngine.Random.Range(0f, -1f * playerDirectionSigns.y)
                     );
+
+                unitVector.Normalize();
+
+                Debug.Log(playerDirectionSigns + "\n" + unitVector);
 
                 unitVector *= pointsRange;
                 return new LinkedPoint((Vector2)originPoint.position + unitVector, LinkedPoint.Types.Random);
