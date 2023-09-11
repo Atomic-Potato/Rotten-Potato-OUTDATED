@@ -1,11 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Xml;
+using System.IO;
 using UnityEngine;
 
 
 [Serializable]
-public class EnemyPathSection
+public class EnemyPath
 {
     [SerializeField] bool isUsingRandom;
     [SerializeField] Random random;    
@@ -15,8 +15,8 @@ public class EnemyPathSection
     [HideInInspector]
     public static readonly LinkedPoint END_OF_PATH = null;
 
-    public EnemyPathSection NextPath;
-    public EnemyPathSection PreviousPath;
+    public EnemyPath NextPath;
+    public EnemyPath PreviousPath;
 
 
     public LinkedPoint GetNextPoint()
@@ -82,15 +82,19 @@ public class EnemyPathSection
         [SerializeField] bool isUsingRandomPoints;
         [SerializeField] int numberOfPoints;
 
-        // The points in the orderd they were given using the GetNextPoint function
-        List<LinkedPoint> constructedRandomPath = new List<LinkedPoint>();
 
         public override LinkedPoint GetNextPoint()
         {
-
             if (_currentPoint == null)
             {
                 _currentPoint = GetFirstPoint();
+                return _currentPoint;
+            }
+
+            if (_currentPoint.Next != null)
+            {
+                _currentPoint = _currentPoint.Next;
+                return _currentPoint;
             }
 
             LinkedPoint nextPoint = null;
@@ -113,16 +117,19 @@ public class EnemyPathSection
             }
             else
             {
-                constructedRandomPath.Add(nextPoint);
+                _currentPoint.Next = nextPoint;
+                _currentPoint.Previous = _previousPoint;
+
                 _previousPoint = _currentPoint;
                 _currentPoint = nextPoint;
+
                 return nextPoint;
             }
             
             #region Local Methods
             LinkedPoint GetFirstPoint()
             {
-                return new LinkedPoint(originPoint.position);
+                return new LinkedPoint(originPoint.position, LinkedPoint.Types.Random);
             }
 
             LinkedPoint GetNextRandomPointInArray()
@@ -134,7 +141,7 @@ public class EnemyPathSection
 
                 int index = UnityEngine.Random.Range(0, points.Count);
                 points.RemoveAt(index);
-                return new LinkedPoint(points[index].position); 
+                return new LinkedPoint(points[index].position, LinkedPoint.Types.Random); 
             }
 
             LinkedPoint GenerateRandomPointWithinRange()
@@ -151,7 +158,7 @@ public class EnemyPathSection
                     );
 
                 unitVector *= pointsRange;
-                return new LinkedPoint((Vector2)originPoint.position + unitVector);
+                return new LinkedPoint((Vector2)originPoint.position + unitVector, LinkedPoint.Types.Random);
             }
             #endregion
         }
@@ -177,8 +184,28 @@ public class EnemyPathSection
                 throw new Exception("Linear section contains no points");
             }
 
+            if (_currentIndex == points.Length)
+            {
+                throw new Exception("Path cant continue past the current point");
+            }
+            
             _currentIndex++;
-            return _currentIndex == points.Length ? null : new LinkedPoint(points[_currentIndex].position);
+            if (_currentPoint == null)
+            {
+                _currentPoint = new LinkedPoint(points[_currentIndex].position, LinkedPoint.Types.Linear);
+                return _currentPoint;
+            }
+
+            if (_currentPoint.Next == null)
+            {
+                _currentPoint.Next = new LinkedPoint(points[_currentIndex].position, LinkedPoint.Types.Linear);
+                _currentPoint.Previous = _previousPoint;
+
+                _previousPoint = _currentPoint;
+                return _currentPoint.Next;
+            }
+
+            return _currentPoint.Next;
         }
 
         public override LinkedPoint GetPreviousPoint()
@@ -194,7 +221,18 @@ public class EnemyPathSection
             }
 
             _currentIndex--;
-            return _currentIndex == -1 ? null : new LinkedPoint(points[_currentIndex].position);
+            if (_currentIndex == -1)
+            {
+                throw new Exception("Path cant continue past the current point");
+            }
+
+            if (_currentPoint == null)
+            {
+                throw new Exception("Previous point don't exist. (Enemy should go through the path before going back)");
+            }
+            
+            _currentPoint = _currentPoint.Previous;
+            return _currentPoint;
         }
     }
 }

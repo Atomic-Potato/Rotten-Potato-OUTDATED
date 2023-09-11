@@ -3985,7 +3985,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   path:
-  - isUsingRandom: 0
+  - isUsingRandom: 1
     random:
       pointsRange: 0
       originPoint: {fileID: 0}
@@ -3994,6 +3994,30 @@ MonoBehaviour:
       isUsingRandomPoints: 0
       numberOfPoints: 0
     isUsingLinear: 0
+    linear:
+      points: []
+  - isUsingRandom: 0
+    random:
+      pointsRange: 0
+      originPoint: {fileID: 0}
+      isUsingManualPoints: 0
+      points: []
+      isUsingRandomPoints: 0
+      numberOfPoints: 0
+    isUsingLinear: 1
+    linear:
+      points: []
+  - isUsingRandom: 1
+    random:
+      pointsRange: 0
+      originPoint: {fileID: 0}
+      isUsingManualPoints: 0
+      points: []
+      isUsingRandomPoints: 0
+      numberOfPoints: 0
+    isUsingLinear: 0
+    linear:
+      points: []
 --- !u!1 &2130538263
 GameObject:
   m_ObjectHideFlags: 0

@@ -3,7 +3,7 @@
 public class EnemyPathManager : MonoBehaviour
 {
     [SerializeField]
-    EnemyPathSection[] path;
+    EnemyPath[] path;
 
     void Awake()
     {
