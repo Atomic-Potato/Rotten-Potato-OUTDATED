@@ -40,14 +40,17 @@ public class pDash : MonoBehaviour
     float _initialVelocity;
     float _initialGravity;
     float _holdTimer;
+    float _dashTimer;
     Vector2 _direction;
     Coroutine _dashCache;
     Coroutine _jumpCache;
 
+    bool _isCanDash;
     bool _isCanHold;
     bool _isHolding;
     bool _isDashing;
     public bool IsDashing => _isDashing;
+    bool _isReceivingDashInput;
     bool _isReceivingJumpInput;
 
     void OnDrawGizmos() 
@@ -70,18 +73,23 @@ public class pDash : MonoBehaviour
 
     void Update()
     {
-        if (BasicMovement.IS_GROUNDED && (!_isDashing || !_isHolding))
+        if (IsAbleToDash())
         {
-            _dashesLeft = count;
+            Dash();
         }
 
         if (_isCanHold)
         {
             Hold();
         }
+
+        if (BasicMovement.IS_GROUNDED && (!_isDashing || !_isHolding))
+        {
+            _dashesLeft = count;
+        }
     }
 
-    void OnTriggerEnter(Collider other) 
+    void OnTriggerEnter2D(Collider2D other)
     {
         if(!_isDashing)
         {
@@ -91,43 +99,39 @@ public class pDash : MonoBehaviour
         if (other.gameObject.tag == "Enemy")
         {
             _dashesLeft += restoredDashesCount;
+            StopDash();
         }    
     }
 
-    public void Dash(InputAction.CallbackContext context)
+    #region Dash
+    public void Dash()
     { 
-        if (IsAbleToDash())
+        if (!IsAbleToDash())
         {
-            _dashCache = StartCoroutine(ExecuteDash());
+            return;
         }
-
-        IEnumerator ExecuteDash()
+        
+        if (!_isDashing)
         {
             _isDashing = true;
             _isCanHold = false;
+            _dashTimer = 0f;
             _direction = GetMouseDirection();
 
             DisableHostileCollision();
             StopMovement();
 
             rigidbody.AddForce(_initialVelocity * _direction, ForceMode2D.Impulse);
-            yield return new WaitForSeconds(time);
-            rigidbody.velocity = Vector2.zero;
-
-            _isCanHold = true;
-
-            EnableHostileCollision();          
-
-            _dashesLeft--;
-            _dashCache = null;
-            _isDashing = false;
         }
 
-        #region Local Methods
-        bool IsAbleToDash()
+        if (_dashTimer < time)
         {
-            return _dashCache == null && context.performed && _dashesLeft > 0;
+            _dashTimer += Time.deltaTime;
+            return;
         }
+
+        StopDash();
+
 
         void StopMovement()
         {
@@ -135,20 +139,39 @@ public class pDash : MonoBehaviour
             rigidbody.velocity = Vector2.zero;
             rigidbody.gravityScale = 0f;
         }
-
-        void DisableHostileCollision()
-        {
-            // TODO:
-            // Removes collision with projectiles and enemies
-        }
-
-        void EnableHostileCollision()
-        {
-            // TODO:
-            // Enable collision with projectiles and enemies
-        }
-        #endregion
     }
+    bool IsAbleToDash()
+    {
+        if (_isReceivingDashInput)
+        {
+            _isCanDash = true;
+        }
+
+        return _isCanDash &&  _dashesLeft > 0;
+    }
+
+    void StopDash()
+    {
+        rigidbody.velocity = Vector2.zero;
+        EnableHostileCollision();          
+        _dashesLeft--;
+        _isCanDash = false;
+        _isCanHold = true;
+        _isDashing = false;
+    }
+
+    void DisableHostileCollision()
+    {
+        // TODO:
+        // Removes collision with projectiles and enemies
+    }
+
+    void EnableHostileCollision()
+    {
+        // TODO:
+        // Enable collision with projectiles and enemies
+    }
+    #endregion
 
     void Hold()
     {
@@ -211,9 +234,6 @@ public class pDash : MonoBehaviour
         #endregion
     }
 
-
-
-
     public Vector2 GetMouseDirection()
     {
         Vector2 direction = Camera.main.ScreenToWorldPoint(Input.mousePosition) - transform.position;
@@ -234,6 +254,24 @@ public class pDash : MonoBehaviour
         return (distance / time) + (0.5f * acceleration * time); 
     }
 
+    #region Input
+    public void DetectDashInput(InputAction.CallbackContext context)
+    {
+        _isReceivingDashInput = context.performed;
+
+        if (_isReceivingDashInput && _dashCache == null)
+        {
+            _dashCache = StartCoroutine(ResetInputNextFrame());
+        }
+
+        IEnumerator ResetInputNextFrame()
+        {
+            yield return null;
+            _isReceivingDashInput = false;
+            _dashCache = null;
+        }
+    }
+
     public void DetectJumpInput(InputAction.CallbackContext context)
     {    
         _isReceivingJumpInput = context.performed;
@@ -250,4 +288,5 @@ public class pDash : MonoBehaviour
             _jumpCache = null;
         }
     }
+    #endregion
 }

@@ -105,9 +105,6 @@ public class EnemyPathSection
             if (isUsingRandomPoints)
             {
                 _colliderMaxLength = GetColliderMaximumLength();
-                
-                Debug.Log(_colliderMaxLength);
-
                 if (_colliderMaxLength > pointsRange)
                 {
                     throw new Exception(
