@@ -79,8 +79,6 @@ public class pDash : MonoBehaviour
         {
             Hold();
         }
-
-        Debug.Log("Can hold: " + _isCanHold + "\nIs holding: " + _isHolding);
     }
 
     void OnTriggerEnter(Collider other) 

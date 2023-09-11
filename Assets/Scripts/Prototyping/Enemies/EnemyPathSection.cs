@@ -5,18 +5,21 @@ using UnityEngine;
 
 
 [Serializable]
-public class EnemyPath
+public class EnemyPathSection
 {
+    [Header("Random")]
     [SerializeField] bool isUsingRandom;
-    [SerializeField] Random random;    
+    [SerializeField] Random random;
+
+    [Header("Linear")]
     [SerializeField] bool isUsingLinear;
     [SerializeField] Linear linear;
     
     [HideInInspector]
     public static readonly LinkedPoint END_OF_PATH = null;
 
-    public EnemyPath NextPath;
-    public EnemyPath PreviousPath;
+    public EnemyPathSection NextPath;
+    public EnemyPathSection PreviousPath;
 
 
     public LinkedPoint GetNextPoint()
@@ -31,15 +34,7 @@ public class EnemyPath
             nextPoint = linear.GetNextPoint();
         }
 
-
-        if (nextPoint == null)
-        {
-            return NextPath != null ? NextPath.GetNextPoint() : END_OF_PATH;
-        }
-        else
-        {
-            return END_OF_PATH;
-        }
+        return nextPoint;
     }
 
     public LinkedPoint GetPreviousPoint()
@@ -186,7 +181,7 @@ public class EnemyPath
 
             if (_currentIndex == points.Length)
             {
-                throw new Exception("Path cant continue past the current point");
+                return END_OF_PATH;
             }
             
             _currentIndex++;

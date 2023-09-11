@@ -440,6 +440,36 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &170481039
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 170481040}
+  m_Layer: 0
+  m_Name: GameObject
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &170481040
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 170481039}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -1.1824564, y: 4.543478, z: 2.2740226}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 10
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &265956922
 GameObject:
   m_ObjectHideFlags: 0
@@ -661,11 +691,13 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 340326323}
+  - component: {fileID: 340326325}
   - component: {fileID: 340326322}
   - component: {fileID: 340326321}
+  - component: {fileID: 340326324}
   m_Layer: 0
-  m_Name: Controller
-  m_TagString: Untagged
+  m_Name: Enemy
+  m_TagString: Enemy
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -696,13 +728,36 @@ MonoBehaviour:
   m_GameObject: {fileID: 340326320}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 33aabe1a2dec93349b06e6e5dc51bc06, type: 3}
+  m_Script: {fileID: 11500000, guid: fd7f8470b4832d846a91272c3c83ee50, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  pathCreator: {fileID: 1300044143}
-  endOfPathInstruction: 0
-  speed: 3
-  rotateInMovementDirection: 0
+  path:
+  - isUsingRandom: 1
+    random:
+      pointsRange: 1.5
+      originPoint: {fileID: 1922010421}
+      isUsingManualPoints: 0
+      points: []
+      isUsingRandomPoints: 1
+      numberOfPoints: 0
+    isUsingLinear: 0
+    linear:
+      points:
+      - {fileID: 170481040}
+      - {fileID: 2090971175}
+  - isUsingRandom: 0
+    random:
+      pointsRange: 1.5
+      originPoint: {fileID: 1922010421}
+      isUsingManualPoints: 0
+      points: []
+      isUsingRandomPoints: 1
+      numberOfPoints: 1
+    isUsingLinear: 1
+    linear:
+      points:
+      - {fileID: 170481040}
+      - {fileID: 2090971175}
 --- !u!4 &340326323
 Transform:
   m_ObjectHideFlags: 0
@@ -710,14 +765,45 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 340326320}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: -3.09, y: 3.717156, z: 2.6426225}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 1833143276}
-  m_Father: {fileID: 2129186631}
-  m_RootOrder: 0
+  m_Father: {fileID: 0}
+  m_RootOrder: 8
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!58 &340326324
+CircleCollider2D:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 340326320}
+  m_Enabled: 1
+  m_Density: 1
+  m_Material: {fileID: 0}
+  m_IsTrigger: 1
+  m_UsedByEffector: 0
+  m_UsedByComposite: 0
+  m_Offset: {x: 0, y: 0}
+  serializedVersion: 2
+  m_Radius: 0.7
+--- !u!114 &340326325
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 340326320}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aaa695ac22f9e5249985f213512b023b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  timeToCounterAttack: 1
+  pathManager: {fileID: 340326322}
+  spriteRenderer: {fileID: 1833143277}
 --- !u!1 &348513973
 GameObject:
   m_ObjectHideFlags: 0
@@ -1394,7 +1480,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 8
+  m_RootOrder: 9
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1053499858
 GameObject:
@@ -2052,92 +2138,6 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 2
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!1 &1300044142
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 1300044146}
-  - component: {fileID: 1300044143}
-  m_Layer: 0
-  m_Name: EnemyPath
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!114 &1300044143
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1300044142}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 8e5ac92bc18f545cc84cd886ece82b4d, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  editorData:
-    _bezierPath:
-      points:
-      - {x: -0.6406772, y: 0.10663724, z: 0}
-      - {x: -0.63233554, y: 0.940829, z: 0}
-      - {x: 0.7273974, y: 0.9158033, z: 0}
-      - {x: 0.7357391, y: 0.07326953, z: 0}
-      - {x: 0.74408084, y: -0.7692642, z: 0}
-      - {x: -0.6490189, y: -0.7275545, z: 0}
-      isClosed: 1
-      space: 1
-      controlMode: 1
-      autoControlLength: 0.3
-      boundsUpToDate: 0
-      bounds:
-        m_Center: {x: 0, y: 0, z: 0}
-        m_Extent: {x: 2, y: 0.14433756, z: 0}
-      perAnchorNormalsAngle:
-      - 0
-      - 0
-      globalNormalsAngle: 0
-      flipNormals: 0
-    vertexPathUpToDate: 1
-    vertexPathMaxAngleError: 0
-    vertexPathMinVertexSpacing: 0.01
-    showTransformTool: 1
-    showPathBounds: 0
-    showPerSegmentBounds: 0
-    displayAnchorPoints: 1
-    displayControlPoints: 1
-    bezierHandleScale: 5
-    globalDisplaySettingsFoldout: 0
-    keepConstantHandleSize: 0
-    showNormalsInVertexMode: 0
-    showBezierPathInVertexMode: 0
-    showDisplayOptions: 0
-    showPathOptions: 1
-    showVertexPathDisplayOptions: 0
-    showVertexPathOptions: 1
-    showNormals: 0
-    showNormalsHelpInfo: 0
-    tabIndex: 0
-  initialized: 1
---- !u!4 &1300044146
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1300044142}
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_Children: []
-  m_Father: {fileID: 2129186631}
-  m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1303930248
 GameObject:
@@ -3827,6 +3827,36 @@ SpriteShapeRenderer:
   m_LocalAABB:
     m_Center: {x: 0, y: -0.00000023841858, z: 0}
     m_Extent: {x: 2.0000002, y: 2, z: 0}
+--- !u!1 &1922010420
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1922010421}
+  m_Layer: 0
+  m_Name: Enemy Origin Point
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1922010421
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1922010420}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 3.5, z: 2.4713402}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 7
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1949021875
 GameObject:
   m_ObjectHideFlags: 0
@@ -3939,7 +3969,7 @@ Transform:
   m_Father: {fileID: 1949021876}
   m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!1 &2129186630
+--- !u!1 &2090971174
 GameObject:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -3947,77 +3977,28 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
-  - component: {fileID: 2129186631}
-  - component: {fileID: 2129186632}
+  - component: {fileID: 2090971175}
   m_Layer: 0
-  m_Name: Enemy
+  m_Name: GameObject (1)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!4 &2129186631
+--- !u!4 &2090971175
 Transform:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2129186630}
+  m_GameObject: {fileID: 2090971174}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0.01420531, y: 3.717156, z: 2.6426225}
+  m_LocalPosition: {x: -1.1824564, y: 1.95, z: 2.2740226}
   m_LocalScale: {x: 1, y: 1, z: 1}
-  m_Children:
-  - {fileID: 340326323}
-  - {fileID: 1300044146}
+  m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 7
+  m_RootOrder: 11
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &2129186632
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2129186630}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: fd7f8470b4832d846a91272c3c83ee50, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  path:
-  - isUsingRandom: 1
-    random:
-      pointsRange: 0
-      originPoint: {fileID: 0}
-      isUsingManualPoints: 0
-      points: []
-      isUsingRandomPoints: 0
-      numberOfPoints: 0
-    isUsingLinear: 0
-    linear:
-      points: []
-  - isUsingRandom: 0
-    random:
-      pointsRange: 0
-      originPoint: {fileID: 0}
-      isUsingManualPoints: 0
-      points: []
-      isUsingRandomPoints: 0
-      numberOfPoints: 0
-    isUsingLinear: 1
-    linear:
-      points: []
-  - isUsingRandom: 1
-    random:
-      pointsRange: 0
-      originPoint: {fileID: 0}
-      isUsingManualPoints: 0
-      points: []
-      isUsingRandomPoints: 0
-      numberOfPoints: 0
-    isUsingLinear: 0
-    linear:
-      points: []
 --- !u!1 &2130538263
 GameObject:
   m_ObjectHideFlags: 0
@@ -4441,7 +4422,7 @@ MonoBehaviour:
   count: 5
   distance: 3
   time: 0.1
-  holdTime: 1
+  holdTime: 5
   holdJumpDistance: 1
   holdJumpTime: 0.1
   restoredDashesCount: 0

@@ -1,13 +1,74 @@
-﻿using UnityEngine;
+﻿using System.Collections;
+using System.Runtime.Remoting.Messaging;
+using UnityEngine;
 
 public class EnemyPathManager : MonoBehaviour
 {
-    [SerializeField]
-    EnemyPath[] path;
+    [SerializeField] EnemyPathSection[] path;
+
+    int _currentSectionIndex = -1;
 
     void Awake()
     {
         ConnectPathsSections();
+        MoveToNextSection();
+        MoveToNextPoint();
+    }
+
+
+    public LinkedPoint MoveToNextPoint()
+    {
+        LinkedPoint point = path[_currentSectionIndex].GetNextPoint();
+
+        if (point == null)
+        {
+            EnemyPathSection section =  MoveToNextSection();
+
+            if (section == null)
+            {
+                return null;
+            }
+            return MoveToNextPoint();
+        }
+
+        transform.position = point.position;
+        return point;
+    }
+
+    public LinkedPoint MoveToPreviousPoint()
+    {
+        LinkedPoint point = path[_currentSectionIndex].GetPreviousPoint();
+
+        if (point == null)
+        {
+            EnemyPathSection section =  MoveToPreviousSection();
+
+            if (section == null)
+            {
+                return null;
+            }
+            MoveToPreviousPoint();
+        }
+
+        transform.position = point.position;
+        return point;
+    }
+
+    EnemyPathSection MoveToNextSection()
+    {
+        _currentSectionIndex++;
+        return _currentSectionIndex == path.Length ? null : path[_currentSectionIndex];
+    }
+
+    EnemyPathSection MoveToPreviousSection()
+    {
+        _currentSectionIndex--;
+        if (_currentSectionIndex == -1)
+        {
+            _currentSectionIndex = 0;
+        }
+
+        return path[_currentSectionIndex];
     }
 
     void ConnectPathsSections()
