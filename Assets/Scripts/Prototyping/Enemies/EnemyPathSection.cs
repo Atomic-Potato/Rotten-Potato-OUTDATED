@@ -33,6 +33,7 @@ public class EnemyPathSection
         {
             nextPoint = linear.GetNextPoint();
         }
+        
 
         return nextPoint;
     }
@@ -77,6 +78,7 @@ public class EnemyPathSection
         [SerializeField] bool isUsingRandomPoints;
         [SerializeField] int numberOfPoints;
 
+        int _manualPointsUsed = 0;
 
         public override LinkedPoint GetNextPoint()
         {
@@ -129,14 +131,17 @@ public class EnemyPathSection
 
             LinkedPoint GetNextRandomPointInArray()
             {
-                if (points.Count == 0)
+                if (_manualPointsUsed == points.Count)
                 {
                     return null;
                 }
 
-                int index = UnityEngine.Random.Range(0, points.Count);
-                points.RemoveAt(index);
-                return new LinkedPoint(points[index].position, LinkedPoint.Types.Random); 
+                int index = UnityEngine.Random.Range(0, points.Count - _manualPointsUsed);
+                Debug.Log("Index: " + index + " Count: " + points.Count);
+                LinkedPoint point = new LinkedPoint(points[index].position, LinkedPoint.Types.Random);
+                SwitchPointsInArray(index, (points.Count - 1) - _manualPointsUsed);
+                _manualPointsUsed++;
+                return point; 
             }
 
             LinkedPoint GenerateRandomPointWithinRange()
@@ -154,6 +159,13 @@ public class EnemyPathSection
 
                 unitVector *= pointsRange;
                 return new LinkedPoint((Vector2)originPoint.position + unitVector, LinkedPoint.Types.Random);
+            }
+            
+            void SwitchPointsInArray(int index1, int index2)
+            {
+                Transform auxilary = points[index1];
+                points[index1] = points[index2];
+                points[index2] = auxilary;
             }
             #endregion
         }
