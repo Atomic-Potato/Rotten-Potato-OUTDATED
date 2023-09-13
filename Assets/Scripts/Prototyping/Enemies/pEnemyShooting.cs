@@ -12,6 +12,15 @@ public class pEnemyShooting : MonoBehaviour
 
     Coroutine _shootingCache = null;
 
+    void OnEnable()
+    {
+        if (_shootingCache != null)
+        {
+            StopCoroutine(_shootingCache);
+            _shootingCache = null;
+        }    
+    }
+
     void Update() 
     {
         if (_shootingCache == null && IsPlayerWithingAttackDistance())

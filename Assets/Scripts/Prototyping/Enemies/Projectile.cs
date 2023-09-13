@@ -1,7 +1,7 @@
 ﻿using System.Collections;
 using UnityEngine;
 
-public class pBulletController : MonoBehaviour
+public class Projectile : MonoBehaviour
 {
     [Range(0, 999)]
     [SerializeField] int damagePoints;
@@ -26,7 +26,7 @@ public class pBulletController : MonoBehaviour
             DamagePlayer();
             SelfDestroy();
         }
-        else if (other.gameObject.tag != "Projectile")
+        else if (other.gameObject.tag != "Projectile" && other.gameObject.tag != "Enemy")
         {
             SelfDestroy();
         }

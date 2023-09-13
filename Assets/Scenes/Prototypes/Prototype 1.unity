@@ -814,10 +814,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   damage: 1
-  counterAttackProbability: 0.5
-  timeToCounterAttack: 0.75
-  timeToBeParried: 0.15
+  counterAttackProbability: 1
+  timeToCounterAttack: 2
+  timeToBeParried: 1
   pathManager: {fileID: 340326322}
+  shooting: {fileID: 340326321}
   spriteRenderer: {fileID: 1833143277}
   parryColor: {r: 0.9234619, g: 0, b: 1, a: 1}
   IsAttacking: 0
@@ -4631,7 +4632,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9715f8d0f542c8740a17520245e05383, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  hitPoints: 999
+  hitPoints: 4
 --- !u!114 &7048394262691945169
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4644,7 +4645,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 413292e5fd6274948854b126b5dc8237, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  count: 100
+  count: 2
   distance: 3
   time: 0.1
   holdTime: 5
