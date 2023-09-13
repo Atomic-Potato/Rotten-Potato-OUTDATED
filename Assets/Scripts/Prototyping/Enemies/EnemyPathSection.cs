@@ -31,6 +31,22 @@ public class EnemyPathSection
         }
     }
 
+    public LinkedPoint GetCurrentPoint()
+    {
+        if (isUsingRandom && random != null)
+        {
+            return random.GetCurrentPoint();
+        }
+        else if (isUsingLinear && linear != null)
+        {
+            return linear.GetCurrentPoint();
+        }
+        else
+        {
+            return null;
+        }
+    }
+
     public LinkedPoint GetNextPoint()
     {
         LinkedPoint nextPoint = null;
@@ -104,6 +120,11 @@ public class EnemyPathSection
                         );
                 }
             }
+        }
+
+        public override LinkedPoint GetCurrentPoint()
+        {
+            return _currentPoint;
         }
 
         public override LinkedPoint GetNextPoint()
@@ -258,6 +279,11 @@ public class EnemyPathSection
         [SerializeField] Transform[] points;
 
         int _currentIndex = -1;
+
+        public override LinkedPoint GetCurrentPoint()
+        {
+            return _currentPoint;
+        }
 
         public override LinkedPoint GetNextPoint()
         {

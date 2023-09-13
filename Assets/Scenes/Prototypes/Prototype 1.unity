@@ -762,14 +762,13 @@ MonoBehaviour:
       - {fileID: 972578852}
       - {fileID: 1441252404}
       isUsingRandomPoints: 1
-      numberOfPoints: 100
+      numberOfPoints: 1
       enemyTransform: {fileID: 340326323}
       collider: {fileID: 340326324}
     isUsingLinear: 1
     linear:
       points:
       - {fileID: 170481040}
-      - {fileID: 2090971175}
 --- !u!4 &340326323
 Transform:
   m_ObjectHideFlags: 0
@@ -813,7 +812,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: aaa695ac22f9e5249985f213512b023b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  damage: 1
   timeToCounterAttack: 1
+  timeToBeParried: 1
   pathManager: {fileID: 340326322}
   spriteRenderer: {fileID: 1833143277}
   origin: {fileID: 1922010421}

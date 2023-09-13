@@ -15,7 +15,11 @@ public class EnemyPathManager : MonoBehaviour
         MoveToNextPoint();
     }
 
-
+    public LinkedPoint GetCurrentPoint()
+    {
+        return path[_currentSectionIndex].GetCurrentPoint();
+    }
+    
     public LinkedPoint MoveToNextPoint()
     {
         LinkedPoint point = path[_currentSectionIndex].GetNextPoint();

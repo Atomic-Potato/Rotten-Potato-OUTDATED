@@ -3,21 +3,30 @@ using UnityEngine;
 
 public class Enemy : MonoBehaviour
 {
-    [Range(0f, 5f)]
+    [Space]
+    [SerializeField] int damage;
+
+    [Range(0f, 20f)]
     [SerializeField] float timeToCounterAttack;
+    [Range(0f, 20f)]
+    [SerializeField] float timeToBeParried;
     
     [Space(height: 10)]
     [SerializeField] EnemyPathManager pathManager;
     [SerializeField] SpriteRenderer spriteRenderer;
 
+    [Space]
+    [Header("Gizmos & Debugging")]
+    [SerializeField] Color parryColor;
     public float TimeToCounterAttack => timeToCounterAttack;
 
     float _counterAttackTimer;
+    float _toBeParriedTimer;
     bool _isCanCounterAttack;
     bool _isCounterAttacking;
     bool _isCanAttack;
     bool _isAttacking;
-    Color _color;
+    bool _isPlayerInRange;
 
     public Transform origin;
 
@@ -31,6 +40,7 @@ public class Enemy : MonoBehaviour
     {
         if (other.gameObject.tag == "Player")
         {
+            _isPlayerInRange = true;
             pDash dash = other.gameObject.GetComponent<pDash>();
 
             if (dash.IsDashing)
@@ -38,6 +48,10 @@ public class Enemy : MonoBehaviour
                 if (_isCanCounterAttack)
                 {
                     StopCounterAttack(Color.white);
+                }
+                if (_isCanAttack)
+                {
+                    StopAttack(Color.white);
                 }
 
                 LinkedPoint point = pathManager.MoveToNextPoint();
@@ -49,10 +63,14 @@ public class Enemy : MonoBehaviour
                 
                 _isCanCounterAttack = true;
             }
-            else
-            {
-                _isCanAttack = true;
-            }
+        }    
+    }
+
+    void OnTriggerExit2D(Collider2D other) 
+    {
+        if (other.gameObject.tag == "Player")
+        {
+            _isPlayerInRange = false;
         }    
     }
 
@@ -61,6 +79,10 @@ public class Enemy : MonoBehaviour
         if (_isCanCounterAttack)
         {
             CounterAttack();
+        }
+        else if (_isCanAttack)
+        {
+            Attack();
         }
     }
 
@@ -82,9 +104,10 @@ public class Enemy : MonoBehaviour
 
         if (_counterAttackTimer >= timeToCounterAttack)
         {
-
             LinkedPoint point = pathManager.MoveToPreviousPoint();
             StopCounterAttack(GetPointColor(point));
+
+            _isCanAttack = true;
         }
     }
 
@@ -93,6 +116,36 @@ public class Enemy : MonoBehaviour
         _isCanCounterAttack = false;
         _isCounterAttacking = false;
         _counterAttackTimer = 0f;
+        spriteRenderer.color = color;
+    }
+
+    void Attack()
+    {
+        if (!_isAttacking)
+        {
+            _isAttacking = true;
+            _toBeParriedTimer = 0f;
+            Color pink = new Color(255,105,180, 1);
+            spriteRenderer.color = parryColor;
+        }
+
+        _toBeParriedTimer += Time.deltaTime;
+
+        if (_toBeParriedTimer >= timeToBeParried)
+        {
+            if (_isPlayerInRange)
+            {
+                pPlayer.Instance.Damage?.Invoke(damage);
+            }
+            StopAttack(GetPointColor(pathManager.GetCurrentPoint()));
+        }
+    }
+
+    void StopAttack(Color color)
+    {
+        _isCanAttack = false;
+        _isAttacking = false;
+        _toBeParriedTimer = 0f;
         spriteRenderer.color = color;
     }
 
