@@ -106,11 +106,12 @@ public class pDash : MonoBehaviour
     #region Dash
     public void Dash()
     { 
-        if (!IsAbleToDash())
+        if (_dashesLeft <= 0)
         {
+            _isCanDash = false;
             return;
         }
-        
+
         if (!_isDashing)
         {
             if (_isHolding)
@@ -157,7 +158,7 @@ public class pDash : MonoBehaviour
             _isCanDash = true;
         }
 
-        return _isCanDash &&  _dashesLeft > 0;
+        return _isCanDash;
     }
 
     void StopDash()

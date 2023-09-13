@@ -47,7 +47,7 @@ public class EnemyPathManager : MonoBehaviour
             {
                 return null;
             }
-            MoveToPreviousPoint();
+            return MoveToPreviousPoint();
         }
 
         transform.position = point.position;

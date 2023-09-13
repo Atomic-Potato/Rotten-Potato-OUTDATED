@@ -53,21 +53,13 @@ public class EnemyPathSection
         LinkedPoint previousPoint = null;
         if (isUsingRandom && random != null)
         {
-            previousPoint = random.GetNextPoint();
+            previousPoint = random.GetPreviousPoint();
         }
         else if (isUsingLinear && linear != null)
         {
-            previousPoint = linear.GetNextPoint();
+            previousPoint = linear.GetPreviousPoint();
         }
-
-        if (previousPoint == null)
-        {
-            return PreviousPath != null ? PreviousPath.GetPreviousPoint() : END_OF_PATH;
-        }
-        else
-        {
-            return END_OF_PATH;
-        }
+        return previousPoint;
     }
 
     [Serializable]
@@ -122,9 +114,9 @@ public class EnemyPathSection
                 _currentPoint = GetFirstPoint();
                 return _currentPoint;
             }
-
-            if (_currentPoint.Next != null)
+            else if (_currentPoint.Next != null)
             {
+                _previousPoint = _currentPoint;
                 _currentPoint = _currentPoint.Next;
                 return _currentPoint;
             }
@@ -145,25 +137,20 @@ public class EnemyPathSection
 
             if (nextPoint == null)
             {
-                return null;
+                return END_OF_PATH;
             }
             else
             {
-                _currentPoint.Next = nextPoint;
-                _currentPoint.Previous = _previousPoint;
-
                 _previousPoint = _currentPoint;
                 _currentPoint = nextPoint;
+                
+                _previousPoint.Next = _currentPoint;
+                _currentPoint.Previous = _previousPoint;
 
-                return nextPoint;
+                return _currentPoint;
             }
             
             #region Local Methods
-            LinkedPoint GetFirstPoint()
-            {
-                return new LinkedPoint(originPoint.position, LinkedPoint.Types.Random);
-            }
-
             LinkedPoint GetNextRandomPointInArray()
             {
                 if (_manualPointsUsed == points.Count)
@@ -220,7 +207,10 @@ public class EnemyPathSection
 
         public override LinkedPoint GetPreviousPoint()
         {
-            return _previousPoint;
+            _previousPoint = _previousPoint?.Previous;
+            _currentPoint = _currentPoint?.Previous;
+
+            return _currentPoint;
         }
     
         float GetColliderMaximumLength()
@@ -246,6 +236,11 @@ public class EnemyPathSection
                     throw new Exception("Incompatible collider type");
                 }
             }
+    
+        LinkedPoint GetFirstPoint()
+        {
+            return new LinkedPoint(originPoint.position, LinkedPoint.Types.Random);
+        }
     }
 
     [Serializable]
@@ -274,17 +269,20 @@ public class EnemyPathSection
                 _currentPoint = new LinkedPoint(points[_currentIndex].position, LinkedPoint.Types.Linear);
                 return _currentPoint;
             }
-
-            if (_currentPoint.Next == null)
+            else if (_currentPoint.Next == null)
             {
-                _currentPoint.Next = new LinkedPoint(points[_currentIndex].position, LinkedPoint.Types.Linear);
-                _currentPoint.Previous = _previousPoint;
+                LinkedPoint nextPoint = new LinkedPoint(points[_currentIndex].position, LinkedPoint.Types.Linear);
 
                 _previousPoint = _currentPoint;
-                return _currentPoint.Next;
+                _currentPoint = nextPoint;
+
+                _previousPoint.Next = _currentPoint;
+                _currentPoint.Previous = _previousPoint;
+
+                return _currentPoint;
             }
 
-            return _currentPoint.Next;
+            return null;
         }
 
         public override LinkedPoint GetPreviousPoint()
@@ -300,17 +298,8 @@ public class EnemyPathSection
             }
 
             _currentIndex--;
-            if (_currentIndex == -1)
-            {
-                throw new Exception("Path cant continue past the current point");
-            }
-
-            if (_currentPoint == null)
-            {
-                throw new Exception("Previous point don't exist. (Enemy should go through the path before going back)");
-            }
-            
-            _currentPoint = _currentPoint.Previous;
+            _previousPoint = _previousPoint?.Previous;
+            _currentPoint = _currentPoint?.Previous;
             return _currentPoint;
         }
     }

@@ -732,7 +732,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   path:
-  - isUsingRandom: 1
+  - isUsingRandom: 0
     random:
       pointsRange: 2
       originPoint: {fileID: 1922010421}
@@ -746,7 +746,7 @@ MonoBehaviour:
       numberOfPoints: 100
       enemyTransform: {fileID: 340326323}
       collider: {fileID: 340326324}
-    isUsingLinear: 0
+    isUsingLinear: 1
     linear:
       points:
       - {fileID: 170481040}
@@ -4518,7 +4518,6 @@ MonoBehaviour:
   rigidbody: {fileID: 7048394262691945165}
   collider: {fileID: 7048394262691945166}
   noFrictionMaterial: {fileID: 6200000, guid: 9caa2176edf51584781d36311d10f50b, type: 2}
-  basicMovement: {fileID: 1659856477907056084}
   gizmosDrawDistance: 0
   gizmosUseDistanceDirectionToMouse: 0
   gizmosDistanceDirection: {x: 0, y: 1}

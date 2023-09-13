@@ -38,6 +38,8 @@ public class Enemy : MonoBehaviour
                     return;
                 }
                 
+                // _isCanCounterAttack = true;
+                
                 if (point.type == LinkedPoint.Types.Random)
                 {
                     spriteRenderer.color = Color.red;
@@ -46,7 +48,6 @@ public class Enemy : MonoBehaviour
                 {
                     spriteRenderer.color = Color.green;
                 }
-                //_isCanCounterAttack = true;
             }
         }    
     }
@@ -66,11 +67,13 @@ public class Enemy : MonoBehaviour
 
     void CounterAttack()
     {
-        if (_isCanCounterAttack)
+        if (!_isCounterAttacking)
         {
             _isCounterAttacking = true;
             _counterAttackTimer = 0f;
         }
+
+        _counterAttackTimer += Time.deltaTime;
 
         if (_counterAttackTimer >= timeToCounterAttack)
         {
