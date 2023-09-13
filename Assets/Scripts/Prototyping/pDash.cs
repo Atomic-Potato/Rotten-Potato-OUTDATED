@@ -35,6 +35,13 @@ public class pDash : MonoBehaviour
     [SerializeField] bool gizmosDrawDistance;
     [SerializeField] bool gizmosUseDistanceDirectionToMouse;
     [SerializeField] Vector2 gizmosDistanceDirection = Vector2.right;
+    
+    static bool isDashingCache;
+    public static bool IsDashing => isDashingCache;
+    static bool isHoldingCache;
+    public static bool IsHolding => isHoldingCache;
+    static bool isDamagedDashingCache;
+    public static bool IsDamagedDashing => isDamagedDashingCache;
 
     int _dashesLeft;
     float _initialVelocity;
@@ -43,13 +50,14 @@ public class pDash : MonoBehaviour
     float _dashTimer;
     Vector2 _direction;
     Coroutine _dashCache;
+    Coroutine _damageDashCache;
     Coroutine _jumpCache;
 
     bool _isCanDash;
     bool _isCanHold;
     bool _isHolding;
     bool _isDashing;
-    public bool IsDashing => _isDashing;
+    bool _isDamagedDashing;
     bool _isReceivingDashInput;
     bool _isReceivingJumpInput;
 
@@ -73,6 +81,8 @@ public class pDash : MonoBehaviour
 
     void Update()
     {
+        UpdateCache();
+
         if (IsAbleToDash())
         {
             Dash();
@@ -98,13 +108,25 @@ public class pDash : MonoBehaviour
         
         if (other.gameObject.tag == "Enemy")
         {
+            Enemy enemy = other.gameObject.GetComponent<Enemy>();
+            enemy.Damage();
             StopDash();
             _dashesLeft += restoredDashesCount;
         }    
     }
 
+    void UpdateCache()
+    {
+        if (isHoldingCache != _isHolding)
+            isHoldingCache = _isHolding;
+        if (isDashingCache != _isDashing)
+            isDashingCache = _isDashing;
+        if (isDamagedDashingCache != _isDamagedDashing)
+            isDamagedDashingCache = _isDamagedDashing;
+    }
+
     #region Dash
-    public void Dash()
+    void Dash()
     { 
         if (_dashesLeft <= 0)
         {
@@ -136,21 +158,49 @@ public class pDash : MonoBehaviour
         }
 
         StopDash();
+    }
 
-        void StopMovement()
+    void StopHolding()
+    {
+        _isCanHold = false;
+        _isHolding = false;
+    }
+
+    public void Dash(bool isDamageDash, Vector2 direction, float time = 0.1f, float distance = 3)
+    {
+        if (_damageDashCache == null)
         {
-            BasicMovement.MovementActive = false;
-            BasicMovement.JumpingActive = false;
-            rigidbody.velocity = Vector2.zero;
-            rigidbody.gravityScale = 0f;
+            _damageDashCache = StartCoroutine(ExecuteDash());
         }
-        
-        void StopHolding()
+
+        IEnumerator ExecuteDash()
         {
-            _isCanHold = false;
-            _isHolding = false;
+            if (isDamageDash)
+            {
+                _isDamagedDashing = true;
+            }
+            _isDashing = true;
+
+            if (!isDamageDash)
+            {
+                DisableHostileCollision();
+            }
+            if (_isHolding)
+            {
+                StopHolding();
+            }
+
+            StopMovement();
+            float initialVelocity = GetInitialVelocityNoAcceleration(distance, time);
+
+            rigidbody.AddForce(initialVelocity * direction, ForceMode2D.Impulse);
+            yield return new WaitForSeconds(time);
+
+            StopDash();
+            _damageDashCache = null;
         }
     }
+
     bool IsAbleToDash()
     {
         if (_isReceivingDashInput)
@@ -161,6 +211,14 @@ public class pDash : MonoBehaviour
         return _isCanDash;
     }
 
+    void StopMovement()
+    {
+        BasicMovement.MovementActive = false;
+        BasicMovement.JumpingActive = false;
+        rigidbody.velocity = Vector2.zero;
+        rigidbody.gravityScale = 0f;
+    }
+
     void StopDash()
     {
         rigidbody.velocity = Vector2.zero;
@@ -168,6 +226,7 @@ public class pDash : MonoBehaviour
         _dashesLeft--;
         _isCanDash = false;
         _isCanHold = true;
+        _isDamagedDashing = false;
         _isDashing = false;
     }
 
@@ -218,12 +277,7 @@ public class pDash : MonoBehaviour
             RestoreMovement();
         } 
 
-        void RestoreMovement()
-        {
-            rigidbody.gravityScale = _initialGravity;
-            BasicMovement.MovementActive = true;
-            BasicMovement.JumpingActive = true;
-        }
+        
 
         void RemoveFriction()
         {
@@ -242,6 +296,13 @@ public class pDash : MonoBehaviour
             rigidbody.AddForce(initialJumpVelocity * Vector2.up, ForceMode2D.Impulse);
         }
         #endregion
+    }
+
+    void RestoreMovement()
+    {
+        rigidbody.gravityScale = _initialGravity;
+        BasicMovement.MovementActive = true;
+        BasicMovement.JumpingActive = true;
     }
 
     public Vector2 GetMouseDirection()

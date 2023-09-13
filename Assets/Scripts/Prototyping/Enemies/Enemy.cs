@@ -25,10 +25,12 @@ public class Enemy : MonoBehaviour
     bool _isCanCounterAttack;
     bool _isCounterAttacking;
     bool _isCanAttack;
-    bool _isAttacking;
+    public bool IsAttacking;
     bool _isPlayerInRange;
 
-    public Transform origin;
+    pDash _playerDash;
+
+    [SerializeField] Transform origin;
 
     private void OnDrawGizmos() {
         Gizmos.color = Color.white;
@@ -41,27 +43,9 @@ public class Enemy : MonoBehaviour
         if (other.gameObject.tag == "Player")
         {
             _isPlayerInRange = true;
-            pDash dash = other.gameObject.GetComponent<pDash>();
-
-            if (dash.IsDashing)
+            if (_playerDash == null)
             {
-                if (_isCanCounterAttack)
-                {
-                    StopCounterAttack(Color.white);
-                }
-                if (_isCanAttack)
-                {
-                    StopAttack(Color.white);
-                }
-
-                LinkedPoint point = pathManager.MoveToNextPoint();
-                if (point == null)
-                {
-                    Die();
-                    return;
-                }
-                
-                _isCanCounterAttack = true;
+                _playerDash = other.gameObject.GetComponent<pDash>();
             }
         }    
     }
@@ -86,6 +70,28 @@ public class Enemy : MonoBehaviour
         }
     }
 
+    public void Damage()
+    {
+        if(IsAttacking)
+        {
+            return;
+        }
+
+        if (_isCanCounterAttack)
+        {
+            StopCounterAttack(Color.white);
+        }
+
+        LinkedPoint point = pathManager.MoveToNextPoint();
+        if (point == null)
+        {
+            Die();
+            return;
+        }
+        
+        _isCanCounterAttack = true;
+    }
+
     public void Die()
     {
         Destroy(gameObject);
@@ -107,7 +113,7 @@ public class Enemy : MonoBehaviour
             LinkedPoint point = pathManager.MoveToPreviousPoint();
             StopCounterAttack(GetPointColor(point));
 
-            _isCanAttack = true;
+            // _isCanAttack = true;
         }
     }
 
@@ -121,9 +127,9 @@ public class Enemy : MonoBehaviour
 
     void Attack()
     {
-        if (!_isAttacking)
+        if (!IsAttacking)
         {
-            _isAttacking = true;
+            IsAttacking = true;
             _toBeParriedTimer = 0f;
             Color pink = new Color(255,105,180, 1);
             spriteRenderer.color = parryColor;
@@ -136,15 +142,40 @@ public class Enemy : MonoBehaviour
             if (_isPlayerInRange)
             {
                 pPlayer.Instance.Damage?.Invoke(damage);
+                if (pDash.IsHolding)
+                {
+                    KnockPlayerBack();
+                }
             }
+
             StopAttack(GetPointColor(pathManager.GetCurrentPoint()));
+        }
+
+        void KnockPlayerBack()
+        {
+            LinkedPoint previousPoint = pathManager.GetCurrentPoint().Previous;
+            Vector2 direction;
+            float distance;
+
+            if (previousPoint != null)
+            {
+                direction = (previousPoint.position - (Vector2)pPlayer.Instance.transform.position).normalized;
+                distance = Vector2.Distance(pPlayer.Instance.transform.position, previousPoint.position);
+                _playerDash.Dash(true, direction, 0.1f, distance);
+            }
+            else
+            {
+                direction = pPlayer.Instance.transform.position - transform.position;
+                distance = 1f;
+                _playerDash.Dash(true, direction, 0.1f, distance);
+            }
         }
     }
 
     void StopAttack(Color color)
     {
         _isCanAttack = false;
-        _isAttacking = false;
+        IsAttacking = false;
         _toBeParriedTimer = 0f;
         spriteRenderer.color = color;
     }

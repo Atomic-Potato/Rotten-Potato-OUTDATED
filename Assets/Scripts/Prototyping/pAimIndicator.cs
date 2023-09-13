@@ -15,6 +15,7 @@ public class pAimIndicator : MonoBehaviour
     [SerializeField] bool gizmos;
     [SerializeField] bool gizmosDisplayMouseDirection;
     [SerializeField] bool gizmosDisplayIndicatorDirection;
+    [SerializeField] BoxCollider2D collider;
 
     void OnDrawGizmos()
     {
@@ -43,6 +44,11 @@ public class pAimIndicator : MonoBehaviour
     void Update()
     {
         indicator.transform.position = (Vector2)transform.position + GetDirectionToMouse() * distanceFromPlayer;
+        DrawBox(indicator.transform.position, new Vector3(collider.size.x/2f, collider.size.y/2f, 0f), Color.red);
+        DrawBox(
+            new Vector3(transform.position.x, transform.position.y -0.08f, 0f), 
+            new Vector3(collider.size.x/2f, collider.size.y/2f, 0f), 
+            Color.red);
     }
 
     Vector2 GetDirectionToMouse()
@@ -51,5 +57,35 @@ public class pAimIndicator : MonoBehaviour
         Vector2 direction = mousePosition - transform.position;
         direction.Normalize();
         return direction;
+    }
+
+    void DrawBox(Vector3 position, Vector3 size, Color color){
+        //TOP front
+        Debug.DrawRay(new Vector3(position.x - size.x, position.y + size.y, position.z + size.z), new Vector3(size.x*2f, 0f, 0f), color);
+        //TOP back
+        Debug.DrawRay(new Vector3(position.x - size.x, position.y + size.y, position.z - size.z), new Vector3(size.x*2f, 0f, 0f), color);
+        //BOTTOM front
+        Debug.DrawRay(new Vector3(position.x - size.x, position.y - size.y, position.z + size.z), new Vector3(size.x*2f, 0f, 0f), color);
+        //BOTTOM back
+        Debug.DrawRay(new Vector3(position.x - size.x, position.y - size.y, position.z - size.z), new Vector3(size.x*2f, 0f, 0f), color);
+        //LEFT front
+        Debug.DrawRay(new Vector3(position.x - size.x, position.y - size.y, position.z + size.z), new Vector3(0f, size.y*2f, 0f), color);
+        //LEFT back
+        Debug.DrawRay(new Vector3(position.x - size.x, position.y - size.y, position.z - size.z), new Vector3(0f, size.y*2f, 0f), color);
+        //RIGHT front
+        Debug.DrawRay(new Vector3(position.x + size.x, position.y - size.y, position.z + size.z), new Vector3(0f, size.y*2f, 0f), color);
+        //RIGHT back
+        Debug.DrawRay(new Vector3(position.x + size.x, position.y - size.y, position.z - size.z), new Vector3(0f, size.y*2f, 0f), color);
+
+        //LEFT SIDE
+        //Top
+        Debug.DrawRay(new Vector3(position.x - size.x, position.y + size.y, position.z - size.z), new Vector3(0f, 0f, size.z * 2f), color);
+        //Bottom
+        Debug.DrawRay(new Vector3(position.x - size.x, position.y - size.y, position.z - size.z), new Vector3(0f, 0f, size.z * 2f), color);
+        //RIGHT SIDE
+        //Top
+        Debug.DrawRay(new Vector3(position.x + size.x, position.y + size.y, position.z - size.z), new Vector3(0f, 0f, size.z * 2f), color);
+        //Bottom
+        Debug.DrawRay(new Vector3(position.x + size.x, position.y - size.y, position.z - size.z), new Vector3(0f, 0f, size.z * 2f), color);
     }
 }

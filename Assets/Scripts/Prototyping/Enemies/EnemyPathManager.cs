@@ -5,6 +5,7 @@ using UnityEngine;
 public class EnemyPathManager : MonoBehaviour
 {
     [SerializeField] EnemyPathSection[] path;
+    [SerializeField] Transform ghostTransform;
 
     int _currentSectionIndex = -1;
 
@@ -34,6 +35,10 @@ public class EnemyPathManager : MonoBehaviour
             }
             return MoveToNextPoint();
         }
+
+        if (point.Previous != null)
+            if (point.Previous.Previous != null)
+                ghostTransform.position = point.Previous.Previous.position;
 
         transform.position = point.position;
         return point;
