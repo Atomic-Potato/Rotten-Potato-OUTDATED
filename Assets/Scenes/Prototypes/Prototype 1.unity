@@ -814,8 +814,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   damage: 1
-  timeToCounterAttack: 3.5
-  timeToBeParried: 1.5
+  counterAttackProbability: 0.5
+  timeToCounterAttack: 0.75
+  timeToBeParried: 0.15
   pathManager: {fileID: 340326322}
   spriteRenderer: {fileID: 1833143277}
   parryColor: {r: 0.9234619, g: 0, b: 1, a: 1}
@@ -4673,6 +4674,7 @@ MonoBehaviour:
   gizmos: 1
   gizmosDisplayMouseDirection: 1
   gizmosDisplayIndicatorDirection: 1
+  collider: {fileID: 7048394262691945166}
 --- !u!4 &7048394262691945203
 Transform:
   m_ObjectHideFlags: 0

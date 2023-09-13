@@ -1,4 +1,5 @@
 ﻿using TMPro;
+using UnityEditor.U2D;
 using UnityEngine;
 
 public class Enemy : MonoBehaviour
@@ -6,6 +7,9 @@ public class Enemy : MonoBehaviour
     [Space]
     [SerializeField] int damage;
 
+    [Space]
+    [Range(0, 1f)]
+    [SerializeField] float counterAttackProbability;
     [Range(0f, 20f)]
     [SerializeField] float timeToCounterAttack;
     [Range(0f, 20f)]
@@ -83,13 +87,14 @@ public class Enemy : MonoBehaviour
         }
 
         LinkedPoint point = pathManager.MoveToNextPoint();
+        spriteRenderer.color = GetPointColor(point);
         if (point == null)
         {
             Die();
             return;
         }
-        
-        _isCanCounterAttack = true;
+
+        _isCanCounterAttack = RollForSuccess(counterAttackProbability);
     }
 
     public void Die()
@@ -113,7 +118,7 @@ public class Enemy : MonoBehaviour
             LinkedPoint point = pathManager.MoveToPreviousPoint();
             StopCounterAttack(GetPointColor(point));
 
-            // _isCanAttack = true;
+            _isCanAttack = true;
         }
     }
 
@@ -178,6 +183,12 @@ public class Enemy : MonoBehaviour
         IsAttacking = false;
         _toBeParriedTimer = 0f;
         spriteRenderer.color = color;
+    }
+
+    bool RollForSuccess(float probablityOfSuccess)
+    {
+        float random = Random.Range(0f, 1f);
+        return random <= probablityOfSuccess;
     }
 
     Color GetPointColor(LinkedPoint point)
