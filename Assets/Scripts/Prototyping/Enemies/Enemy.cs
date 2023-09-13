@@ -65,7 +65,7 @@ public class Enemy : MonoBehaviour
 
     void Update()
     {
-        shooting.enabled = !_isCounterAttacking || IsAttacking ? true : false; 
+        shooting.enabled = !_isCounterAttacking && !IsAttacking ? true : false; 
 
         if (_isCanCounterAttack)
         {

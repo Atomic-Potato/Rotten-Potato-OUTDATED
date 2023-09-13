@@ -12,13 +12,13 @@ public class pEnemyShooting : MonoBehaviour
 
     Coroutine _shootingCache = null;
 
-    void OnEnable()
+    void OnDisable() 
     {
         if (_shootingCache != null)
         {
             StopCoroutine(_shootingCache);
             _shootingCache = null;
-        }    
+        }
     }
 
     void Update() 
