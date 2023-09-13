@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.IO;
 using UnityEngine;
 
 
@@ -137,7 +136,8 @@ public class EnemyPathSection
 
             if (nextPoint == null)
             {
-                return END_OF_PATH;
+                _previousPoint = _currentPoint;
+                _currentPoint = END_OF_PATH;
             }
             else
             {
@@ -146,9 +146,9 @@ public class EnemyPathSection
                 
                 _previousPoint.Next = _currentPoint;
                 _currentPoint.Previous = _previousPoint;
-
-                return _currentPoint;
             }
+
+            return _currentPoint;
             
             #region Local Methods
             LinkedPoint GetNextRandomPointInArray()
@@ -207,8 +207,16 @@ public class EnemyPathSection
 
         public override LinkedPoint GetPreviousPoint()
         {
-            _previousPoint = _previousPoint?.Previous;
-            _currentPoint = _currentPoint?.Previous;
+            if (_currentPoint == END_OF_PATH)
+            {
+                _currentPoint = _previousPoint;
+                _previousPoint = _previousPoint?.Previous;
+            }
+            else
+            {
+                _previousPoint = _previousPoint?.Previous;
+                _currentPoint = _currentPoint?.Previous;
+            }
 
             return _currentPoint;
         }
@@ -264,25 +272,34 @@ public class EnemyPathSection
             }
             
             _currentIndex++;
-            if (_currentPoint == null)
+            if (_currentIndex == points.Length)
+            {
+                if (_currentPoint == END_OF_PATH)
+                {
+                    return END_OF_PATH;
+                }
+
+                _previousPoint = _currentPoint;
+                _currentPoint = null;
+                return END_OF_PATH;
+            }
+            else if (_currentPoint == null)
             {
                 _currentPoint = new LinkedPoint(points[_currentIndex].position, LinkedPoint.Types.Linear);
                 return _currentPoint;
             }
-            else if (_currentPoint.Next == null)
-            {
-                LinkedPoint nextPoint = new LinkedPoint(points[_currentIndex].position, LinkedPoint.Types.Linear);
+            
+            LinkedPoint nextPoint = _currentPoint.Next == null ? 
+                new LinkedPoint(points[_currentIndex].position, LinkedPoint.Types.Linear) :
+                _currentPoint.Next;
 
-                _previousPoint = _currentPoint;
-                _currentPoint = nextPoint;
+            _previousPoint = _currentPoint;
+            _currentPoint = nextPoint;
 
-                _previousPoint.Next = _currentPoint;
-                _currentPoint.Previous = _previousPoint;
+            _previousPoint.Next = _currentPoint;
+            _currentPoint.Previous = _previousPoint;
 
-                return _currentPoint;
-            }
-
-            return null;
+            return _currentPoint;
         }
 
         public override LinkedPoint GetPreviousPoint()
@@ -298,8 +315,16 @@ public class EnemyPathSection
             }
 
             _currentIndex--;
-            _previousPoint = _previousPoint?.Previous;
-            _currentPoint = _currentPoint?.Previous;
+            if (_currentPoint == END_OF_PATH && _previousPoint != null)
+            {
+                _currentPoint = _previousPoint;
+                _previousPoint = _previousPoint?.Previous;
+            }            
+            else
+            {
+                _previousPoint = _previousPoint?.Previous;
+                _currentPoint = _currentPoint?.Previous;
+            }
             return _currentPoint;
         }
     }

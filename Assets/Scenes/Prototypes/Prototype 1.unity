@@ -732,6 +732,25 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   path:
+  - isUsingRandom: 1
+    random:
+      pointsRange: 2
+      originPoint: {fileID: 1922010421}
+      isUsingManualPoints: 0
+      points:
+      - {fileID: 170481040}
+      - {fileID: 2090971175}
+      - {fileID: 972578852}
+      - {fileID: 1441252404}
+      isUsingRandomPoints: 1
+      numberOfPoints: 1
+      enemyTransform: {fileID: 340326323}
+      collider: {fileID: 340326324}
+    isUsingLinear: 0
+    linear:
+      points:
+      - {fileID: 170481040}
+      - {fileID: 2090971175}
   - isUsingRandom: 0
     random:
       pointsRange: 2
@@ -4508,7 +4527,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 413292e5fd6274948854b126b5dc8237, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  count: 1
+  count: 100
   distance: 3
   time: 0.1
   holdTime: 2

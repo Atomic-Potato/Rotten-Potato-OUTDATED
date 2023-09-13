@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using TMPro;
+using UnityEngine;
 
 public class Enemy : MonoBehaviour
 {
@@ -14,6 +15,9 @@ public class Enemy : MonoBehaviour
     float _counterAttackTimer;
     bool _isCanCounterAttack;
     bool _isCounterAttacking;
+    bool _isCanAttack;
+    bool _isAttacking;
+    Color _color;
 
     public Transform origin;
 
@@ -31,6 +35,11 @@ public class Enemy : MonoBehaviour
 
             if (dash.IsDashing)
             {
+                if (_isCanCounterAttack)
+                {
+                    StopCounterAttack(Color.white);
+                }
+
                 LinkedPoint point = pathManager.MoveToNextPoint();
                 if (point == null)
                 {
@@ -38,16 +47,11 @@ public class Enemy : MonoBehaviour
                     return;
                 }
                 
-                // _isCanCounterAttack = true;
-                
-                if (point.type == LinkedPoint.Types.Random)
-                {
-                    spriteRenderer.color = Color.red;
-                }
-                else if (point.type == LinkedPoint.Types.Linear)
-                {
-                    spriteRenderer.color = Color.green;
-                }
+                _isCanCounterAttack = true;
+            }
+            else
+            {
+                _isCanAttack = true;
             }
         }    
     }
@@ -71,16 +75,40 @@ public class Enemy : MonoBehaviour
         {
             _isCounterAttacking = true;
             _counterAttackTimer = 0f;
+            spriteRenderer.color = Color.yellow;
         }
 
         _counterAttackTimer += Time.deltaTime;
 
         if (_counterAttackTimer >= timeToCounterAttack)
         {
-            pathManager.MoveToPreviousPoint();
 
-            _isCanCounterAttack = false;
-            _isCounterAttacking = false;
+            LinkedPoint point = pathManager.MoveToPreviousPoint();
+            StopCounterAttack(GetPointColor(point));
+        }
+    }
+
+    void StopCounterAttack(Color color)
+    {
+        _isCanCounterAttack = false;
+        _isCounterAttacking = false;
+        _counterAttackTimer = 0f;
+        spriteRenderer.color = color;
+    }
+
+    Color GetPointColor(LinkedPoint point)
+    {
+        if (point.type == LinkedPoint.Types.Random)
+        {
+            return Color.red;
+        }
+        else if (point.type == LinkedPoint.Types.Linear)
+        {
+            return Color.green;
+        }
+        else
+        {
+            return Color.white;
         }
     }
 }
