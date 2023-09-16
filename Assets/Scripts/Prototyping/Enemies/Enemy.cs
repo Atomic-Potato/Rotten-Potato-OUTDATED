@@ -196,16 +196,7 @@ public class Enemy : MonoBehaviour, IParriable
         {
             LinkedPoint point = pathManager.MoveToPreviousPoint();
             StopCounterAttack(GetPointColor(point));
-
-            bool isShouldCounterAttackAgain = RollForSuccess(keepCounterAttackingProbability);
-            if (isShouldCounterAttackAgain)
-            {
-                _isCanCounterAttack = true;
-            }
-            else
-            {
-                _isCanAttack = true;
-            }
+            _isCanAttack = true;
         }
     }
 
@@ -244,6 +235,12 @@ public class Enemy : MonoBehaviour, IParriable
             }
 
             StopAttack(GetPointColor(pathManager.GetCurrentPoint()));
+
+            bool isShouldCounterAttackAgain = RollForSuccess(keepCounterAttackingProbability);
+            if (isShouldCounterAttackAgain)
+            {
+                _isCanCounterAttack = true;
+            }
         }
 
         void KnockPlayerBack()
