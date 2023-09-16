@@ -16,6 +16,20 @@ public class EnemyPathManager : MonoBehaviour
         MoveToNextPoint();
     }
 
+    /// <summary>
+    /// Returns the index of the point in the current section.
+    /// -1 in case of failure
+    /// </summary>
+    public int GetCurrentPointIndex()
+    {
+        return path[_currentSectionIndex] != null ? path[_currentSectionIndex].GetCurrentPointIndex() : -1;
+    }
+
+    public int GetCurrentSectionLength()
+    {
+        return path[_currentSectionIndex] == null ? 0 : path[_currentSectionIndex].GetSectionLength();
+    }
+
     public LinkedPoint GetCurrentPoint()
     {
         return path[_currentSectionIndex].GetCurrentPoint();

@@ -31,6 +31,38 @@ public class EnemyPathSection
         }
     }
 
+    public int GetCurrentPointIndex()
+    {
+        if (isUsingRandom && random != null)
+        {
+            return random.GetCurrentPointIndex();
+        }
+        else if (isUsingLinear && linear != null)
+        {
+            return linear.GetCurrentPointIndex();
+        }
+        else
+        {
+            return -1;
+        }
+    }
+
+    public int GetSectionLength()
+    {
+        if (isUsingRandom && random != null)
+        {
+            return random.GetSectionLength();
+        }
+        else if (isUsingLinear && linear != null)
+        {
+            return linear.GetSectionLength();
+        }
+        else
+        {
+            return 0;
+        }
+    }
+
     public LinkedPoint GetCurrentPoint()
     {
         if (isUsingRandom && random != null)
@@ -103,6 +135,7 @@ public class EnemyPathSection
         public bool IsUsingManualPoints => isUsingManualPoints;
         public bool IsUsingRandomPoints => isUsingRandomPoints;
 
+        int _currentIndex = -1;
         int _manualPointsUsed = 0;
         float _colliderMaxLength = 0f;
 
@@ -122,6 +155,25 @@ public class EnemyPathSection
             }
         }
 
+        public override int GetCurrentPointIndex()
+        {
+            return _currentIndex;
+        }
+
+        public override int GetSectionLength()
+        {
+            if (isUsingRandomPoints)
+            {
+                return numberOfPoints;
+            }
+            if (isUsingManualPoints)
+            {
+                return points.Count;
+            }
+
+            return 0;
+        }
+
         public override LinkedPoint GetCurrentPoint()
         {
             return _currentPoint;
@@ -131,11 +183,13 @@ public class EnemyPathSection
         {
             if (_currentPoint == null)
             {
+                _currentIndex++;
                 _currentPoint = GetFirstPoint();
                 return _currentPoint;
             }
             else if (_currentPoint.Next != null)
             {
+                _currentIndex++;
                 _previousPoint = _currentPoint;
                 _currentPoint = _currentPoint.Next;
                 return _currentPoint;
@@ -169,6 +223,7 @@ public class EnemyPathSection
                 _currentPoint.Previous = _previousPoint;
             }
 
+            _currentIndex++;
             return _currentPoint;
             
             #region Local Methods
@@ -238,7 +293,11 @@ public class EnemyPathSection
                 _previousPoint = _previousPoint?.Previous;
                 _currentPoint = _currentPoint?.Previous;
             }
-
+            
+            if (_currentIndex > -1)
+            {
+                _currentIndex--;
+            }
             return _currentPoint;
         }
     
@@ -279,6 +338,17 @@ public class EnemyPathSection
         [SerializeField] Transform[] points;
 
         int _currentIndex = -1;
+
+
+        public override int GetCurrentPointIndex()
+        {
+            return _currentIndex;
+        }
+
+        public override int GetSectionLength()
+        {
+            return points.Length;
+        }
 
         public override LinkedPoint GetCurrentPoint()
         {

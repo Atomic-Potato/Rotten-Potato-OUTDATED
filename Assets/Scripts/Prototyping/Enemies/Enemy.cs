@@ -17,7 +17,10 @@ public class Enemy : MonoBehaviour, IParriable
     [SerializeField] float timeToCounterAttack;
     [Range(0f, 20f)]
     [SerializeField] float timeToBeParried;
-    
+    [Tooltip("If enabled, allows the enemy to counter attack until the start of the current section it took."
+        + " \nIf disabled, will counter attack until the start of the entire path.")]
+    [SerializeField] bool isCanCounterToSectionStartOnly;
+
     [Space(height: 10)]
     [SerializeField] EnemyPathManager pathManager;
     [SerializeField] pEnemyShooting shooting;
@@ -41,7 +44,9 @@ public class Enemy : MonoBehaviour, IParriable
 
     [SerializeField] Transform origin;
 
-    private void OnDrawGizmos() {
+    #region Execution
+    private void OnDrawGizmos() 
+    {
         Gizmos.color = Color.white;
         Vector2 dir = (transform.position - origin.transform.position).normalized;
         Gizmos.DrawRay(origin.transform.position, dir * Vector2.Distance(transform.position, origin.transform.position));
@@ -80,6 +85,7 @@ public class Enemy : MonoBehaviour, IParriable
             Attack();
         }
     }
+    #endregion
 
     public void Damage()
     {
@@ -100,12 +106,12 @@ public class Enemy : MonoBehaviour, IParriable
         }
 
         LinkedPoint point = pathManager.MoveToNextPoint();
-        spriteRenderer.color = GetPointColor(point);
         if (point == null)
         {
             Die();
             return;
         }
+        spriteRenderer.color = GetPointColor(point);
 
         _isCanCounterAttack = RollForSuccess(counterAttackProbability);
     }
@@ -164,6 +170,16 @@ public class Enemy : MonoBehaviour, IParriable
     #region Counter Attack
     void CounterAttack()
     {
+        if (isCanCounterToSectionStartOnly)
+        {
+            int currentPointIndex = pathManager.GetCurrentPointIndex();
+            if (currentPointIndex <= 0)
+            {
+                StopCounterAttack(GetPointColor(pathManager.GetCurrentPoint()));
+                return;
+            }
+        }
+
         if (!_isCounterAttacking)
         {
             _isCounterAttacking = true;
