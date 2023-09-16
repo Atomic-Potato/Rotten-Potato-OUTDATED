@@ -213,8 +213,8 @@ public class pDash : MonoBehaviour
 
     void StopMovement()
     {
-        BasicMovement.MovementActive = false;
-        BasicMovement.JumpingActive = false;
+        BasicMovement.IsMovementActive = false;
+        BasicMovement.IsJumpingActive = false;
         rigidbody.velocity = Vector2.zero;
         rigidbody.gravityScale = 0f;
     }
@@ -301,8 +301,8 @@ public class pDash : MonoBehaviour
     void RestoreMovement()
     {
         rigidbody.gravityScale = _initialGravity;
-        BasicMovement.MovementActive = true;
-        BasicMovement.JumpingActive = true;
+        BasicMovement.IsMovementActive = true;
+        BasicMovement.IsJumpingActive = true;
     }
 
     public Vector2 GetMouseDirection()

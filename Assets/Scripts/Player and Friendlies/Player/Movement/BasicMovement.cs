@@ -39,8 +39,8 @@ public class BasicMovement : MonoBehaviour
     [HideInInspector] private static bool isJumping;
 
     // ---- OTHER ----
-    [HideInInspector] public static bool MovementActive = true;
-    [HideInInspector] public static bool JumpingActive = true;
+    [HideInInspector] public static bool IsMovementActive = true;
+    [HideInInspector] public static bool IsJumpingActive = true;
     #endregion
 
     #region PRIVATE VARAIBLES
@@ -95,9 +95,9 @@ public class BasicMovement : MonoBehaviour
     void FixedUpdate(){
         CapFallingVelocity();
 
-        if(MovementActive)
+        if(IsMovementActive)
             ApplyMovement();
-        if(JumpingActive)
+        if(IsJumpingActive)
             ApplyJump(jumpForce);
     }
     #endregion

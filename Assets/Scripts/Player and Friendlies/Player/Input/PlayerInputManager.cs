@@ -1,20 +1,35 @@
 ﻿using UnityEngine;
-using UnityEngine.InputSystem;
 
 public class PlayerInputManager : MonoBehaviour{
     private static PlayerInput playerInputActions;
 
-    public static PlayerInput Maps{ get{return playerInputActions;} }
+    public static PlayerInput Maps => playerInputActions;
 
-    void Awake() {
+    public static Vector2 DirectionInput
+    {
+        get
+        {
+            Vector2 direction = new Vector2();
+            direction.x = Maps.Player.XAxisLeftRight.ReadValue<float>();
+            direction.y = Maps.Player.YAxisNegativeRoll.ReadValue<float>();
+            return direction;
+        }
+    }
+
+    void Awake() 
+    {
         playerInputActions = new PlayerInput();    
     }
 
-    void OnEnable() {
+    void OnEnable() 
+    {
         playerInputActions.Enable();    
     }
 
-    void OnDisable() {
+    void OnDisable() 
+    {
         playerInputActions.Disable();    
     }
+
+    
 }

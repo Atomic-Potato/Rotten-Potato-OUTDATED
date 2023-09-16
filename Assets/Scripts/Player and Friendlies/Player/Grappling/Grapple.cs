@@ -386,10 +386,10 @@ public class Grapple : MonoBehaviour{
     }
 
     void DisableOtherMovementMechanics(){
-        if(BasicMovement.MovementActive)
-            BasicMovement.MovementActive = false;
-        if(BasicMovement.JumpingActive)
-            BasicMovement.JumpingActive = false;
+        if(BasicMovement.IsMovementActive)
+            BasicMovement.IsMovementActive = false;
+        if(BasicMovement.IsJumpingActive)
+            BasicMovement.IsJumpingActive = false;
 
         /* TODO:
         if(roll.enabled)
@@ -401,10 +401,10 @@ public class Grapple : MonoBehaviour{
     }
 
     void EnableOtherMovementMechanics(){
-        if(!BasicMovement.MovementActive)
-            BasicMovement.MovementActive = true;
-        if(!BasicMovement.JumpingActive)
-            BasicMovement.JumpingActive = true;
+        if(!BasicMovement.IsMovementActive)
+            BasicMovement.IsMovementActive = true;
+        if(!BasicMovement.IsJumpingActive)
+            BasicMovement.IsJumpingActive = true;
 
         /* TODO:
         if(!roll.enabled)
