@@ -112,7 +112,7 @@ public class pDash : MonoBehaviour
             enemy.Damage();
             StopDash();
             _dashesLeft += restoredDashesCount;
-        }    
+        }
     }
 
     void UpdateCache()
