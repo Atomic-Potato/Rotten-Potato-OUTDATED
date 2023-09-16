@@ -14,7 +14,6 @@ public class Parry : MonoBehaviour
     void Update()
     {
         _isSpamming = IsSpammingParryInput();
-        Debug.Log("Is spamming: " + _isSpamming);
 
         if (enemy != null)
         {

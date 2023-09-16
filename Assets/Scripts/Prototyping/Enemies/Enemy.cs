@@ -10,6 +10,9 @@ public class Enemy : MonoBehaviour
     [Space]
     [Range(0, 1f)]
     [SerializeField] float counterAttackProbability;
+    [Tooltip("The probability of the enemy attacking the player isntead of getting damaged.")]
+    [Range(0f, 1f)]
+    [SerializeField] float attackPlayerProbability;
     [Range(0f, 20f)]
     [SerializeField] float timeToCounterAttack;
     [Range(0f, 20f)]
@@ -90,7 +93,36 @@ public class Enemy : MonoBehaviour
         {
             StopCounterAttack(Color.white);
         }
+        
+        _isCanAttack = RollForSuccess(attackPlayerProbability);
+        if (_isCanAttack)
+        {
+            return;
+        }
 
+        LinkedPoint point = pathManager.MoveToNextPoint();
+        spriteRenderer.color = GetPointColor(point);
+        if (point == null)
+        {
+            Die();
+            return;
+        }
+
+        _isCanCounterAttack = RollForSuccess(counterAttackProbability);
+    }
+
+    void DamageNoAttack()
+    {
+        if(IsAttacking)
+        {
+            return;
+        }
+
+        if (_isCanCounterAttack)
+        {
+            StopCounterAttack(Color.white);
+        }
+        
         LinkedPoint point = pathManager.MoveToNextPoint();
         spriteRenderer.color = GetPointColor(point);
         if (point == null)
@@ -120,7 +152,7 @@ public class Enemy : MonoBehaviour
         }
         _isParriable = false;
         
-        Damage();
+        DamageNoAttack();
     }
 
     #region Counter Attack
