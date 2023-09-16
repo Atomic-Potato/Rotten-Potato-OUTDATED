@@ -464,7 +464,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 170481039}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -2.33, y: 2.16, z: -2.6426225}
+  m_LocalPosition: {x: -2.33, y: -1, z: -2.6426225}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 1833475161}
@@ -734,41 +734,17 @@ MonoBehaviour:
   path:
   - isUsingRandom: 1
     random:
-      pointsRange: 2
-      originPoint: {fileID: 1922010421}
+      pointsRange: 0
+      originPoint: {fileID: 0}
       isUsingManualPoints: 0
-      points:
-      - {fileID: 170481040}
-      - {fileID: 2090971175}
-      - {fileID: 972578852}
-      - {fileID: 1441252404}
+      points: []
       isUsingRandomPoints: 1
-      numberOfPoints: 1000
-      enemyTransform: {fileID: 340326323}
-      collider: {fileID: 340326324}
+      numberOfPoints: 100
+      enemyTransform: {fileID: 0}
+      collider: {fileID: 0}
     isUsingLinear: 0
     linear:
-      points:
-      - {fileID: 170481040}
-      - {fileID: 2090971175}
-  - isUsingRandom: 0
-    random:
-      pointsRange: 2
-      originPoint: {fileID: 1922010421}
-      isUsingManualPoints: 0
-      points:
-      - {fileID: 170481040}
-      - {fileID: 2090971175}
-      - {fileID: 972578852}
-      - {fileID: 1441252404}
-      isUsingRandomPoints: 1
-      numberOfPoints: 1
-      enemyTransform: {fileID: 340326323}
-      collider: {fileID: 340326324}
-    isUsingLinear: 1
-    linear:
-      points:
-      - {fileID: 170481040}
+      points: []
   ghostTransform: {fileID: 1943943359}
 --- !u!4 &340326323
 Transform:
@@ -810,20 +786,22 @@ MonoBehaviour:
   m_GameObject: {fileID: 340326320}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: aaa695ac22f9e5249985f213512b023b, type: 3}
+  m_Script: {fileID: 11500000, guid: 269d31b889bdb6e48a8e5fa254e6607d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  damage: 1
-  counterAttackProbability: 1
-  attackPlayerProbability: 1
-  timeToCounterAttack: 2
-  timeToBeParried: 1
+  damageToPlayer: 1
+  counterAttackProbability: 0.75
+  keepCounterAttackingProbability: 0.5
+  attackPlayerProbability: 0.65
+  timeToCounterAttack: 0.75
+  timeToBeParried: 0.15
+  isCanCounterToSectionStartOnly: 1
   pathManager: {fileID: 340326322}
   shooting: {fileID: 340326321}
   spriteRenderer: {fileID: 1833143277}
-  parryColor: {r: 0.9234619, g: 0, b: 1, a: 1}
+  parryColor: {r: 0.7630806, g: 0.049439307, b: 0.9528302, a: 1}
   IsAttacking: 0
-  origin: {fileID: 1922010421}
+  origin: {fileID: 0}
 --- !u!1 &348513973
 GameObject:
   m_ObjectHideFlags: 0
@@ -1847,6 +1825,53 @@ SpriteShapeRenderer:
   m_LocalAABB:
     m_Center: {x: 0, y: -0.00000023841858, z: 0}
     m_Extent: {x: 2.0000002, y: 2, z: 0}
+--- !u!1 &1091229115
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1091229117}
+  - component: {fileID: 1091229116}
+  m_Layer: 0
+  m_Name: Enemies Cluster
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1091229116
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1091229115}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6627e6141fdcbf648a5649395934b763, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  enemiesCount: 0
+  radius: 0
+  rotate: 0
+  enemy: {fileID: 0}
+--- !u!4 &1091229117
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1091229115}
+  m_LocalRotation: {x: 0, y: -0, z: 0.5968554, w: -0.8023488}
+  m_LocalPosition: {x: 2.2944703, y: 2.6725385, z: 2.02369}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 11
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 286.71}
 --- !u!1 &1104407013
 GameObject:
   m_ObjectHideFlags: 0
@@ -4282,7 +4307,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2090971174}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -5.33, y: 2.16, z: -2.6426225}
+  m_LocalPosition: {x: -5.33, y: -1.41, z: -2.6426225}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 1833475161}
@@ -4621,7 +4646,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9715f8d0f542c8740a17520245e05383, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  hitPoints: 999
+  hitPoints: 4
 --- !u!114 &7048394262691945169
 MonoBehaviour:
   m_ObjectHideFlags: 0
