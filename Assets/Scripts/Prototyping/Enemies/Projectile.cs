@@ -1,13 +1,14 @@
 ﻿using System.Collections;
 using UnityEngine;
 
-public class Projectile : MonoBehaviour
+public class Projectile : MonoBehaviour, IParriable
 {
     [Range(0, 999)]
     [SerializeField] int damagePoints;
     [SerializeField] float launchForce = 2f;
     [Range(0f, 30f)]
     [SerializeField] float lifeTime = 10f;
+    [SerializeField] bool isParriable;
 
     [Space]
     [SerializeField] Rigidbody2D rigidbody;
@@ -45,6 +46,16 @@ public class Projectile : MonoBehaviour
     IEnumerator SelfDestructInTime()
     {
         yield return new WaitForSeconds(lifeTime);
+        SelfDestroy();
+    }
+
+    public bool IsParriable()
+    {
+        return isParriable;
+    }
+
+    public void Parry()
+    {
         SelfDestroy();
     }
 }

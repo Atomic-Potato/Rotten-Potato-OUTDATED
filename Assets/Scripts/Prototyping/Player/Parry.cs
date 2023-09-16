@@ -9,17 +9,17 @@ public class Parry : MonoBehaviour
     int? _spamCache = null;
     Coroutine _spamWindowCache;
     bool _isSpamming;
-    Enemy enemy;
+    IParriable parriableHostile;
 
     void Update()
     {
         _isSpamming = IsSpammingParryInput();
 
-        if (enemy != null)
+        if (parriableHostile != null)
         {
-            if (enemy.IsParriable && !_isSpamming && PlayerInputManager.IsPerformedParry)
+            if (IsCanParry() && PlayerInputManager.IsPerformedParry)
             {
-                enemy.Parry();
+                parriableHostile.Parry();
             }
         }
     }
@@ -28,19 +28,31 @@ public class Parry : MonoBehaviour
     {
         if (other.gameObject.tag == "Enemy")
         {
-            if (enemy == null)
+            if (parriableHostile == null)
             {
-                enemy = other.gameObject.GetComponent<Enemy>();
+                parriableHostile = other.gameObject.GetComponent<Enemy>();
+            }
+        }
+        else if (other.gameObject.tag == "Projectile")
+        {
+            if (parriableHostile == null)
+            {
+                parriableHostile = other.gameObject.GetComponent<Projectile>();
             }
         }    
     }
 
     void OnTriggerExit2D(Collider2D other) 
     {
-        if (other.gameObject.tag == "Enemy")
+        if (other.gameObject.tag == "Enemy" || other.gameObject.tag == "Projectile")
         {
-            enemy = null;
+            parriableHostile = null;
         }  
+    }
+
+    bool IsCanParry()
+    {
+        return parriableHostile.IsParriable() && !_isSpamming; 
     }
 
     bool IsSpammingParryInput()

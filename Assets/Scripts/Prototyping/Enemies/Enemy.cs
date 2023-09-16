@@ -2,7 +2,7 @@
 using UnityEditor.U2D;
 using UnityEngine;
 
-public class Enemy : MonoBehaviour
+public class Enemy : MonoBehaviour, IParriable
 {
     [Space]
     [SerializeField] int damage;
@@ -35,7 +35,6 @@ public class Enemy : MonoBehaviour
     bool _isCanAttack;
     public bool IsAttacking;
     bool _isParriable;
-    public bool IsParriable => _isParriable; 
     bool _isPlayerInRange;
 
     pDash _playerDash;
@@ -139,6 +138,11 @@ public class Enemy : MonoBehaviour
         Destroy(gameObject);
     }
 
+    #region Parrying
+    public bool IsParriable()
+    {
+        return _isParriable;
+    }
     public void Parry()
     {
         if (!_isParriable)
@@ -154,6 +158,8 @@ public class Enemy : MonoBehaviour
         
         DamageNoAttack();
     }
+    #endregion
+
 
     #region Counter Attack
     void CounterAttack()

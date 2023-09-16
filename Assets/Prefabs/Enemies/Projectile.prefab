@@ -49,6 +49,7 @@ MonoBehaviour:
   damagePoints: 1
   launchForce: 10
   lifeTime: 10
+  isParriable: 1
   rigidbody: {fileID: 8925513643453365219}
 --- !u!50 &8925513643453365219
 Rigidbody2D:
