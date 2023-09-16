@@ -5,6 +5,8 @@ public class Parry : MonoBehaviour
 {
     [Range(0f, 1f)]
     [SerializeField] float timeWindowForSpam = 0.2f;
+    [Tooltip("An object can be parried once inside this collider")]
+    [SerializeField] Collider2D parryCollisionRange;
     
     int? _spamCache = null;
     Coroutine _spamWindowCache;
@@ -26,6 +28,12 @@ public class Parry : MonoBehaviour
 
     void OnTriggerStay2D(Collider2D other) 
     {
+        Collider2D otherCollider = other.gameObject.GetComponent<Collider2D>();
+        if (!parryCollisionRange.IsTouching(otherCollider))
+        {
+            return;
+        }
+
         if (other.gameObject.tag == "Enemy")
         {
             if (parriableHostile == null)

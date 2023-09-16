@@ -27,7 +27,10 @@ public class pDash : MonoBehaviour
 
     [Space]
     [SerializeField] Rigidbody2D rigidbody;
-    [SerializeField] Collider2D collider;
+    [Tooltip("The collider that is used for solid/static objects collisions such as the ground.")]
+    [SerializeField] Collider2D playerCollider;
+    [Tooltip("The collider used to detect hitting enemies.")]
+    [SerializeField] Collider2D detectionCollider;
     [SerializeField] PhysicsMaterial2D noFrictionMaterial;
 
     [Space]
@@ -101,6 +104,13 @@ public class pDash : MonoBehaviour
 
     void OnTriggerEnter2D(Collider2D other)
     {
+        Collider2D otherCollider = other.gameObject.GetComponent<Collider2D>();
+        if (!detectionCollider.IsTouching(otherCollider))
+        {
+            return;
+        }
+
+
         if(!_isDashing)
         {
             return;
@@ -281,7 +291,7 @@ public class pDash : MonoBehaviour
 
         void RemoveFriction()
         {
-            collider.sharedMaterial = noFrictionMaterial;
+            playerCollider.sharedMaterial = noFrictionMaterial;
         }
 
         void StopMovement()

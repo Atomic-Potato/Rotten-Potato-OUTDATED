@@ -27,7 +27,7 @@ public class Projectile : MonoBehaviour, IParriable
             DamagePlayer();
             SelfDestroy();
         }
-        else if (other.gameObject.tag != "Projectile" && other.gameObject.tag != "Enemy")
+        else if (other.gameObject.tag == "Solid" || other.gameObject.tag == "Ground")
         {
             SelfDestroy();
         }

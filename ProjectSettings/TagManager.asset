@@ -15,6 +15,7 @@ TagManager:
   - Finish Line
   - Flyer Bullet
   - Projectile
+  - Parry System
   layers:
   - Default
   - TransparentFX

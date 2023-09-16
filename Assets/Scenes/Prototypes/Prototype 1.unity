@@ -1449,7 +1449,7 @@ GameObject:
   - component: {fileID: 482787922}
   m_Layer: 9
   m_Name: Parry System
-  m_TagString: Untagged
+  m_TagString: Parry System
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -1481,9 +1481,9 @@ CircleCollider2D:
   m_IsTrigger: 1
   m_UsedByEffector: 0
   m_UsedByComposite: 0
-  m_Offset: {x: 0, y: -0.075}
+  m_Offset: {x: 0, y: -0.08}
   serializedVersion: 2
-  m_Radius: 0.6
+  m_Radius: 1
 --- !u!114 &482787923
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1497,6 +1497,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   timeWindowForSpam: 0.2
+  parryCollisionRange: {fileID: 482787922}
 --- !u!1 &508692804
 GameObject:
   m_ObjectHideFlags: 0
@@ -4641,7 +4642,8 @@ MonoBehaviour:
   holdJumpTime: 0.1
   restoredDashesCount: 1
   rigidbody: {fileID: 7048394262691945165}
-  collider: {fileID: 7048394262691945166}
+  playerCollider: {fileID: 7048394262691945166}
+  detectionCollider: {fileID: 7048394262691945166}
   noFrictionMaterial: {fileID: 6200000, guid: 9caa2176edf51584781d36311d10f50b, type: 2}
   gizmosDrawDistance: 0
   gizmosUseDistanceDirectionToMouse: 0
