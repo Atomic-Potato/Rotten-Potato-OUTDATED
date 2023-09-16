@@ -10,8 +10,11 @@ public class Enemy : MonoBehaviour, IParriable
     [Space]
     [Range(0, 1f)]
     [SerializeField] float counterAttackProbability;
-    [Tooltip("The probability of the enemy attacking the player isntead of getting damaged.")]
+    [Tooltip("The probability of the enemy to keep counter attacking after the last counter attack.")]
     [Range(0f, 1f)]
+    [SerializeField] float keepCounterAttackingProbability;
+    [Range(0f, 1f)]
+    [Tooltip("The probability of the enemy attacking the player isntead of getting damaged.")]
     [SerializeField] float attackPlayerProbability;
     [Range(0f, 20f)]
     [SerializeField] float timeToCounterAttack;
@@ -194,7 +197,15 @@ public class Enemy : MonoBehaviour, IParriable
             LinkedPoint point = pathManager.MoveToPreviousPoint();
             StopCounterAttack(GetPointColor(point));
 
-            _isCanAttack = true;
+            bool isShouldCounterAttackAgain = RollForSuccess(keepCounterAttackingProbability);
+            if (isShouldCounterAttackAgain)
+            {
+                _isCanCounterAttack = true;
+            }
+            else
+            {
+                _isCanAttack = true;
+            }
         }
     }
 
