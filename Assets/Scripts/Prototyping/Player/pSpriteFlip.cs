@@ -16,11 +16,11 @@ public class pSpriteFlip : MonoBehaviour {
 
     bool IsGoingRight()
     {
-        return PlayerInputManager.DirectionInput.x > 0f;
+        return PlayerInputManager.Direction.x > 0f;
     }
     
     bool IsGoingLeft()
     {
-        return PlayerInputManager.DirectionInput.x < 0f;
+        return PlayerInputManager.Direction.x < 0f;
     }
 }

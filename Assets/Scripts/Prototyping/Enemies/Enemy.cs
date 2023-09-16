@@ -31,6 +31,8 @@ public class Enemy : MonoBehaviour
     bool _isCounterAttacking;
     bool _isCanAttack;
     public bool IsAttacking;
+    bool _isParriable;
+    public bool IsParriable => _isParriable; 
     bool _isPlayerInRange;
 
     pDash _playerDash;
@@ -105,6 +107,23 @@ public class Enemy : MonoBehaviour
         Destroy(gameObject);
     }
 
+    public void Parry()
+    {
+        if (!_isParriable)
+        {
+            return;
+        }
+        
+        if (IsAttacking)
+        {
+            StopAttack(Color.white);
+        }
+        _isParriable = false;
+        
+        Damage();
+    }
+
+    #region Counter Attack
     void CounterAttack()
     {
         if (!_isCounterAttacking)
@@ -132,12 +151,15 @@ public class Enemy : MonoBehaviour
         _counterAttackTimer = 0f;
         spriteRenderer.color = color;
     }
+    #endregion
 
+    #region Attack
     void Attack()
     {
         if (!IsAttacking)
         {
             IsAttacking = true;
+            _isParriable = true;
             _toBeParriedTimer = 0f;
             Color pink = new Color(255,105,180, 1);
             spriteRenderer.color = parryColor;
@@ -187,7 +209,9 @@ public class Enemy : MonoBehaviour
         _toBeParriedTimer = 0f;
         spriteRenderer.color = color;
     }
+    #endregion
 
+    #region Methods
     bool RollForSuccess(float probablityOfSuccess)
     {
         float random = Random.Range(0f, 1f);
@@ -209,4 +233,5 @@ public class Enemy : MonoBehaviour
             return Color.white;
         }
     }
+    #endregion
 }

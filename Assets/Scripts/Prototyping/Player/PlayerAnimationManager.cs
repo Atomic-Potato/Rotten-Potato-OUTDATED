@@ -46,7 +46,7 @@ public class PlayerAnimationManager : MonoBehaviour
         return 
             BasicMovement.IS_GROUNDED && 
             BasicMovement.IsMovementActive &&
-            PlayerInputManager.DirectionInput.x != 0f;
+            PlayerInputManager.Direction.x != 0f;
     }
 
     bool IsIdle()
@@ -54,6 +54,6 @@ public class PlayerAnimationManager : MonoBehaviour
         return 
             BasicMovement.IS_GROUNDED && 
             BasicMovement.IsMovementActive &&
-            PlayerInputManager.DirectionInput.x == 0f;
+            PlayerInputManager.Direction.x == 0f;
     }
 }

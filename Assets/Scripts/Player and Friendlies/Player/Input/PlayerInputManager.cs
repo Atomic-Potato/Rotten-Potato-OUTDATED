@@ -1,11 +1,12 @@
 ﻿using UnityEngine;
+using UnityEngine.InputSystem;
 
 public class PlayerInputManager : MonoBehaviour{
     private static PlayerInput playerInputActions;
 
     public static PlayerInput Maps => playerInputActions;
 
-    public static Vector2 DirectionInput
+    public static Vector2 Direction
     {
         get
         {
@@ -16,6 +17,8 @@ public class PlayerInputManager : MonoBehaviour{
         }
     }
 
+    public static bool IsPerformedParry => Maps.Player.Parry.triggered;
+
     void Awake() 
     {
         playerInputActions = new PlayerInput();    
@@ -23,13 +26,11 @@ public class PlayerInputManager : MonoBehaviour{
 
     void OnEnable() 
     {
-        playerInputActions.Enable();    
+        playerInputActions.Enable();
     }
 
     void OnDisable() 
     {
         playerInputActions.Disable();    
     }
-
-    
 }
