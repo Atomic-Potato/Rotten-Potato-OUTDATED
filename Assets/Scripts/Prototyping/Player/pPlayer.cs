@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -8,7 +9,9 @@ public class pPlayer : MonoBehaviour
 {
     #region INSPECTOR VARIABLES
     [Range(0, 999)]
-    [SerializeField] int hitPoints = 4; 
+    [SerializeField] int hitPoints = 4;
+    [Range(0f, 10f)]
+    [SerializeField] float recoveryTime = 2f;
     #endregion
 
     #region STATIC & PUBLIC VARIABLES
@@ -21,13 +24,15 @@ public class pPlayer : MonoBehaviour
 
     #region PRIVATE VARIABLES
     int _initialHitPoints;
+    bool _isInRecovery;
+    Coroutine _recoverCache;
     #endregion
 
     void Awake() 
     {
         if (_instance != null && _instance != this)
         {
-            Destroy(this.gameObject);
+            Destroy(gameObject);
         }
         else
         {
@@ -42,11 +47,34 @@ public class pPlayer : MonoBehaviour
 
     void ApplyDamage(int damagePoints)
     {
+        if (_isInRecovery)
+        {
+            return;
+        }
+
         hitPoints -= damagePoints;
 
         if (hitPoints <= 0)
         {
             Kill();
+        }
+
+        Recover();
+
+        void Recover()
+        {
+            if (_recoverCache == null)
+            {
+                _recoverCache = StartCoroutine(ExecuteRecover());
+            }
+
+            IEnumerator ExecuteRecover()
+            {
+                _isInRecovery = true;
+                yield return new WaitForSeconds(recoveryTime);
+                _isInRecovery = false;
+                _recoverCache = null;
+            }
         }
     }
 
