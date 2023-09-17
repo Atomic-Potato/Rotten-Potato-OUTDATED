@@ -45,7 +45,6 @@ public class BasicMovement : MonoBehaviour
 
     #region PRIVATE VARAIBLES
     Coroutine justLandedCache = null;
-    Vector2 inputDirection = Vector2.zero;
     float refVelocity = 0f;
     float? lastGroundedTime;
     float? jumpInputReceivedTime;
@@ -104,11 +103,11 @@ public class BasicMovement : MonoBehaviour
 
     #region MOVEMENT
     void ApplyMovement(){
-        float targetVelocity = inputDirection.x * horizontalVelocity;
+        float targetVelocity = PlayerInputManager.Direction.x * horizontalVelocity;
         
-        if (inputDirection.x != NO_INPUT)
+        if (PlayerInputManager.Direction.x != NO_INPUT)
             Accelerate(targetVelocity);
-        else if (inputDirection.x == NO_INPUT && isGrounded)
+        else if (PlayerInputManager.Direction.x == NO_INPUT && isGrounded)
             Decelerate();
         
         HandleFirction();
@@ -150,7 +149,7 @@ public class BasicMovement : MonoBehaviour
     }
 
     bool NoHorizontalMovement(){
-        return rigidBody.velocity.x < 0.25f && rigidBody.velocity.x > -1f && inputDirection.x == 0;
+        return rigidBody.velocity.x < 0.25f && rigidBody.velocity.x > -1f && PlayerInputManager.Direction.x == 0;
     }
     #endregion
 
@@ -199,14 +198,6 @@ public class BasicMovement : MonoBehaviour
     #endregion
 
     #region INPUT HANDLERS
-    public void OnXHoldInput(InputAction.CallbackContext context){
-        inputDirection.x = context.ReadValue<float>();
-    }
-
-    public void OnYHoldInput(InputAction.CallbackContext context){
-        inputDirection.y = context.ReadValue<float>();
-    }
-
     public void JumpInput(InputAction.CallbackContext context){
         if(context.started){
             jumpInputReceived = true;

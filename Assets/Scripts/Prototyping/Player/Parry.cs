@@ -131,7 +131,7 @@ public class Parry : MonoBehaviour
 
         IEnumerator ResetSpamWindow()
         {
-            yield return new WaitForSeconds(timeWindowForSpam);
+            yield return new WaitForSecondsRealtime(timeWindowForSpam);
             _spamCache = null;
             _spamWindowCache = null;
         }
@@ -158,7 +158,7 @@ public class Parry : MonoBehaviour
         {
             dash.IncrementDashes(1);
             SlowTime();
-            yield return new WaitForSeconds(freeDashTime);
+            yield return new WaitForSecondsRealtime(freeDashTime);
             dash.DecrementDashes(1);
             RestoreTime();
         }

@@ -133,8 +133,8 @@ public class Grapple : MonoBehaviour{
 
         AnchorDetectionDistance = GetScreenDiagonalLength();
 
-        PlayerInputManager.Maps.Player.Grapple.performed += _ => inputHoldReceived = true;
-        PlayerInputManager.Maps.Player.Grapple.canceled += _ => inputHoldReceived = false;
+        // PlayerInputManager.Maps.Player.Grapple.performed += _ => inputHoldReceived = true;
+        // PlayerInputManager.Maps.Player.Grapple.canceled += _ => inputHoldReceived = false;
     }
 
     private void Update(){
@@ -349,7 +349,7 @@ public class Grapple : MonoBehaviour{
     IEnumerator DelayInputHold(){
         inputHoldReceived = false;
         yield return new WaitForSeconds(0.2f);
-        inputHoldReceived = PlayerInputManager.Maps.Player.Grapple.ReadValue<float>() > 0.0f;
+        // inputHoldReceived = PlayerInputManager.Maps.Player.Grapple.ReadValue<float>() > 0.0f;
     }
     float GetSpeedIgnoringFallVelocity(){
         Vector2 velocity = Vector2.zero;
