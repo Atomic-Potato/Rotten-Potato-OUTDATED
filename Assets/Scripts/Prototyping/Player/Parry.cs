@@ -32,7 +32,10 @@ public class Parry : MonoBehaviour
             {
                 if (_parriableHostile is Projectile)
                 {
-                    StopFreeDash(false);
+                    if (_giveFreeDashCache != null)
+                    {
+                        StopFreeDash(false);
+                    }
                     GiveFreeDash();
                 }
 
@@ -97,6 +100,11 @@ public class Parry : MonoBehaviour
     {
         bool isPressingParry = PlayerInputManager.IsPerformedParry;
         
+        if (isPressingParry)
+        {
+            isPressingParry = true;
+        }
+
         if (_spamCache == null && isPressingParry)
         {
             _spamCache = 1;
@@ -131,8 +139,11 @@ public class Parry : MonoBehaviour
 
     void ResetSpam()
     {
-        StopCoroutine(_spamWindowCache);
-        _spamWindowCache = null;
+        if (_spamWindowCache != null)
+        {
+            StopCoroutine(_spamWindowCache);
+            _spamWindowCache = null;
+        }
         _spamCache = null;
     }
 

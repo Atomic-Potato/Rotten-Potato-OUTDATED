@@ -1480,7 +1480,7 @@ MonoBehaviour:
   timeWindowForSpam: 0.2
   parryCollisionRange: {fileID: 482787922}
   freeDashTime: 5
-  slowTimeScale: 0.5
+  slowTimeScale: 0.25
   dash: {fileID: 7048394262691945169}
 --- !u!1 &508692804
 GameObject:
