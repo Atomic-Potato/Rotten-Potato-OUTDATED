@@ -1479,7 +1479,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   timeWindowForSpam: 0.2
   parryCollisionRange: {fileID: 482787922}
-  freeDashTime: 5
+  freeDashTime: 3
   slowTimeScale: 0.25
   dash: {fileID: 7048394262691945169}
 --- !u!1 &508692804
@@ -4606,6 +4606,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   hitPoints: 4
+  recoveryTime: 2
 --- !u!114 &7048394262691945169
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4621,7 +4622,7 @@ MonoBehaviour:
   count: 2
   distance: 3
   time: 0.1
-  holdTime: 5
+  holdTime: -1
   holdJumpDistance: 1
   holdJumpTime: 0.1
   restoredDashesCount: 1
@@ -4723,6 +4724,7 @@ GameObject:
   - component: {fileID: 7239286059446304664}
   - component: {fileID: 7239286059446304609}
   - component: {fileID: 7239286059446304667}
+  - component: {fileID: 7239286059446304668}
   m_Layer: 14
   m_Name: Main Camera
   m_TagString: MainCamera
@@ -4789,6 +4791,21 @@ MonoBehaviour:
   firstPanningPoint: {fileID: 29324458}
   nextPanningPoint: {fileID: 0}
   previousPanningPoint: {fileID: 0}
+--- !u!114 &7239286059446304668
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7239286059446304665}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 612186617292b5a4f8e32df740ce8d49, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  zoomInSize: 4.5
+  zoomInTime: 3.5
+  zoomOutTime: 2.15
 --- !u!114 &8476856364894212769
 MonoBehaviour:
   m_ObjectHideFlags: 0
