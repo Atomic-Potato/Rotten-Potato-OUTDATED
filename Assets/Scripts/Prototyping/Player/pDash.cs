@@ -51,7 +51,7 @@ public class pDash : MonoBehaviour
     float _initialGravity;
     float _holdTimer;
     float _dashTimer;
-    Vector2 _direction;
+    Vector2? _direction;
     Coroutine _dashCache;
     Coroutine _damageDashCache;
     Coroutine _jumpCache;
@@ -70,7 +70,7 @@ public class pDash : MonoBehaviour
         {
             Gizmos.color = Color.green;
 
-            Vector2 direction = gizmosUseDistanceDirectionToMouse ? GetMouseDirection() : gizmosDistanceDirection;
+            Vector2 direction = gizmosUseDistanceDirectionToMouse ? (Vector2)GetAimingDirection() : gizmosDistanceDirection;
             Gizmos.DrawRay(transform.position, direction * distance);
         }
     }
@@ -153,12 +153,18 @@ public class pDash : MonoBehaviour
 
             _isDashing = true;
             _dashTimer = 0f;
-            _direction = GetMouseDirection();
+            _direction = GetAimingDirection();
+            Debug.Log(_direction);
+            if (_direction == null)
+            {
+                AbortDash();
+                return;
+            }
 
             DisableHostileCollision();
             StopMovement();
 
-            rigidbody.AddForce(_initialVelocity * _direction, ForceMode2D.Impulse);
+            rigidbody.AddForce(_initialVelocity * (Vector2)_direction, ForceMode2D.Impulse);
         }
 
         if (_dashTimer < time)
@@ -176,8 +182,13 @@ public class pDash : MonoBehaviour
         _isHolding = false;
     }
 
-    public void Dash(bool isDamageDash, Vector2 direction, float time = 0.1f, float distance = 3)
+    public void Dash(bool isDamageDash, Vector2? direction, float time = 0.1f, float distance = 3)
     {
+        if (direction == null)
+        {
+            return;
+        }
+
         if (_damageDashCache == null)
         {
             _damageDashCache = StartCoroutine(ExecuteDash());
@@ -203,7 +214,7 @@ public class pDash : MonoBehaviour
             StopMovement();
             float initialVelocity = GetInitialVelocityNoAcceleration(distance, time);
 
-            rigidbody.AddForce(initialVelocity * direction, ForceMode2D.Impulse);
+            rigidbody.AddForce(initialVelocity * (Vector2)direction, ForceMode2D.Impulse);
             yield return new WaitForSeconds(time);
 
             StopDash();
@@ -236,6 +247,14 @@ public class pDash : MonoBehaviour
         _dashesLeft--;
         _isCanDash = false;
         _isCanHold = true;
+        _isDamagedDashing = false;
+        _isDashing = false;
+    }
+
+    void AbortDash()
+    {
+        EnableHostileCollision();          
+        _isCanDash = false;
         _isDamagedDashing = false;
         _isDashing = false;
     }
@@ -326,11 +345,31 @@ public class pDash : MonoBehaviour
         BasicMovement.IsJumpingActive = true;
     }
 
-    public Vector2 GetMouseDirection()
+    public Vector2? GetAimingDirection()
     {
-        Vector2 direction = Camera.main.ScreenToWorldPoint(Input.mousePosition) - transform.position;
-        direction.Normalize();
-        return direction;
+        if (PlayerInputManager.IsUsingGamePad)
+        {
+            if (PlayerInputManager.Aim == Vector2.zero)
+            {
+                if (PlayerInputManager.DirectionRaw == Vector2.zero)
+                {
+                    return null;
+                }
+                return PlayerInputManager.DirectionRaw;
+            }
+            else if (PlayerInputManager.Aim != Vector2.zero)
+            {
+                return PlayerInputManager.Aim.normalized;
+            }
+            return null;
+        }
+        else
+        {
+            Vector3 mousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+            Vector2 direction = mousePosition - transform.position;
+            direction.Normalize();
+            return direction;
+        }
     }
 
     public float GetInitialVelocityNoAcceleration(float distance, float time)

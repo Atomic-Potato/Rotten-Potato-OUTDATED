@@ -6,10 +6,13 @@ public class PlayerInputManager : MonoBehaviour{
 
     public static PlayerInput Maps => playerInputActions;
 
+    public static bool IsUsingGamePad => Gamepad.all.Count > 0;
+
     public static Vector2 Direction
     {
         get
         {
+            
             Vector2 direction = Maps.Player.Move.ReadValue<Vector2>();
 
             if (direction.x > 0f)
@@ -41,10 +44,6 @@ public class PlayerInputManager : MonoBehaviour{
 
     public static bool IsPerformedParry => Maps.Player.Parry.triggered;
     public static bool IsPerformedJump => Maps.Player.Jump.triggered;
-
-    private void Update() {
-        Debug.Log(Aim);
-    }
 
     void Awake() 
     {
