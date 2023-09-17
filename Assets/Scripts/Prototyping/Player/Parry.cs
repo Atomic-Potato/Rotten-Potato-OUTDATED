@@ -30,14 +30,14 @@ public class Parry : MonoBehaviour
         {
             if (IsCanParry() && PlayerInputManager.IsPerformedParry)
             {
-                Debug.Log(_parriableHostile);
                 if (_parriableHostile is Projectile)
                 {
+                    StopFreeDash(false);
                     GiveFreeDash();
                 }
 
                 _parriableHostile.Parry();
-
+               ResetSpam();
             }
         }
 
@@ -45,16 +45,11 @@ public class Parry : MonoBehaviour
         {
             if (pDash.IsDashing)
             {
-                RestoreTime();
-                StopCoroutine(_giveFreeDashCache);
-                _giveFreeDashCache = null;
+                StopFreeDash(true);
             }
             else if (pDash.IsDamagedDashing || PlayerInputManager.IsPerformedJump)
             {
-                RestoreTime();
-                dash.DecrementDashes(1);
-                StopCoroutine(_giveFreeDashCache);
-                _giveFreeDashCache = null;
+                StopFreeDash(false);
             }
         }
 
@@ -134,6 +129,13 @@ public class Parry : MonoBehaviour
         }
     }
 
+    void ResetSpam()
+    {
+        StopCoroutine(_spamWindowCache);
+        _spamWindowCache = null;
+        _spamCache = null;
+    }
+
     void GiveFreeDash()
     {
         if (_giveFreeDashCache == null)
@@ -160,5 +162,16 @@ public class Parry : MonoBehaviour
     void RestoreTime()
     {
         Time.timeScale = 1f;
+    }
+
+    void StopFreeDash(bool isTookFreeDash)
+    {
+        RestoreTime();
+        if (!isTookFreeDash)
+        {
+            dash.DecrementDashes(1);
+        }
+        StopCoroutine(_giveFreeDashCache);
+        _giveFreeDashCache = null;
     }
 }
