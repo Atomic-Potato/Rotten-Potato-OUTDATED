@@ -701,7 +701,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!114 &340326321
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -800,8 +800,7 @@ MonoBehaviour:
   shooting: {fileID: 340326321}
   spriteRenderer: {fileID: 1833143277}
   parryColor: {r: 0.7630806, g: 0.049439307, b: 0.9528302, a: 1}
-  IsAttacking: 0
-  origin: {fileID: 0}
+  origin: {fileID: 1922010421}
 --- !u!1 &348513973
 GameObject:
   m_ObjectHideFlags: 0
@@ -1854,10 +1853,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6627e6141fdcbf648a5649395934b763, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  enemiesCount: 0
-  radius: 0
-  rotate: 0
-  enemy: {fileID: 0}
+  enemiesCount: 20
+  radius: 5
+  rotate: 1
+  rotationSpeed: 10
+  enemy: {fileID: 4316626593973650206, guid: 82e963d6a10074f42998288b916c4190, type: 3}
+  parent: {fileID: 1091229115}
 --- !u!4 &1091229117
 Transform:
   m_ObjectHideFlags: 0
@@ -1865,13 +1866,13 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1091229115}
-  m_LocalRotation: {x: 0, y: -0, z: 0.5968554, w: -0.8023488}
-  m_LocalPosition: {x: 2.2944703, y: 2.6725385, z: 2.02369}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -0.19, y: 1.87, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 11
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 286.71}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1104407013
 GameObject:
   m_ObjectHideFlags: 0

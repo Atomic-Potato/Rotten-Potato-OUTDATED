@@ -37,7 +37,7 @@ public class MediumEnemy : Enemy, IParriable
     bool _isCanCounterAttack;
     bool _isCounterAttacking;
     bool _isCanAttack;
-    public bool IsAttacking;
+    bool _isAttacking;
     bool _isParriable;
     bool _isPlayerInRange;
 
@@ -75,7 +75,7 @@ public class MediumEnemy : Enemy, IParriable
 
     void Update()
     {
-        shooting.enabled = !_isCounterAttacking && !IsAttacking ? true : false; 
+        shooting.enabled = !_isCounterAttacking && !_isAttacking ? true : false; 
 
         if (_isCanCounterAttack)
         {
@@ -90,7 +90,7 @@ public class MediumEnemy : Enemy, IParriable
 
     public override void Damage()
     {
-        if(IsAttacking)
+        if(_isAttacking)
         {
             return;
         }
@@ -119,7 +119,7 @@ public class MediumEnemy : Enemy, IParriable
 
     void DamageNoAttack()
     {
-        if(IsAttacking)
+        if(_isAttacking)
         {
             return;
         }
@@ -157,7 +157,7 @@ public class MediumEnemy : Enemy, IParriable
             return;
         }
         
-        if (IsAttacking)
+        if (_isAttacking)
         {
             StopAttack(Color.white);
         }
@@ -209,9 +209,9 @@ public class MediumEnemy : Enemy, IParriable
     #region Attack
     void Attack()
     {
-        if (!IsAttacking)
+        if (!_isAttacking)
         {
-            IsAttacking = true;
+            _isAttacking = true;
             _isParriable = true;
             _toBeParriedTimer = 0f;
             Color pink = new Color(255,105,180, 1);
@@ -264,7 +264,7 @@ public class MediumEnemy : Enemy, IParriable
     void StopAttack(Color color)
     {
         _isCanAttack = false;
-        IsAttacking = false;
+        _isAttacking = false;
         _toBeParriedTimer = 0f;
         spriteRenderer.color = color;
     }
