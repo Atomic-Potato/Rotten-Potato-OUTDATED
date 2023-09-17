@@ -5,25 +5,59 @@ public class Parry : MonoBehaviour
 {
     [Range(0f, 1f)]
     [SerializeField] float timeWindowForSpam = 0.2f;
-    [Tooltip("An object can be parried once inside this collider")]
+    [Tooltip("An object can be parried once inside this collider.")]
     [SerializeField] Collider2D parryCollisionRange;
+    [Tooltip("Time given to free dash.")]
+    [Range(0f, 999f)]
+    [SerializeField] float freeDashTime;
+    [Tooltip("Time scale when slowing down time if parried a projectile.")]
+    [Range(0f,1f)]
+    [SerializeField] float slowTimeScale;
+    [SerializeField] pDash dash;
     
     int? _spamCache = null;
     Coroutine _spamWindowCache;
     bool _isSpamming;
-    IParriable parriableHostile;
+    IParriable _parriableHostile;
+    Coroutine _giveFreeDashCache;
 
+    #region Execution
     void Update()
     {
         _isSpamming = IsSpammingParryInput();
 
-        if (parriableHostile != null)
+        if (_parriableHostile != null)
         {
             if (IsCanParry() && PlayerInputManager.IsPerformedParry)
             {
-                parriableHostile.Parry();
+                Debug.Log(_parriableHostile);
+                if (_parriableHostile is Projectile)
+                {
+                    GiveFreeDash();
+                }
+
+                _parriableHostile.Parry();
+
             }
         }
+
+        if (_giveFreeDashCache != null)
+        {
+            if (pDash.IsDashing)
+            {
+                RestoreTime();
+                StopCoroutine(_giveFreeDashCache);
+                _giveFreeDashCache = null;
+            }
+            else if (pDash.IsDamagedDashing || PlayerInputManager.IsPerformedJump)
+            {
+                RestoreTime();
+                dash.DecrementDashes(1);
+                StopCoroutine(_giveFreeDashCache);
+                _giveFreeDashCache = null;
+            }
+        }
+
     }
 
     void OnTriggerStay2D(Collider2D other) 
@@ -36,16 +70,16 @@ public class Parry : MonoBehaviour
 
         if (other.gameObject.tag == "Enemy")
         {
-            if (parriableHostile == null)
+            if (_parriableHostile == null)
             {
-                parriableHostile = other.gameObject.GetComponent<Enemy>();
+                _parriableHostile = other.gameObject.GetComponent<Enemy>();
             }
         }
         else if (other.gameObject.tag == "Projectile")
         {
-            if (parriableHostile == null)
+            if (_parriableHostile == null)
             {
-                parriableHostile = other.gameObject.GetComponent<Projectile>();
+                _parriableHostile = other.gameObject.GetComponent<Projectile>();
             }
         }    
     }
@@ -54,13 +88,14 @@ public class Parry : MonoBehaviour
     {
         if (other.gameObject.tag == "Enemy" || other.gameObject.tag == "Projectile")
         {
-            parriableHostile = null;
+            _parriableHostile = null;
         }  
     }
+    #endregion
 
     bool IsCanParry()
     {
-        return parriableHostile.IsParriable() && !_isSpamming; 
+        return _parriableHostile.IsParriable() && !_isSpamming; 
     }
 
     bool IsSpammingParryInput()
@@ -97,5 +132,33 @@ public class Parry : MonoBehaviour
             _spamCache = null;
             _spamWindowCache = null;
         }
+    }
+
+    void GiveFreeDash()
+    {
+        if (_giveFreeDashCache == null)
+        {
+            _giveFreeDashCache = StartCoroutine(ExecuteGiveFreeDash());
+        }
+
+        IEnumerator ExecuteGiveFreeDash()
+        {
+            dash.IncrementDashes(1);
+            SlowTime();
+            yield return new WaitForSeconds(freeDashTime);
+            dash.DecrementDashes(1);
+            RestoreTime();
+        }
+
+    }
+    
+    void SlowTime()
+    {
+        Time.timeScale = slowTimeScale;
+    }
+
+    void RestoreTime()
+    {
+        Time.timeScale = 1f;
     }
 }

@@ -9,6 +9,7 @@ public class pLevelManager : MonoBehaviour
 
     void Awake() 
     {
+        Time.timeScale = 1f;
         RespawnPoint = respawnPoint;    
     }
 }

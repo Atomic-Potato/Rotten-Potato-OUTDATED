@@ -18,6 +18,7 @@ public class PlayerInputManager : MonoBehaviour{
     }
 
     public static bool IsPerformedParry => Maps.Player.Parry.triggered;
+    public static bool IsPerformedJump => Maps.Player.Jump.triggered;
 
     void Awake() 
     {

@@ -308,6 +308,17 @@ public class pDash : MonoBehaviour
         #endregion
     }
 
+    #region Methods
+    public void IncrementDashes(int i)
+    {
+        _dashesLeft += i;
+    }
+
+    public void DecrementDashes(int i)
+    {
+        _dashesLeft -= i;
+    }
+
     void RestoreMovement()
     {
         rigidbody.gravityScale = _initialGravity;
@@ -334,6 +345,7 @@ public class pDash : MonoBehaviour
         float acceleration = rigidbody.mass * rigidbody.gravityScale;
         return (distance / time) + (0.5f * acceleration * time); 
     }
+    #endregion
 
     #region Input
     public void DetectDashInput(InputAction.CallbackContext context)
