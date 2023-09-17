@@ -14,7 +14,8 @@ public class pDash : MonoBehaviour
 
     [Space]
     [Header("Hold & Hold Jump")]
-    [Range(0f, 5f)]
+    [Tooltip("Negative time means infinite time.")]
+    [Range(-1f, 5f)]
     [SerializeField] float holdTime;
     [Range(0.1f, 100f)]
     [SerializeField] float holdJumpDistance;
@@ -161,7 +162,6 @@ public class pDash : MonoBehaviour
                 return;
             }
 
-            DisableHostileCollision();
             StopMovement();
 
             rigidbody.AddForce(_initialVelocity * (Vector2)_direction, ForceMode2D.Impulse);
@@ -202,10 +202,6 @@ public class pDash : MonoBehaviour
             }
             _isDashing = true;
 
-            if (!isDamageDash)
-            {
-                DisableHostileCollision();
-            }
             if (_isHolding)
             {
                 StopHolding();
@@ -243,7 +239,6 @@ public class pDash : MonoBehaviour
     void StopDash()
     {
         rigidbody.velocity = Vector2.zero;
-        EnableHostileCollision();          
         _dashesLeft--;
         _isCanDash = false;
         _isCanHold = true;
@@ -253,22 +248,9 @@ public class pDash : MonoBehaviour
 
     void AbortDash()
     {
-        EnableHostileCollision();          
         _isCanDash = false;
         _isDamagedDashing = false;
         _isDashing = false;
-    }
-
-    void DisableHostileCollision()
-    {
-        // TODO:
-        // Removes collision with projectiles and enemies
-    }
-
-    void EnableHostileCollision()
-    {
-        // TODO:
-        // Enable collision with projectiles and enemies
     }
     #endregion
 
@@ -287,15 +269,18 @@ public class pDash : MonoBehaviour
             StopHolding();
         }
 
-        if (_isHolding)
+        if (holdTime > 0f)
         {
-            _holdTimer += Time.deltaTime;
-        }
+            if (_isHolding)
+            {
+                _holdTimer += Time.deltaTime;
+            }
 
-        if(_holdTimer >= holdTime)
-        {
-            StopHolding();
-            RemoveFriction();
+            if(_holdTimer >= holdTime)
+            {
+                StopHolding();
+                RemoveFriction();
+            }
         }
 
         #region Local Methods
