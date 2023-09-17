@@ -4,6 +4,8 @@ public class MediumEnemy : Enemy, IParriable
 {
     [Space]
     [SerializeField] int damageToPlayer;
+    [Tooltip("If no previous path points are found, then this is the amount of distance the player will be knocked.")]
+    [SerializeField] float knockBackDistance;
     
     [Space]
     [Range(0, 1f)]
@@ -207,7 +209,7 @@ public class MediumEnemy : Enemy, IParriable
     #endregion
 
     #region Attack
-    void Attack()
+    public override void Attack()
     {
         if (!_isAttacking)
         {
@@ -255,8 +257,7 @@ public class MediumEnemy : Enemy, IParriable
             else
             {
                 direction = pPlayer.Instance.transform.position - transform.position;
-                distance = 1f;
-                _playerDash.Dash(true, direction, 0.1f, distance);
+                _playerDash.Dash(true, direction, 0.1f, knockBackDistance);
             }
         }
     }

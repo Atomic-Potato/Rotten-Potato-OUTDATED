@@ -111,7 +111,7 @@ public class pDash : MonoBehaviour
         }
 
 
-        if(!_isDashing)
+        if(!_isDashing || _isDamagedDashing)
         {
             return;
         }

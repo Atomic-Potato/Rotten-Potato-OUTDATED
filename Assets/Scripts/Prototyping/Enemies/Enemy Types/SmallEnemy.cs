@@ -1,22 +1,57 @@
-﻿public class SmallEnemy : Enemy
+﻿using UnityEngine;
+
+public class SmallEnemy : Enemy
 {
+    [Tooltip("The damage points applied to player upon collision.")]
+    [SerializeField] int damage;
+    [SerializeField] float knockBackDistance = 2.5f;
+    [Range(0.1f, 5f)]
+    [SerializeField] float knockBackTime = 0.15f;
+
+    void OnTriggerEnter2D(Collider2D other)
+    {
+        if (other.gameObject.tag == "Player")
+        {
+            if (pDash.IsDashing)
+            {
+                return;
+            }
+
+            pDash dash = other.gameObject.GetComponent<pDash>();
+
+            Attack();
+            KnockPlayerBack(dash);
+        }
+    }
+
+    
     public override void Damage()
     {
-        throw new System.NotImplementedException();
+        Die();
     }
 
     public override void Die()
     {
-        throw new System.NotImplementedException();
+        Destroy(gameObject);
+    }
+
+    public override void Attack()
+    {
+        pPlayer.Instance.Damage?.Invoke(damage);
+    }
+
+     void KnockPlayerBack(pDash dash)
+    {
+        Vector2 direction = (pPlayer.Instance.transform.position - transform.position).normalized;
+        dash.Dash(true, direction, knockBackTime, knockBackDistance);
     }
 
     public override bool IsParriable()
     {
-        throw new System.NotImplementedException();
+        return false;
     }
 
     public override void Parry()
     {
-        throw new System.NotImplementedException();
     }
 }
