@@ -24,6 +24,10 @@ public class MediumEnemy : Enemy, IParriable
         + " \nIf disabled, will counter attack until the start of the entire path.")]
     [SerializeField] bool isCanCounterToSectionStartOnly;
 
+    [Space]
+    [Tooltip("The cluster to be spawned after the enemy death.")]
+    [SerializeField] GameObject enemyCluster;
+
     [Space(height: 10)]
     [SerializeField] EnemyPathManager pathManager;
     [SerializeField] EnemyProjectileShooting shooting;
@@ -44,10 +48,17 @@ public class MediumEnemy : Enemy, IParriable
     bool _isPlayerInRange;
 
     pDash _playerDash;
+    GameObject _spawnedCluster;
 
     [SerializeField] Transform origin;
 
     #region Execution
+    void Awake()
+    {
+        _spawnedCluster = Instantiate(enemyCluster);
+        _spawnedCluster.SetActive(false);
+    }
+
     private void OnDrawGizmos() 
     {
         Gizmos.color = Color.white;
@@ -132,18 +143,20 @@ public class MediumEnemy : Enemy, IParriable
         }
         
         LinkedPoint point = pathManager.MoveToNextPoint();
-        spriteRenderer.color = GetPointColor(point);
         if (point == null)
         {
             Die();
             return;
         }
+        spriteRenderer.color = GetPointColor(point);
 
         _isCanCounterAttack = RollForSuccess(counterAttackProbability);
     }
 
     public override void Die()
     {
+        _spawnedCluster.SetActive(true);
+        _spawnedCluster.transform.position = transform.position;
         Destroy(gameObject);
     }
 

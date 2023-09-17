@@ -128,7 +128,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   damagePoints: 1
-  launchForce: 4
+  launchForce: 2.5
   lifeTime: 10
   isParriable: 1
   rigidbody: {fileID: 4643928293787101241}
@@ -166,6 +166,6 @@ CapsuleCollider2D:
   m_IsTrigger: 1
   m_UsedByEffector: 0
   m_UsedByComposite: 0
-  m_Offset: {x: 0.10107061, y: -0.000000012048554}
+  m_Offset: {x: 0.02, y: -0.000000012048554}
   m_Size: {x: 0.3591168, y: 0.24000312}
   m_Direction: 1
