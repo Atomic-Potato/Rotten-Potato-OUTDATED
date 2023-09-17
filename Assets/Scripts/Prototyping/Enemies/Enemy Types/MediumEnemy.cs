@@ -26,7 +26,7 @@ public class MediumEnemy : Enemy, IParriable
 
     [Space(height: 10)]
     [SerializeField] EnemyPathManager pathManager;
-    [SerializeField] pEnemyShooting shooting;
+    [SerializeField] EnemyProjectileShooting shooting;
     [SerializeField] SpriteRenderer spriteRenderer;
 
     [Space]

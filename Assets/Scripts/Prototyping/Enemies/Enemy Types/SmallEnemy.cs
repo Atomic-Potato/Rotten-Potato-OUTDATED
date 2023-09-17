@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System.Collections;
+using UnityEngine;
 
 public class SmallEnemy : Enemy
 {
@@ -23,7 +24,6 @@ public class SmallEnemy : Enemy
             KnockPlayerBack(dash);
         }
     }
-
     
     public override void Damage()
     {
@@ -40,7 +40,7 @@ public class SmallEnemy : Enemy
         pPlayer.Instance.Damage?.Invoke(damage);
     }
 
-     void KnockPlayerBack(pDash dash)
+    void KnockPlayerBack(pDash dash)
     {
         Vector2 direction = (pPlayer.Instance.transform.position - transform.position).normalized;
         dash.Dash(true, direction, knockBackTime, knockBackDistance);

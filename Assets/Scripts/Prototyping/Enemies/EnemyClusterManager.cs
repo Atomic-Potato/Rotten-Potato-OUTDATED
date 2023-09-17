@@ -63,13 +63,20 @@ public class EnemyClusterManager : MonoBehaviour
         Vector2 position = new Vector2(1f, 0) * radius;
         for (int i=0; i < enemiesCount; i++)
         {
-            Instantiate(enemy, (Vector2)parent.transform.position + position, Quaternion.identity, parent.transform);
+            Spawn();
             position = RotateVectorByTheta(position);
         }
 
         Vector2 RotateVectorByTheta(Vector2 v)
         {
             return a * v.x + b * v.y;
+        }
+
+        void Spawn()
+        {
+            GameObject spawned = Instantiate(enemy, (Vector2)parent.transform.position + position, Quaternion.identity, parent.transform);
+            EnemyProjectileShooting shooting = spawned.GetComponent<EnemyProjectileShooting>();
+            shooting.target = transform;
         }
     }
 

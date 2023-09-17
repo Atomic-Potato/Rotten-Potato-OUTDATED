@@ -717,8 +717,9 @@ MonoBehaviour:
   timeBetweenShots: 1.25
   shootOnStart: 0
   distanceToAttack: 7.5
-  bulletObject: {fileID: 8925513643453365217, guid: a391b6e096147d14187f487744ad815f,
+  projectile: {fileID: 8925513643453365217, guid: a391b6e096147d14187f487744ad815f,
     type: 3}
+  target: {fileID: 0}
 --- !u!114 &340326322
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -790,6 +791,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   damageToPlayer: 1
+  knockBackDistance: 0
   counterAttackProbability: 0.75
   keepCounterAttackingProbability: 0.5
   attackPlayerProbability: 0.65
