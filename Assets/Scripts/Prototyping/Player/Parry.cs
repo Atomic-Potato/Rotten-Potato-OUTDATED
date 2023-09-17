@@ -15,9 +15,12 @@ public class Parry : MonoBehaviour
     [SerializeField] float slowTimeScale;
     [SerializeField] pDash dash;
     
+    public static bool IsGivenFreeDash => _isGivenFreeDash;
+
     int? _spamCache = null;
     Coroutine _spamWindowCache;
     bool _isSpamming;
+    static bool _isGivenFreeDash;
     IParriable _parriableHostile;
     Coroutine _giveFreeDashCache;
 
@@ -151,6 +154,7 @@ public class Parry : MonoBehaviour
         if (_giveFreeDashCache == null)
         {
             _giveFreeDashCache = StartCoroutine(ExecuteGiveFreeDash());
+            _isGivenFreeDash = true;
         }
 
         IEnumerator ExecuteGiveFreeDash()
@@ -161,6 +165,7 @@ public class Parry : MonoBehaviour
             yield return new WaitForSecondsRealtime(freeDashTime);
             dash.DecrementDashes(1);
             RestoreTime();
+            _isGivenFreeDash = false;
         }
 
     }
@@ -183,6 +188,7 @@ public class Parry : MonoBehaviour
             dash.DecrementDashes(1);
         }
         StopCoroutine(_giveFreeDashCache);
+        _isGivenFreeDash = false;
         _giveFreeDashCache = null;
     }
 }
