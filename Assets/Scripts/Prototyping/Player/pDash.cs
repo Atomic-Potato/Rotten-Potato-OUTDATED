@@ -236,7 +236,7 @@ public class pDash : MonoBehaviour
         rigidbody.gravityScale = 0f;
     }
 
-    void StopDash()
+    public void StopDash()
     {
         rigidbody.velocity = Vector2.zero;
         _dashesLeft--;
@@ -246,7 +246,7 @@ public class pDash : MonoBehaviour
         _isDashing = false;
     }
 
-    void AbortDash()
+    public void AbortDash()
     {
         _isCanDash = false;
         _isDamagedDashing = false;

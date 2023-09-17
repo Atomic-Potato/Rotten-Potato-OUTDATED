@@ -38,7 +38,6 @@ public class Parry : MonoBehaviour
                     }
                     GiveFreeDash();
                 }
-
                 _parriableHostile.Parry();
                ResetSpam();
             }
@@ -93,7 +92,7 @@ public class Parry : MonoBehaviour
 
     bool IsCanParry()
     {
-        return _parriableHostile.IsParriable() && !_isSpamming; 
+        return _parriableHostile.IsParriable() && !_isSpamming;
     }
 
     bool IsSpammingParryInput()
@@ -156,6 +155,7 @@ public class Parry : MonoBehaviour
 
         IEnumerator ExecuteGiveFreeDash()
         {
+            dash.StopDash();
             dash.IncrementDashes(1);
             SlowTime();
             yield return new WaitForSecondsRealtime(freeDashTime);
