@@ -7,18 +7,22 @@ using UnityEngine.SceneManagement;
 // This script execution is ran before the default execution order
 public class pPlayer : MonoBehaviour
 {
-    #region INSPECTOR VARIABLES
+    #region Inspector Variables
     [Range(0, 999)]
     [SerializeField] int hitPoints = 4;
     [Range(0f, 10f)]
     [SerializeField] float recoveryTime = 2f;
+
+    [Space]
+    [SerializeField] Rigidbody2D rigidbody;
     #endregion
 
-    #region STATIC & PUBLIC VARIABLES
+    #region Global Variables
     static pPlayer _instance;
     public static pPlayer Instance => _instance;
     public GameObject Object => gameObject;
     public int HitPoints => hitPoints;
+    public Rigidbody2D Rigidbody => rigidbody;
     public Action<int> Damage;
     #endregion
 

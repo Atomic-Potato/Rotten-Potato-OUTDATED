@@ -3,6 +3,7 @@ using UnityEngine;
 
 public class PlayerAnimationManager : MonoBehaviour
 {
+    #region Inspector
     [SerializeField] Animator animator;
 
     [Space]
@@ -12,7 +13,14 @@ public class PlayerAnimationManager : MonoBehaviour
     [Space]
     [SerializeField] AnimationClip clipIdle;
     [SerializeField] AnimationClip clipRun;
+    [SerializeField] AnimationClip clipJump;
+    [SerializeField] AnimationClip clipFall;
+    [SerializeField] AnimationClip clipDash;
+    [SerializeField] AnimationClip clipDamageDash;
+    [SerializeField] AnimationClip clipAirHold;
+    #endregion
 
+    #region Global Variables
     static PlayerAnimationManager _instance;
     public static PlayerAnimationManager Instance => _instance;
 
@@ -20,6 +28,7 @@ public class PlayerAnimationManager : MonoBehaviour
     public AnimationClip CurrentClip => clipCurrent;
 
     public Action<AnimationClip> AnimationStateAction;
+    #endregion
 
     void Awake()
     {
@@ -37,18 +46,41 @@ public class PlayerAnimationManager : MonoBehaviour
 
     void Update()
     {
+        AnimationClip nextClip = null;
         if (IsRunning())
         {
-            AnimationStateAction?.Invoke(clipRun);
+            nextClip = clipRun;
         }
         else if (IsIdle())
         {
-            AnimationStateAction?.Invoke(clipIdle);
+            nextClip = clipIdle;
+        }
+        else if (IsJumping())
+        {
+            nextClip = clipJump;
+        }
+        else if (IsFalling())
+        {
+            nextClip = clipFall;
+        }
+        else if (pDash.IsDashing && !pDash.IsDamagedDashing)
+        {
+            nextClip = clipDash;
+        }
+        else if (pDash.IsDamagedDashing)
+        {
+            nextClip = clipDamageDash;
+        }
+        else if (pDash.IsHolding)
+        {
+            nextClip = clipAirHold;
         }
         else
         {
-            AnimationStateAction?.Invoke(defaultClip);
+            nextClip = defaultClip;
         }
+
+        AnimationStateAction?.Invoke(nextClip);
     }
 
     void SetAnimationState(AnimationClip clip)
@@ -62,6 +94,7 @@ public class PlayerAnimationManager : MonoBehaviour
         clipCurrent = clip;
     }
 
+    #region States Conditions
     bool IsRunning()
     {
         return 
@@ -77,4 +110,19 @@ public class PlayerAnimationManager : MonoBehaviour
             BasicMovement.IsMovementActive &&
             PlayerInputManager.Direction.x == 0f;
     }
+
+    bool IsJumping()
+    {
+        return 
+            !BasicMovement.IS_GROUNDED &&
+            pPlayer.Instance.Rigidbody.velocity.y > 0f;
+    }
+
+    bool IsFalling()
+    {
+        return 
+            !BasicMovement.IS_GROUNDED &&
+            pPlayer.Instance.Rigidbody.velocity.y < 0f;
+    }
+    #endregion
 }
