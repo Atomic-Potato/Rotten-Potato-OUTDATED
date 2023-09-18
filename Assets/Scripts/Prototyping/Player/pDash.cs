@@ -119,8 +119,9 @@ public class pDash : MonoBehaviour
             Hold();
         }
 
-        if (BasicMovement.IS_GROUNDED && (!_isDashing || !_isHolding))
+        if (BasicMovement.IS_GROUNDED && !_isDashing && !_isHolding && _dashesLeft < count)
         {
+            Debug.Log("Restored");
             AlterDashCount?.Invoke(count - _dashesLeft);
         }
     }
@@ -175,16 +176,16 @@ public class pDash : MonoBehaviour
                 StopHolding();
             }
 
-            _isDashing = true;
-            _dashTimer = 0f;
             _direction = GetAimingDirection();
-            Debug.Log(_direction);
             if (_direction == null)
             {
                 AbortDash();
                 return;
             }
 
+            _isDashing = true;
+            _dashTimer = 0f;
+            AlterDashCount?.Invoke(-1);
             StopMovement();
 
             rigidbody.AddForce(_initialVelocity * (Vector2)_direction, ForceMode2D.Impulse);
@@ -223,6 +224,11 @@ public class pDash : MonoBehaviour
             {
                 _isDamagedDashing = true;
             }
+            else
+            {
+                AlterDashCount?.Invoke(-1);
+            }
+
             _isDashing = true;
 
             if (_isHolding)
@@ -262,7 +268,6 @@ public class pDash : MonoBehaviour
     public void StopDash()
     {
         rigidbody.velocity = Vector2.zero;
-        AlterDashCount?.Invoke(-1);
         _isCanDash = false;
         _isCanHold = true;
         _isDamagedDashing = false;
