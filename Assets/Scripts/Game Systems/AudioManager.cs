@@ -2,6 +2,7 @@
 using UnityEngine.Audio;
 using UnityEngine;
 using System;
+using UnityEditor;
 
 public class AudioManager : MonoBehaviour
 {
@@ -260,5 +261,17 @@ public class AudioManager : MonoBehaviour
         //because otherwise it will suddenly jump to initial volume mid FadeOut
         if(s.isFadingIn())
             s.source.volume = s.initialVolume;
+    }
+
+    public static void PlayAudioSource(AudioSource source)
+    {
+        if (source.isPlaying)
+        {
+            source.time = 0f;
+            return;
+        }
+
+        source.time = 0f;
+        source.Play();
     }
 }

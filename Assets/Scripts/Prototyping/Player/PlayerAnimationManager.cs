@@ -22,6 +22,11 @@ public class PlayerAnimationManager : MonoBehaviour
     [SerializeField] AnimationClip clipAirHold;
 
     [Space]
+    [Header("Audio")]
+    [SerializeField] AudioSource audioStepHigh;
+    [SerializeField] AudioSource audioStepLow;
+
+    [Space]
     [Header("Other")]
     [Range(0f, 1f)]
     [SerializeField] float noDashesAlphaValue = 0.75f;
@@ -209,6 +214,19 @@ public class PlayerAnimationManager : MonoBehaviour
     }
     #endregion
 
+    #region Animation Events
+    void Event_PlayStepAudioHigh()
+    {
+        AudioManager.PlayAudioSource(audioStepHigh);
+    }
+
+    void Event_PlayStepAudioLow()
+    {
+        AudioManager.PlayAudioSource(audioStepLow);
+    }
+    #endregion
+
+    #region Other Methods
     void SetAlpha(float a)
     {
         if (spriteRenderer.color.a != a)
@@ -234,4 +252,5 @@ public class PlayerAnimationManager : MonoBehaviour
             _recoveryFlashCache = null;
         }
     }
+    #endregion
 }

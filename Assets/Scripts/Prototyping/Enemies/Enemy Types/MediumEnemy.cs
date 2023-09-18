@@ -34,6 +34,13 @@ public class MediumEnemy : Enemy, IParriable
     [SerializeField] SpriteRenderer spriteRenderer;
 
     [Space]
+    [Header("Audio")]
+    [SerializeField] AudioSource audioAttack;
+    [SerializeField] AudioSource audioDeath;
+    [SerializeField] AudioSource audioTeleport;
+    
+
+    [Space]
     [Header("Gizmos & Debugging")]
     [SerializeField] Color parryColor;
     public float TimeToCounterAttack => timeToCounterAttack;
@@ -126,6 +133,7 @@ public class MediumEnemy : Enemy, IParriable
             return;
         }
         spriteRenderer.color = GetPointColor(point);
+        AudioManager.PlayAudioSource(audioTeleport);
 
         _isCanCounterAttack = RollForSuccess(counterAttackProbability);
     }
@@ -149,6 +157,7 @@ public class MediumEnemy : Enemy, IParriable
             return;
         }
         spriteRenderer.color = GetPointColor(point);
+        AudioManager.PlayAudioSource(audioTeleport);
 
         _isCanCounterAttack = RollForSuccess(counterAttackProbability);
     }
@@ -157,6 +166,7 @@ public class MediumEnemy : Enemy, IParriable
     {
         _spawnedCluster.SetActive(true);
         _spawnedCluster.transform.position = transform.position;
+        AudioManager.PlayAudioSource(audioDeath);
         Destroy(gameObject);
     }
 
@@ -245,7 +255,8 @@ public class MediumEnemy : Enemy, IParriable
                     KnockPlayerBack();
                 }
             }
-
+            
+            AudioManager.PlayAudioSource(audioAttack);
             StopAttack(GetPointColor(pathManager.GetCurrentPoint()));
 
             bool isShouldCounterAttackAgain = RollForSuccess(keepCounterAttackingProbability);

@@ -3,6 +3,7 @@ using UnityEngine;
 
 public class Parry : MonoBehaviour
 {
+    #region Inspector 
     [Range(0f, 1f)]
     [SerializeField] float timeWindowForSpam = 0.2f;
     [Tooltip("An object can be parried once inside this collider.")]
@@ -14,7 +15,13 @@ public class Parry : MonoBehaviour
     [Range(0f,1f)]
     [SerializeField] float slowTimeScale;
     [SerializeField] pDash dash;
+
+    [Space]
+    [Header("Audio")]
+    [SerializeField] AudioSource audioParry;
+    #endregion
     
+    #region Global Variable
     public static bool IsGivenFreeDash => _isGivenFreeDash;
 
     int? _spamCache = null;
@@ -23,6 +30,7 @@ public class Parry : MonoBehaviour
     static bool _isGivenFreeDash;
     IParriable _parriableHostile;
     Coroutine _giveFreeDashCache;
+    #endregion
 
     #region Execution
     void Update()
@@ -43,6 +51,7 @@ public class Parry : MonoBehaviour
                 }
                 _parriableHostile.Parry();
                ResetSpam();
+               AudioManager.PlayAudioSource(audioParry);
             }
         }
 

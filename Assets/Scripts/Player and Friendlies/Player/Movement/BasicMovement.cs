@@ -30,6 +30,11 @@ public class BasicMovement : MonoBehaviour
     [SerializeField] BoxCollider2D boxCollider;
     [SerializeField] PhysicsMaterial2D fullFrictionMaterial;
     [SerializeField] PhysicsMaterial2D zeroFrictionMaterial;
+
+    [Space]
+    [Header("Audio")]
+    [SerializeField] AudioSource audioJump;
+    [SerializeField] AudioSource audioGroundTouch;
     #endregion
 
     #region STATE VARIABLES & OTHER STATIC VARIABLES
@@ -163,6 +168,7 @@ public class BasicMovement : MonoBehaviour
             return;
 
         rigidBody.velocity = new Vector2(rigidBody.velocity.x, jumpForce);
+        AudioManager.PlayAudioSource(audioJump);
         StartCoroutine(EnableThenDisable(_ => isJumping = _, jumpingStateCooldownTime));
 
         lastGroundedTime = null;
@@ -179,8 +185,11 @@ public class BasicMovement : MonoBehaviour
 
             // TODO: REMEMBER TO DO THIS ONCE YOU IMPLEMENT DASHING
             // if(justLandedCache == null && !isDashing) //!isDashing in case dashing while grounded
-            if(justLandedCache == null)
+            if (justLandedCache == null)
+            {
                 justLandedCache = StartCoroutine(EnableThenDisable(_ => isJustLanded = _, 0.1f));
+                AudioManager.PlayAudioSource(audioGroundTouch);
+            }
         }
         else{
             isGrounded = false;

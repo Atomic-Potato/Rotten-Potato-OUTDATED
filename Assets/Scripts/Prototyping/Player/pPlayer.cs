@@ -15,6 +15,10 @@ public class pPlayer : MonoBehaviour
 
     [Space]
     [SerializeField] Rigidbody2D rigidbody;
+
+    [Space]
+    [Header("Audio")]
+    [SerializeField] AudioSource audioHurt;
     #endregion
 
     #region Global Variables
@@ -56,6 +60,7 @@ public class pPlayer : MonoBehaviour
         }
 
         hitPoints -= damagePoints;
+        AudioManager.PlayAudioSource(audioHurt);
 
         if (hitPoints <= 0)
         {

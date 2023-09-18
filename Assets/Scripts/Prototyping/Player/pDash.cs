@@ -40,6 +40,11 @@ public class pDash : MonoBehaviour
     [SerializeField] bool gizmosDrawDistance;
     [SerializeField] bool gizmosUseDistanceDirectionToMouse;
     [SerializeField] Vector2 gizmosDistanceDirection = Vector2.right;
+
+    [Space]
+    [Header("Audio")]
+    [SerializeField] AudioSource audioDash;
+    [SerializeField] AudioSource audioEnemyHit;
     #endregion
 
     #region Global Variables
@@ -105,6 +110,7 @@ public class pDash : MonoBehaviour
         AlterDashCount?.Invoke(count - _dashesLeft);
     }
 
+
     void Update()
     {
         UpdateCache();
@@ -145,6 +151,7 @@ public class pDash : MonoBehaviour
             enemy.Damage();
             StopDash();
             AlterDashCount?.Invoke(restoredDashesCount);
+            AudioManager.PlayAudioSource(audioEnemyHit);
         }
     }
     #endregion
@@ -188,6 +195,7 @@ public class pDash : MonoBehaviour
             StopMovement();
 
             rigidbody.AddForce(_initialVelocity * (Vector2)_direction, ForceMode2D.Impulse);
+            AudioManager.PlayAudioSource(audioDash);
         }
 
         if (_dashTimer < time)
@@ -228,6 +236,7 @@ public class pDash : MonoBehaviour
             else
             {
                 AlterDashCount?.Invoke(-1);
+                AudioManager.PlayAudioSource(audioDash);
             }
 
             _isDashing = true;
