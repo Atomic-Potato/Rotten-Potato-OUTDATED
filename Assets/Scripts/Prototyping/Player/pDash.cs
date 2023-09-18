@@ -1,10 +1,11 @@
-﻿using System.Collections;
-using TMPro;
+﻿using System;
+using System.Collections;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
 public class pDash : MonoBehaviour
 {
+    #region Inspector variables
     [Range(0, 100)]
     [SerializeField] int count = 1;
     [Range(0.1f, 100f)]
@@ -39,7 +40,12 @@ public class pDash : MonoBehaviour
     [SerializeField] bool gizmosDrawDistance;
     [SerializeField] bool gizmosUseDistanceDirectionToMouse;
     [SerializeField] Vector2 gizmosDistanceDirection = Vector2.right;
-    
+    #endregion
+
+    #region Global Variables
+    static pDash _instance;
+    public static pDash Instance => _instance;
+
     static bool isDashingCache;
     public static bool IsDashing => isDashingCache;
     static bool isHoldingCache;
@@ -47,7 +53,8 @@ public class pDash : MonoBehaviour
     static bool isDamagedDashingCache;
     public static bool IsDamagedDashing => isDamagedDashingCache;
 
-    int _dashesLeft;
+    static int _dashesLeft;
+    public static int DashesLeft => _dashesLeft;
     float _initialVelocity;
     float _initialGravity;
     float _holdTimer;
@@ -65,6 +72,10 @@ public class pDash : MonoBehaviour
     bool _isReceivingDashInput;
     bool _isReceivingJumpInput;
 
+    public Action<int> AlterDashCount;
+    #endregion
+
+    #region Execution
     void OnDrawGizmos() 
     {
         if (gizmosDrawDistance)
@@ -78,9 +89,20 @@ public class pDash : MonoBehaviour
 
     void Awake()
     {
+        if (_instance != null && _instance != this)
+        {
+            Destroy(gameObject);
+        }
+        else
+        {
+            _instance = this;    
+        }
+
+        AlterDashCount = UpdateDashCount;
+
         _initialVelocity = GetInitialVelocityNoAcceleration(distance, time);
         _initialGravity = rigidbody.gravityScale;
-        _dashesLeft = count;
+        AlterDashCount?.Invoke(count - _dashesLeft);
     }
 
     void Update()
@@ -99,7 +121,7 @@ public class pDash : MonoBehaviour
 
         if (BasicMovement.IS_GROUNDED && (!_isDashing || !_isHolding))
         {
-            _dashesLeft = count;
+            AlterDashCount?.Invoke(count - _dashesLeft);
         }
     }
 
@@ -122,9 +144,10 @@ public class pDash : MonoBehaviour
             Enemy enemy = other.gameObject.GetComponent<Enemy>();
             enemy.Damage();
             StopDash();
-            _dashesLeft += restoredDashesCount;
+            AlterDashCount?.Invoke(restoredDashesCount);
         }
     }
+    #endregion
 
     void UpdateCache()
     {
@@ -239,7 +262,7 @@ public class pDash : MonoBehaviour
     public void StopDash()
     {
         rigidbody.velocity = Vector2.zero;
-        _dashesLeft--;
+        AlterDashCount?.Invoke(-1);
         _isCanDash = false;
         _isCanHold = true;
         _isDamagedDashing = false;
@@ -313,14 +336,11 @@ public class pDash : MonoBehaviour
     }
 
     #region Methods
-    public void IncrementDashes(int i)
+
+    void UpdateDashCount(int i)
     {
         _dashesLeft += i;
-    }
 
-    public void DecrementDashes(int i)
-    {
-        _dashesLeft -= i;
     }
 
     void RestoreMovement()

@@ -160,10 +160,10 @@ public class Parry : MonoBehaviour
         IEnumerator ExecuteGiveFreeDash()
         {
             dash.StopDash();
-            dash.IncrementDashes(1);
+            dash.AlterDashCount?.Invoke(1);
             SlowTime();
             yield return new WaitForSecondsRealtime(freeDashTime);
-            dash.DecrementDashes(1);
+            dash.AlterDashCount?.Invoke(-1);
             RestoreTime();
             _isGivenFreeDash = false;
         }
@@ -185,7 +185,7 @@ public class Parry : MonoBehaviour
         RestoreTime();
         if (!isTookFreeDash)
         {
-            dash.DecrementDashes(1);
+            dash.AlterDashCount?.Invoke(-1);
         }
         StopCoroutine(_giveFreeDashCache);
         _isGivenFreeDash = false;
