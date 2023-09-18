@@ -121,7 +121,6 @@ public class pDash : MonoBehaviour
 
         if (BasicMovement.IS_GROUNDED && !_isDashing && !_isHolding && _dashesLeft < count)
         {
-            Debug.Log("Restored");
             AlterDashCount?.Invoke(count - _dashesLeft);
         }
     }
@@ -162,8 +161,8 @@ public class pDash : MonoBehaviour
 
     #region Dash
     void Dash()
-    { 
-        if (_dashesLeft <= 0)
+    {
+        if (_dashesLeft <= 0 && _dashTimer >= time)
         {
             _isCanDash = false;
             return;
@@ -194,10 +193,12 @@ public class pDash : MonoBehaviour
         if (_dashTimer < time)
         {
             _dashTimer += Time.deltaTime;
-            return;
         }
 
-        StopDash();
+        if (_dashTimer >= time)
+        {
+            StopDash();
+        }
     }
 
     void StopHolding()
