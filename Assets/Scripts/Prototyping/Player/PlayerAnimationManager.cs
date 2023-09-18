@@ -24,7 +24,9 @@ public class PlayerAnimationManager : MonoBehaviour
     [Space]
     [Header("Other")]
     [Range(0f, 1f)]
-    [SerializeField] float noDashesAlphaValue = 0.75f; 
+    [SerializeField] float noDashesAlphaValue = 0.75f;
+    [Range(0f,10f)] 
+    [SerializeField] float timeBetweenRecoveryFlashes;
     [SerializeField] SpriteRenderer spriteRenderer;
     #endregion
 
@@ -35,7 +37,7 @@ public class PlayerAnimationManager : MonoBehaviour
     public AnimationClip CurrentClip => clipCurrent;
     public Action<AnimationClip, bool, float> AnimationStateAction;
     Coroutine _waitForAnimationCache;
-    Color noDashesColor;
+    Coroutine _recoveryFlashCache;
     #endregion
 
     void Awake()
@@ -50,11 +52,11 @@ public class PlayerAnimationManager : MonoBehaviour
         }
 
         AnimationStateAction = SetAnimationState;
-        noDashesColor = new Color(1f, 1f, 1f, noDashesAlphaValue);
     }
 
     void Update()
     {
+        Debug.Log(pPlayer.IsInRecovery);
         #region Animation States Handeling
         if (IsRunning())
         {
@@ -98,18 +100,27 @@ public class PlayerAnimationManager : MonoBehaviour
         #region Other
         if (pDash.DashesLeft <= 0)
         {
-            if (spriteRenderer.color != noDashesColor)
-            {
-                Debug.Log("Changed alpha");
-                spriteRenderer.color = noDashesColor;
-            }
+            SetAlpha(noDashesAlphaValue);
         }
         else
         {
-            if (spriteRenderer.color != Color.white)
+            SetAlpha(1f);
+        }
+
+        if (pPlayer.IsInRecovery)
+        {
+            RecoveryFalsh();
+        }
+        else
+        {
+            if (_recoveryFlashCache != null)
             {
-                Debug.Log("Restored alpha");
-                spriteRenderer.color = Color.white;
+                StopCoroutine(_recoveryFlashCache);
+                _recoveryFlashCache = null;
+                if (spriteRenderer.enabled == false)
+                {
+                    spriteRenderer.enabled = true;
+                }
             }
         }
         #endregion
@@ -197,4 +208,30 @@ public class PlayerAnimationManager : MonoBehaviour
             pPlayer.Instance.Rigidbody.velocity.y < 0f;
     }
     #endregion
+
+    void SetAlpha(float a)
+    {
+        if (spriteRenderer.color.a != a)
+        {
+            Color color = new Color(spriteRenderer.color.r, spriteRenderer.color.g, spriteRenderer.color.b, a);
+            spriteRenderer.color = color;
+        }
+    }
+
+    void RecoveryFalsh()
+    {
+        if (_recoveryFlashCache == null)
+        {
+            _recoveryFlashCache = StartCoroutine(ExecuteRecoveryFlash());
+        }
+
+        IEnumerator ExecuteRecoveryFlash()
+        {
+            spriteRenderer.enabled = false;
+            yield return new WaitForSeconds(timeBetweenRecoveryFlashes);
+            spriteRenderer.enabled = true;
+            yield return new WaitForSeconds(timeBetweenRecoveryFlashes);
+            _recoveryFlashCache = null;
+        }
+    }
 }

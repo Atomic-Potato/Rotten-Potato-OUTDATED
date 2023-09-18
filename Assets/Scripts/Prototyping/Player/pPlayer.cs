@@ -24,11 +24,10 @@ public class pPlayer : MonoBehaviour
     public int HitPoints => hitPoints;
     public Rigidbody2D Rigidbody => rigidbody;
     public Action<int> Damage;
-    #endregion
 
-    #region PRIVATE VARIABLES
     int _initialHitPoints;
-    bool _isInRecovery;
+    static bool _isInRecovery;
+    public static bool IsInRecovery => _isInRecovery;
     Coroutine _recoverCache;
     #endregion
 
