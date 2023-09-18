@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 
 public class PlayerAnimationManager : MonoBehaviour
 {
@@ -12,21 +13,41 @@ public class PlayerAnimationManager : MonoBehaviour
     [SerializeField] AnimationClip clipIdle;
     [SerializeField] AnimationClip clipRun;
 
+    static PlayerAnimationManager _instance;
+    public static PlayerAnimationManager Instance => _instance;
+
     AnimationClip clipCurrent;
+    public AnimationClip CurrentClip => clipCurrent;
+
+    public Action<AnimationClip> AnimationStateAction;
+
+    void Awake()
+    {
+        if (_instance != null && _instance != this)
+        {
+            Destroy(gameObject);
+        }
+        else
+        {
+            _instance = this;    
+        }
+
+        AnimationStateAction = SetAnimationState;
+    }
 
     void Update()
     {
         if (IsRunning())
         {
-            SetAnimationState(clipRun);
+            AnimationStateAction?.Invoke(clipRun);
         }
         else if (IsIdle())
         {
-            SetAnimationState(clipIdle);
+            AnimationStateAction?.Invoke(clipIdle);
         }
         else
         {
-            SetAnimationState(defaultClip);
+            AnimationStateAction?.Invoke(defaultClip);
         }
     }
 
