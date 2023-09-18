@@ -20,18 +20,22 @@ public class PlayerAnimationManager : MonoBehaviour
     [SerializeField] AnimationClip clipDash;
     [SerializeField] AnimationClip clipDamageDash;
     [SerializeField] AnimationClip clipAirHold;
+
+    [Space]
+    [Header("Other")]
+    [Range(0f, 1f)]
+    [SerializeField] float noDashesAlphaValue = 0.75f; 
+    [SerializeField] SpriteRenderer spriteRenderer;
     #endregion
 
     #region Global Variables
     static PlayerAnimationManager _instance;
     public static PlayerAnimationManager Instance => _instance;
-
     AnimationClip clipCurrent;
     public AnimationClip CurrentClip => clipCurrent;
-
     public Action<AnimationClip, bool, float> AnimationStateAction;
-
     Coroutine _waitForAnimationCache;
+    Color noDashesColor;
     #endregion
 
     void Awake()
@@ -46,10 +50,12 @@ public class PlayerAnimationManager : MonoBehaviour
         }
 
         AnimationStateAction = SetAnimationState;
+        noDashesColor = new Color(1f, 1f, 1f, noDashesAlphaValue);
     }
 
     void Update()
     {
+        #region Animation States Handeling
         if (IsRunning())
         {
             AnimationStateAction?.Invoke(clipRun, false, -1f);
@@ -87,7 +93,26 @@ public class PlayerAnimationManager : MonoBehaviour
         {
             AnimationStateAction?.Invoke(clipIdleSpecial, true, clipIdleSpecial.length);
         }
+        #endregion
 
+        #region Other
+        if (pDash.DashesLeft <= 0)
+        {
+            if (spriteRenderer.color != noDashesColor)
+            {
+                Debug.Log("Changed alpha");
+                spriteRenderer.color = noDashesColor;
+            }
+        }
+        else
+        {
+            if (spriteRenderer.color != Color.white)
+            {
+                Debug.Log("Restored alpha");
+                spriteRenderer.color = Color.white;
+            }
+        }
+        #endregion
     }
 
     /// <summary>

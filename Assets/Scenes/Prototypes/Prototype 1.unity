@@ -5000,6 +5000,8 @@ MonoBehaviour:
   clipDash: {fileID: 7400000, guid: 1f6a20e204f91c149ac762e2bce3357b, type: 2}
   clipDamageDash: {fileID: 7400000, guid: bc24fea3a19718e4a993e80e2902fbff, type: 2}
   clipAirHold: {fileID: 7400000, guid: 0936136e1c9c9364f9952fb728032dab, type: 2}
+  noDashesAlphaValue: 0.5
+  spriteRenderer: {fileID: 7048394260952802335}
 --- !u!212 &7048394260952802335
 SpriteRenderer:
   m_ObjectHideFlags: 0
