@@ -49,6 +49,15 @@
                     "processors": "",
                     "interactions": "Tap",
                     "initialStateCheck": false
+                },
+                {
+                    "name": "TheFunny",
+                    "type": "Button",
+                    "id": "ed90b8d9-7652-4cae-bf70-a8c982aa97a1",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
                 }
             ],
             "bindings": [
@@ -403,6 +412,17 @@
                     "action": "Move",
                     "isComposite": false,
                     "isPartOfComposite": true
+                },
+                {
+                    "name": "",
+                    "id": "c0e19822-a2f8-4d56-8e8d-6556216b0fe9",
+                    "path": "<Keyboard>/f",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "TheFunny",
+                    "isComposite": false,
+                    "isPartOfComposite": false
                 }
             ]
         }

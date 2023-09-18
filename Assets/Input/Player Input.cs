@@ -71,6 +71,15 @@ public partial class @PlayerInput : IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": ""Tap"",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""TheFunny"",
+                    ""type"": ""Button"",
+                    ""id"": ""ed90b8d9-7652-4cae-bf70-a8c982aa97a1"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -425,6 +434,17 @@ public partial class @PlayerInput : IInputActionCollection2, IDisposable
                     ""action"": ""Move"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""c0e19822-a2f8-4d56-8e8d-6556216b0fe9"",
+                    ""path"": ""<Keyboard>/f"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""TheFunny"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         }
@@ -438,6 +458,7 @@ public partial class @PlayerInput : IInputActionCollection2, IDisposable
         m_Player_Jump = m_Player.FindAction("Jump", throwIfNotFound: true);
         m_Player_Dash = m_Player.FindAction("Dash", throwIfNotFound: true);
         m_Player_Parry = m_Player.FindAction("Parry", throwIfNotFound: true);
+        m_Player_TheFunny = m_Player.FindAction("TheFunny", throwIfNotFound: true);
     }
 
     public void Dispose()
@@ -502,6 +523,7 @@ public partial class @PlayerInput : IInputActionCollection2, IDisposable
     private readonly InputAction m_Player_Jump;
     private readonly InputAction m_Player_Dash;
     private readonly InputAction m_Player_Parry;
+    private readonly InputAction m_Player_TheFunny;
     public struct PlayerActions
     {
         private @PlayerInput m_Wrapper;
@@ -511,6 +533,7 @@ public partial class @PlayerInput : IInputActionCollection2, IDisposable
         public InputAction @Jump => m_Wrapper.m_Player_Jump;
         public InputAction @Dash => m_Wrapper.m_Player_Dash;
         public InputAction @Parry => m_Wrapper.m_Player_Parry;
+        public InputAction @TheFunny => m_Wrapper.m_Player_TheFunny;
         public InputActionMap Get() { return m_Wrapper.m_Player; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -535,6 +558,9 @@ public partial class @PlayerInput : IInputActionCollection2, IDisposable
                 @Parry.started -= m_Wrapper.m_PlayerActionsCallbackInterface.OnParry;
                 @Parry.performed -= m_Wrapper.m_PlayerActionsCallbackInterface.OnParry;
                 @Parry.canceled -= m_Wrapper.m_PlayerActionsCallbackInterface.OnParry;
+                @TheFunny.started -= m_Wrapper.m_PlayerActionsCallbackInterface.OnTheFunny;
+                @TheFunny.performed -= m_Wrapper.m_PlayerActionsCallbackInterface.OnTheFunny;
+                @TheFunny.canceled -= m_Wrapper.m_PlayerActionsCallbackInterface.OnTheFunny;
             }
             m_Wrapper.m_PlayerActionsCallbackInterface = instance;
             if (instance != null)
@@ -554,6 +580,9 @@ public partial class @PlayerInput : IInputActionCollection2, IDisposable
                 @Parry.started += instance.OnParry;
                 @Parry.performed += instance.OnParry;
                 @Parry.canceled += instance.OnParry;
+                @TheFunny.started += instance.OnTheFunny;
+                @TheFunny.performed += instance.OnTheFunny;
+                @TheFunny.canceled += instance.OnTheFunny;
             }
         }
     }
@@ -565,5 +594,6 @@ public partial class @PlayerInput : IInputActionCollection2, IDisposable
         void OnJump(InputAction.CallbackContext context);
         void OnDash(InputAction.CallbackContext context);
         void OnParry(InputAction.CallbackContext context);
+        void OnTheFunny(InputAction.CallbackContext context);
     }
 }

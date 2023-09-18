@@ -45,7 +45,7 @@ public class pUIManager : MonoBehaviour
         dashes.text = _dashesText + pDash.DashesLeft.ToString();
     }
 
-    void UpdatePlayerState(AnimationClip x = null)
+    void UpdatePlayerState(AnimationClip x = null, bool y = false, float z = 0f)
     {
         if (PlayerAnimationManager.Instance.CurrentClip == null)
         {

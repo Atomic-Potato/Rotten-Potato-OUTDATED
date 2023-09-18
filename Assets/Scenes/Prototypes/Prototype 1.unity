@@ -4993,6 +4993,7 @@ MonoBehaviour:
   animator: {fileID: 4351136648133868520}
   defaultClip: {fileID: 7400000, guid: 5637df44b35983445aebc2d44c748fed, type: 2}
   clipIdle: {fileID: 7400000, guid: b6324924795972d48aa8b63984236752, type: 2}
+  clipIdleSpecial: {fileID: 7400000, guid: 748483f6fe89b4c4fbfa23e60dfbc0b3, type: 2}
   clipRun: {fileID: 7400000, guid: 3a6735756ee9fa54f960c2990d71ce82, type: 2}
   clipJump: {fileID: 7400000, guid: d20bcf365fad8d547b75bad55aff4a4d, type: 2}
   clipFall: {fileID: 7400000, guid: 5637df44b35983445aebc2d44c748fed, type: 2}
@@ -5038,12 +5039,13 @@ SpriteRenderer:
   m_SortingLayerID: -824864195
   m_SortingLayer: 4
   m_SortingOrder: 0
-  m_Sprite: {fileID: 21300000, guid: 22a3dac5d43befc469ae40adbdde875c, type: 3}
+  m_Sprite: {fileID: 8966945504643201282, guid: 11c68aab236bcbf4ebb0296be6bf9311,
+    type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
-  m_Size: {x: 0.32, y: 0.32}
+  m_Size: {x: 1, y: 1}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1
@@ -5393,21 +5395,6 @@ MonoBehaviour:
   - m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 1659856477907056084}
-        m_MethodName: OnXHoldInput
-        m_Mode: 0
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
-    m_ActionId: a292c04c-e88d-4565-b2f9-23b2dda63e77
-    m_ActionName: Player/Move[/Keyboard/a,/Keyboard/d]
-  - m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 1659856477907056084}
         m_MethodName: JumpInput
         m_Mode: 0
         m_Arguments:
@@ -5433,51 +5420,6 @@ MonoBehaviour:
     m_ActionName: Player/Jump[/Keyboard/space]
   - m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
-        m_MethodName: GetInput
-        m_Mode: 0
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
-    m_ActionId: e46233c0-453f-4d94-89ba-6020b4dc925b
-    m_ActionName: Player/Grapple[/Mouse/rightButton]
-  - m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 0}
-        m_MethodName: GetCancelInput
-        m_Mode: 0
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
-    m_ActionId: c5796416-93e4-4a4c-a3b6-3a4bfd869418
-    m_ActionName: Player/Cancle Grapple[/Mouse/rightButton,/Keyboard/space]
-  - m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 0}
-        m_MethodName: FireInput
-        m_Mode: 0
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
-    m_ActionId: c98292f1-7540-4d86-b654-f5f2dd56020f
-    m_ActionName: Player/Shoot[/Mouse/leftButton]
-  - m_PersistentCalls:
-      m_Calls:
       - m_Target: {fileID: 7048394262691945169}
         m_MethodName: DetectDashInput
         m_Mode: 0
@@ -5492,24 +5434,17 @@ MonoBehaviour:
     m_ActionId: 4f6de1db-f7f0-4a6d-9be6-2b38a7bf72e9
     m_ActionName: Player/Shift Modifier[/Keyboard/shift]
   - m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 1659856477907056084}
-        m_MethodName: OnYHoldInput
-        m_Mode: 0
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
-    m_ActionId: 9de0c87e-aa64-4617-a44b-9070ad60138c
-    m_ActionName: Player/Y Direction Hold[/Keyboard/s,/Keyboard/w]
-  - m_PersistentCalls:
       m_Calls: []
     m_ActionId: a314aaad-4931-4d4e-b5b8-c4d96f4e5980
     m_ActionName: Player/Parry[/Mouse/rightButton]
+  - m_PersistentCalls:
+      m_Calls: []
+    m_ActionId: c7d0b03f-1488-48d8-86f4-bad883e41e45
+    m_ActionName: Player/Move[/Keyboard/w,/Keyboard/s,/Keyboard/a,/Keyboard/d,/Keyboard/upArrow,/Keyboard/downArrow,/Keyboard/leftArrow,/Keyboard/rightArrow]
+  - m_PersistentCalls:
+      m_Calls: []
+    m_ActionId: 84f2895d-67e2-493c-be2e-f38b1d56f444
+    m_ActionName: Player/Aim[/Mouse/delta]
   m_NeverAutoSwitchControlSchemes: 0
   m_DefaultControlScheme: 
   m_DefaultActionMap: Player
