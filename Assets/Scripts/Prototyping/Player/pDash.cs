@@ -351,7 +351,6 @@ public class pDash : MonoBehaviour
     void UpdateDashCount(int i)
     {
         _dashesLeft += i;
-
     }
 
     void RestoreMovement()

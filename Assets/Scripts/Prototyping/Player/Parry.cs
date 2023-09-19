@@ -49,6 +49,11 @@ public class Parry : MonoBehaviour
                     }
                     GiveFreeDash();
                 }
+                else
+                {
+                    pDash.Instance.AlterDashCount?.Invoke(1);
+                }
+
                 _parriableHostile.Parry();
                ResetSpam();
                AudioManager.PlayAudioSource(audioParry);
