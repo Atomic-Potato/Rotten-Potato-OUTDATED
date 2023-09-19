@@ -94,6 +94,11 @@ public class BasicMovement : MonoBehaviour
 
     void Update(){
         GroundCheck();
+
+        if (PlayerInputManager.IsPerformedJump)
+        {
+            jumpInputReceivedTime = Time.time;
+        }
     }
 
     void FixedUpdate(){
@@ -203,17 +208,6 @@ public class BasicMovement : MonoBehaviour
         switcher(true); // true => global = true;
         yield return new WaitForSeconds(time);
         switcher(false); // false => global = false; 
-    }
-    #endregion
-
-    #region INPUT HANDLERS
-    public void JumpInput(InputAction.CallbackContext context){
-        if(context.started){
-            jumpInputReceived = true;
-            jumpInputReceivedTime = Time.time;
-        }
-        else
-            jumpInputReceived = false;
     }
     #endregion
 }

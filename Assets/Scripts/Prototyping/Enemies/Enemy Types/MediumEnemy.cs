@@ -218,6 +218,7 @@ public class MediumEnemy : Enemy, IParriable
         {
             LinkedPoint point = pathManager.MoveToPreviousPoint();
             StopCounterAttack(GetPointColor(point));
+            AudioManager.PlayAudioSource(audioTeleport);
             _isCanAttack = true;
         }
     }

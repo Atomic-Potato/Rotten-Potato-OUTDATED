@@ -74,8 +74,6 @@ public class pDash : MonoBehaviour
     bool _isHolding;
     bool _isDashing;
     bool _isDamagedDashing;
-    bool _isReceivingDashInput;
-    bool _isReceivingJumpInput;
 
     public Action<int> AlterDashCount;
     #endregion
@@ -259,7 +257,7 @@ public class pDash : MonoBehaviour
 
     bool IsAbleToDash()
     {
-        if (_isReceivingDashInput)
+        if (PlayerInputManager.IsPerformedDash)
         {
             _isCanDash = true;
         }
@@ -301,7 +299,7 @@ public class pDash : MonoBehaviour
             StopMovement();
         }
 
-        if (_isReceivingJumpInput)
+        if (PlayerInputManager.IsPerformedJump)
         {
             Jump();
             StopHolding();
@@ -403,42 +401,6 @@ public class pDash : MonoBehaviour
         // Derived from the kinematic equations
         float acceleration = rigidbody.mass * rigidbody.gravityScale;
         return (distance / time) + (0.5f * acceleration * time); 
-    }
-    #endregion
-
-    #region Input
-    public void DetectDashInput(InputAction.CallbackContext context)
-    {
-        _isReceivingDashInput = context.performed;
-
-        if (_isReceivingDashInput && _dashCache == null)
-        {
-            _dashCache = StartCoroutine(ResetInputNextFrame());
-        }
-
-        IEnumerator ResetInputNextFrame()
-        {
-            yield return null;
-            _isReceivingDashInput = false;
-            _dashCache = null;
-        }
-    }
-
-    public void DetectJumpInput(InputAction.CallbackContext context)
-    {    
-        _isReceivingJumpInput = context.performed;
-
-        if (_isReceivingJumpInput && _jumpCache == null)
-        {
-            _jumpCache = StartCoroutine(ResetInputNextFrame());
-        }
-
-        IEnumerator ResetInputNextFrame()
-        {
-            yield return null;
-            _isReceivingJumpInput = false;
-            _jumpCache = null;
-        }
     }
     #endregion
 }
