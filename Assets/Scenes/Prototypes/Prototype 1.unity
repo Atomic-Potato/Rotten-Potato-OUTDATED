@@ -1157,7 +1157,7 @@ MonoBehaviour:
   path:
   - isUsingRandom: 1
     random:
-      pointsRange: 2
+      pointsRange: 1.85
       originPoint: {fileID: 1922010421}
       isUsingManualPoints: 0
       points: []
@@ -6298,7 +6298,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &1875726998
 RectTransform:
   m_ObjectHideFlags: 0

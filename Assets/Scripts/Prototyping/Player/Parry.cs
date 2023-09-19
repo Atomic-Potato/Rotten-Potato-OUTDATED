@@ -54,6 +54,10 @@ public class Parry : MonoBehaviour
                AudioManager.PlayAudioSource(audioParry);
             }
         }
+        else if (pDash.IsHolding && PlayerInputManager.IsPerformedParry)
+        {
+            pDash.Instance.StopHolding();
+        }
 
         if (_giveFreeDashCache != null)
         {

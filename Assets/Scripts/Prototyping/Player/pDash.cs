@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections;
 using UnityEngine;
-using UnityEngine.InputSystem;
 
 public class pDash : MonoBehaviour
 {
@@ -177,7 +176,7 @@ public class pDash : MonoBehaviour
         {
             if (_isHolding)
             {
-                StopHolding();
+                StopHolding(false);
             }
 
             _direction = GetAimingDirection();
@@ -207,11 +206,7 @@ public class pDash : MonoBehaviour
         }
     }
 
-    void StopHolding()
-    {
-        _isCanHold = false;
-        _isHolding = false;
-    }
+    
 
     public void Dash(bool isDamageDash, Vector2? direction, float time = 0.1f, float distance = 3)
     {
@@ -241,7 +236,7 @@ public class pDash : MonoBehaviour
 
             if (_isHolding)
             {
-                StopHolding();
+                StopHolding(false);
             }
 
             StopMovement();
@@ -290,6 +285,7 @@ public class pDash : MonoBehaviour
     }
     #endregion
 
+    #region Hold
     void Hold()
     {
         if (!_isHolding)
@@ -320,15 +316,6 @@ public class pDash : MonoBehaviour
         }
 
         #region Local Methods
-        void StopHolding()
-        {
-            _isHolding = false;
-            _isCanHold = false;
-            RestoreMovement();
-        } 
-
-        
-
         void RemoveFriction()
         {
             playerCollider.sharedMaterial = noFrictionMaterial;
@@ -347,6 +334,17 @@ public class pDash : MonoBehaviour
         }
         #endregion
     }
+
+    public void StopHolding(bool isShouldRestoreMovement = true)
+    {
+        if (isShouldRestoreMovement)
+        {
+            RestoreMovement();
+        }
+        _isCanHold = false;
+        _isHolding = false;
+    }
+    #endregion
 
     #region Methods
 
