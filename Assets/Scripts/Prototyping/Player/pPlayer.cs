@@ -8,6 +8,7 @@ using UnityEngine.SceneManagement;
 public class pPlayer : MonoBehaviour
 {
     #region Inspector Variables
+    public bool IsImmortal;
     [Range(0, 999)]
     [SerializeField] int hitPoints = 4;
     [Range(0f, 10f)]
@@ -64,7 +65,14 @@ public class pPlayer : MonoBehaviour
 
         if (hitPoints <= 0)
         {
-            Kill();
+            if (IsImmortal)
+            {
+                hitPoints = _initialHitPoints;
+            }
+            else
+            {
+                Kill();
+            }
         }
 
         Recover();
