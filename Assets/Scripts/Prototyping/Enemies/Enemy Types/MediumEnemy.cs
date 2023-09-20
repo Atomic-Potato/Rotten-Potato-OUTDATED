@@ -228,12 +228,20 @@ public class MediumEnemy : Enemy, IParriable
 
         void Hide()
         {
+            if(shooting != null)
+            {
+                shooting.enabled = false;
+            }
             spriteRenderer.enabled = false;
             collider.enabled = false;
         }
 
         void Show()
         {
+            if(shooting != null)
+            {
+                shooting.enabled = true;
+            }
             spriteRenderer.enabled = true;
             collider.enabled = true;
         }
