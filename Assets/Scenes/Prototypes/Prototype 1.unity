@@ -4835,6 +4835,18 @@ Transform:
   m_Father: {fileID: 1949021876}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1127533096 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 465023391363997224, guid: cfb3d329c14dbbc4caafbcde2c4c134d,
+    type: 3}
+  m_PrefabInstance: {fileID: 2111845584}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f97458e870a714d40ada7a16bdb5d438, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1129866838
 GameObject:
   m_ObjectHideFlags: 0
@@ -10313,7 +10325,7 @@ PrefabInstance:
     - target: {fileID: 465023391363997227, guid: cfb3d329c14dbbc4caafbcde2c4c134d,
         type: 3}
       propertyPath: path.Array.data[0].random.numberOfPoints
-      value: 0
+      value: 25
       objectReference: {fileID: 0}
     - target: {fileID: 465023391363997228, guid: cfb3d329c14dbbc4caafbcde2c4c134d,
         type: 3}
@@ -10324,7 +10336,7 @@ PrefabInstance:
         type: 3}
       propertyPath: shooting
       value: 
-      objectReference: {fileID: 0}
+      objectReference: {fileID: 1127533096}
     - target: {fileID: 465023391363997228, guid: cfb3d329c14dbbc4caafbcde2c4c134d,
         type: 3}
       propertyPath: timeToRespawn
@@ -10338,22 +10350,22 @@ PrefabInstance:
     - target: {fileID: 465023391363997228, guid: cfb3d329c14dbbc4caafbcde2c4c134d,
         type: 3}
       propertyPath: timeToBeParried
-      value: 0
+      value: 0.25
       objectReference: {fileID: 0}
     - target: {fileID: 465023391363997228, guid: cfb3d329c14dbbc4caafbcde2c4c134d,
         type: 3}
       propertyPath: timeToCounterAttack
-      value: 0
+      value: 0.45
       objectReference: {fileID: 0}
     - target: {fileID: 465023391363997228, guid: cfb3d329c14dbbc4caafbcde2c4c134d,
         type: 3}
       propertyPath: attackPlayerProbability
-      value: 0
+      value: 0.85
       objectReference: {fileID: 0}
     - target: {fileID: 465023391363997228, guid: cfb3d329c14dbbc4caafbcde2c4c134d,
         type: 3}
       propertyPath: counterAttackProbability
-      value: 0
+      value: 0.9
       objectReference: {fileID: 0}
     - target: {fileID: 465023391363997228, guid: cfb3d329c14dbbc4caafbcde2c4c134d,
         type: 3}
@@ -10363,7 +10375,7 @@ PrefabInstance:
     - target: {fileID: 465023391363997228, guid: cfb3d329c14dbbc4caafbcde2c4c134d,
         type: 3}
       propertyPath: keepCounterAttackingProbability
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: cfb3d329c14dbbc4caafbcde2c4c134d, type: 3}

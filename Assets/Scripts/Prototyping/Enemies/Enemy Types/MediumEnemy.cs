@@ -299,7 +299,10 @@ public class MediumEnemy : Enemy, IParriable
         if (_counterAttackTimer >= timeToCounterAttack)
         {
             LinkedPoint point = pathManager.MoveToPreviousPoint();
-            StopCounterAttack(GetPointColor(point));
+            if (point != null)
+            {
+                StopCounterAttack(GetPointColor(point));
+            }
             AudioManager.PlayAudioSource(audioTeleport);
             _isCanAttack = true;
         }

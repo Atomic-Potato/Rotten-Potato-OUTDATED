@@ -88,7 +88,7 @@ public class EnemyPathManager : MonoBehaviour
         _currentSectionIndex--;
         if (_currentSectionIndex == -1)
         {
-            _currentSectionIndex = 0;
+            return null;
         }
 
         return path[_currentSectionIndex];
