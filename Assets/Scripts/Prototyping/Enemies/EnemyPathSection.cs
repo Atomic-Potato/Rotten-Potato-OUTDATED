@@ -6,6 +6,7 @@ using UnityEngine;
 [Serializable]
 public class EnemyPathSection
 {
+    #region Inspector
     [Space]
     [Header("Random")]
     [SerializeField] bool isUsingRandom;
@@ -14,14 +15,17 @@ public class EnemyPathSection
     [Header("Linear")]
     [SerializeField] bool isUsingLinear;
     [SerializeField] Linear linear;
-    
+    #endregion
 
+    #region Global Variables
     [HideInInspector]
     public static readonly LinkedPoint END_OF_PATH = null;
 
     public EnemyPathSection NextPath;
     public EnemyPathSection PreviousPath;
-    
+    #endregion
+
+    #region Methods
     // Equivalent to Awake
     public void Initialize()
     {
@@ -109,9 +113,26 @@ public class EnemyPathSection
         return previousPoint;
     }
 
+    /// <summary>
+    /// Resets all indicies and sets current linked points to null
+    /// </summary>
+    public void Reset()
+    {
+        if (isUsingRandom && random != null)
+        {
+            random.Reset();
+        }
+        else if (isUsingLinear && linear != null)
+        {
+            linear.Reset();
+        }
+    }
+    #endregion
+
     [Serializable]
     class Random : EnemyPathSectionBase
     {
+        #region Inspector
         [Space]
         [Range(0f, 20f)]
         [SerializeField] float pointsRange;
@@ -131,19 +152,25 @@ public class EnemyPathSection
         [Header("Other")]
         [SerializeField] Transform enemyTransform;
         [SerializeField] Collider2D collider;
+        #endregion
 
+        #region Global Variables
         public bool IsUsingManualPoints => isUsingManualPoints;
         public bool IsUsingRandomPoints => isUsingRandomPoints;
 
         int _currentIndex = -1;
         int _manualPointsUsed = 0;
+        int _originalNumberOfPoints;
         float _colliderMaxLength = 0f;
+        #endregion
 
+        #region Methods
         // Equivalent to Awake
         public void Initialize() 
         {
             if (isUsingRandomPoints)
             {
+                _originalNumberOfPoints = numberOfPoints;
                 _colliderMaxLength = GetColliderMaximumLength();
                 if (_colliderMaxLength > pointsRange)
                 {
@@ -301,6 +328,15 @@ public class EnemyPathSection
             return _currentPoint;
         }
     
+        public override void Reset()
+        {
+            _currentPoint = null;
+            _previousPoint = null;
+            _currentIndex = -1;
+            _manualPointsUsed = 0;
+            numberOfPoints = _originalNumberOfPoints;
+        }
+
         float GetColliderMaximumLength()
             {
                 if (collider is BoxCollider2D)
@@ -329,6 +365,8 @@ public class EnemyPathSection
         {
             return new LinkedPoint(originPoint.position, LinkedPoint.Types.Random);
         }
+
+        #endregion
     }
 
     [Serializable]
@@ -423,5 +461,13 @@ public class EnemyPathSection
             }
             return _currentPoint;
         }
+
+        public override void Reset()
+        {
+            _currentPoint = null;
+            _previousPoint = null;
+            _currentIndex = -1;
+        }
+
     }
 }

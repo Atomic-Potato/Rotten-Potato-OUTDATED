@@ -175,6 +175,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 269d31b889bdb6e48a8e5fa254e6607d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  isShouldRespawn: 0
+  timeToRespawn: 0
   damageToPlayer: 1
   knockBackDistance: 2.5
   counterAttackProbability: 0.75
@@ -187,6 +189,7 @@ MonoBehaviour:
     type: 3}
   pathManager: {fileID: 465023391363997227}
   shooting: {fileID: 465023391363997224}
+  collider: {fileID: 465023391363997229}
   spriteRenderer: {fileID: 465023393393336948}
   audioAttack: {fileID: 465023391271528609}
   audioDeath: {fileID: 465023392371594012}

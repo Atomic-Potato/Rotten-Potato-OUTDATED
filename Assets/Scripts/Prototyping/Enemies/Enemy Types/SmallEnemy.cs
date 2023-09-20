@@ -3,6 +3,7 @@ using UnityEngine;
 
 public class SmallEnemy : Enemy
 {
+    [Space]
     [Tooltip("The damage points applied to player upon collision.")]
     [SerializeField] int damage;
     [SerializeField] float knockBackDistance = 2.5f;
@@ -33,6 +34,11 @@ public class SmallEnemy : Enemy
     public override void Die()
     {
         Destroy(gameObject);
+    }
+
+    public override void Respawn()
+    {
+        throw new System.NotImplementedException();
     }
 
     public override void Attack()

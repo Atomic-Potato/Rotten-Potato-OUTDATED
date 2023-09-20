@@ -4,6 +4,7 @@ public abstract class Enemy : MonoBehaviour, IParriable
 {
     public abstract void Die();    
     public abstract void Damage();
+    public abstract void Respawn();
 
     public abstract void Attack();
 

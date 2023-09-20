@@ -11,4 +11,5 @@ public abstract class EnemyPathSectionBase
     public abstract LinkedPoint GetCurrentPoint();
     public abstract LinkedPoint GetNextPoint();
     public abstract LinkedPoint GetPreviousPoint();
+    public abstract void Reset();
 }

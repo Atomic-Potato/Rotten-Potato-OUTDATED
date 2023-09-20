@@ -1,8 +1,16 @@
-﻿using UnityEngine;
+﻿using System.Collections;
+using UnityEngine;
 
 public class MediumEnemy : Enemy, IParriable
 {
+    #region Inspector
     [Space]
+    [Header("Respawning")]
+    [SerializeField] bool isShouldRespawn;
+    [SerializeField] float timeToRespawn;
+
+    [Space]
+    [Header("Damage")]
     [SerializeField] int damageToPlayer;
     [Tooltip("If no previous path points are found, then this is the amount of distance the player will be knocked.")]
     [SerializeField] float knockBackDistance;
@@ -31,6 +39,7 @@ public class MediumEnemy : Enemy, IParriable
     [Space(height: 10)]
     [SerializeField] EnemyPathManager pathManager;
     [SerializeField] EnemyProjectileShooting shooting;
+    [SerializeField] Collider2D collider;
     [SerializeField] SpriteRenderer spriteRenderer;
 
     [Space]
@@ -43,6 +52,9 @@ public class MediumEnemy : Enemy, IParriable
     [Space]
     [Header("Gizmos & Debugging")]
     [SerializeField] Color parryColor;
+    #endregion
+
+    #region Global Variables
     public float TimeToCounterAttack => timeToCounterAttack;
 
     float _counterAttackTimer;
@@ -56,14 +68,18 @@ public class MediumEnemy : Enemy, IParriable
 
     pDash _playerDash;
     GameObject _spawnedCluster;
-
+    Coroutine _respawnCache;
     [SerializeField] Transform origin;
+    #endregion
 
     #region Execution
     void Awake()
     {
-        _spawnedCluster = Instantiate(enemyCluster);
-        _spawnedCluster.SetActive(false);
+        if (enemyCluster != null)
+        {
+            _spawnedCluster = Instantiate(enemyCluster);
+            _spawnedCluster.SetActive(false);
+        }
     }
 
     private void OnDrawGizmos() 
@@ -95,7 +111,10 @@ public class MediumEnemy : Enemy, IParriable
 
     void Update()
     {
-        shooting.enabled = !_isCounterAttacking && !_isAttacking ? true : false; 
+        if (shooting != null)
+        {
+            shooting.enabled = !_isCounterAttacking && !_isAttacking ? true : false; 
+        }
 
         if (_isCanCounterAttack)
         {
@@ -108,6 +127,7 @@ public class MediumEnemy : Enemy, IParriable
     }
     #endregion
 
+    bool _isrepsawned;
     public override void Damage()
     {
         if(_isAttacking)
@@ -129,7 +149,14 @@ public class MediumEnemy : Enemy, IParriable
         LinkedPoint point = pathManager.MoveToNextPoint();
         if (point == null)
         {
-            Die();
+            if (isShouldRespawn)
+            {
+                Respawn();
+            }
+            else
+            {
+                Die();
+            }
             return;
         }
         spriteRenderer.color = GetPointColor(point);
@@ -153,7 +180,14 @@ public class MediumEnemy : Enemy, IParriable
         LinkedPoint point = pathManager.MoveToNextPoint();
         if (point == null)
         {
-            Die();
+            if (isShouldRespawn)
+            {
+                Respawn();
+            }
+            else
+            {
+                Die();
+            }
             return;
         }
         spriteRenderer.color = GetPointColor(point);
@@ -164,10 +198,45 @@ public class MediumEnemy : Enemy, IParriable
 
     public override void Die()
     {
-        _spawnedCluster.SetActive(true);
-        _spawnedCluster.transform.position = transform.position;
+        if (enemyCluster != null)
+        {
+            _spawnedCluster.SetActive(true);
+            _spawnedCluster.transform.position = transform.position;
+        }
         AudioManager.PlayAudioSource(audioDeath);
         Destroy(gameObject);
+    }
+
+    public override void Respawn()
+    {
+        if (_respawnCache == null)
+        {
+            _respawnCache = StartCoroutine(ExecuteRespawn());
+        }
+
+        IEnumerator ExecuteRespawn()
+        {
+            _isrepsawned = true;
+            Hide();
+            pathManager.Reset();
+            LinkedPoint point = pathManager.MoveToNextPoint();
+            spriteRenderer.color = GetPointColor(point);
+            yield return new WaitForSeconds(timeToRespawn);
+            Show();
+            _respawnCache = null;
+        }
+
+        void Hide()
+        {
+            spriteRenderer.enabled = false;
+            collider.enabled = false;
+        }
+
+        void Show()
+        {
+            spriteRenderer.enabled = true;
+            collider.enabled = true;
+        }
     }
 
     #region Parrying

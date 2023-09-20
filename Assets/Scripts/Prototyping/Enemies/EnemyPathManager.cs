@@ -94,6 +94,19 @@ public class EnemyPathManager : MonoBehaviour
         return path[_currentSectionIndex];
     }
 
+    /// <summary>
+    /// Resets all indicies and points
+    /// </summary>
+    public void Reset()
+    {
+        _currentSectionIndex = -1;
+        foreach (EnemyPathSection section in path)
+        {
+            section.Reset();
+        }
+        MoveToNextSection();
+    }
+
     void ConnectPathsSections()
     {
         if (path.Length <= 1)
