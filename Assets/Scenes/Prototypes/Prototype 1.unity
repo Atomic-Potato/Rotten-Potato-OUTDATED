@@ -6182,12 +6182,12 @@ PrefabInstance:
     - target: {fileID: 465023391363997224, guid: cfb3d329c14dbbc4caafbcde2c4c134d,
         type: 3}
       propertyPath: shootOnStart
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 465023391363997224, guid: cfb3d329c14dbbc4caafbcde2c4c134d,
         type: 3}
       propertyPath: distanceToAttack
-      value: 3.5
+      value: 4
       objectReference: {fileID: 0}
     - target: {fileID: 465023391363997224, guid: cfb3d329c14dbbc4caafbcde2c4c134d,
         type: 3}
@@ -6277,7 +6277,7 @@ PrefabInstance:
     - target: {fileID: 465023391363997227, guid: cfb3d329c14dbbc4caafbcde2c4c134d,
         type: 3}
       propertyPath: path.Array.data[0].random.numberOfPoints
-      value: 0
+      value: 25
       objectReference: {fileID: 0}
     - target: {fileID: 465023391363997228, guid: cfb3d329c14dbbc4caafbcde2c4c134d,
         type: 3}
@@ -6288,11 +6288,11 @@ PrefabInstance:
         type: 3}
       propertyPath: shooting
       value: 
-      objectReference: {fileID: 0}
+      objectReference: {fileID: 1632531784}
     - target: {fileID: 465023391363997228, guid: cfb3d329c14dbbc4caafbcde2c4c134d,
         type: 3}
       propertyPath: timeToRespawn
-      value: 2
+      value: 7.5
       objectReference: {fileID: 0}
     - target: {fileID: 465023391363997228, guid: cfb3d329c14dbbc4caafbcde2c4c134d,
         type: 3}
@@ -6302,32 +6302,32 @@ PrefabInstance:
     - target: {fileID: 465023391363997228, guid: cfb3d329c14dbbc4caafbcde2c4c134d,
         type: 3}
       propertyPath: timeToBeParried
-      value: 0
+      value: 0.45
       objectReference: {fileID: 0}
     - target: {fileID: 465023391363997228, guid: cfb3d329c14dbbc4caafbcde2c4c134d,
         type: 3}
       propertyPath: timeToCounterAttack
-      value: 0
+      value: 0.65
       objectReference: {fileID: 0}
     - target: {fileID: 465023391363997228, guid: cfb3d329c14dbbc4caafbcde2c4c134d,
         type: 3}
       propertyPath: attackPlayerProbability
-      value: 0
+      value: 0.75
       objectReference: {fileID: 0}
     - target: {fileID: 465023391363997228, guid: cfb3d329c14dbbc4caafbcde2c4c134d,
         type: 3}
       propertyPath: counterAttackProbability
-      value: 0
+      value: 0.75
       objectReference: {fileID: 0}
     - target: {fileID: 465023391363997228, guid: cfb3d329c14dbbc4caafbcde2c4c134d,
         type: 3}
       propertyPath: isCanCounterToSectionStartOnly
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 465023391363997228, guid: cfb3d329c14dbbc4caafbcde2c4c134d,
         type: 3}
       propertyPath: keepCounterAttackingProbability
-      value: 0
+      value: 0.75
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: cfb3d329c14dbbc4caafbcde2c4c134d, type: 3}
@@ -6793,6 +6793,18 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
+--- !u!114 &1632531784 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 465023391363997224, guid: cfb3d329c14dbbc4caafbcde2c4c134d,
+    type: 3}
+  m_PrefabInstance: {fileID: 1465939424}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f97458e870a714d40ada7a16bdb5d438, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1632900100
 GameObject:
   m_ObjectHideFlags: 0
@@ -7196,7 +7208,7 @@ PrefabInstance:
     - target: {fileID: 465023391363997227, guid: cfb3d329c14dbbc4caafbcde2c4c134d,
         type: 3}
       propertyPath: path.Array.data[0].random.numberOfPoints
-      value: 50
+      value: 25
       objectReference: {fileID: 0}
     - target: {fileID: 465023391363997228, guid: cfb3d329c14dbbc4caafbcde2c4c134d,
         type: 3}
@@ -7236,12 +7248,12 @@ PrefabInstance:
     - target: {fileID: 465023391363997228, guid: cfb3d329c14dbbc4caafbcde2c4c134d,
         type: 3}
       propertyPath: attackPlayerProbability
-      value: 0.25
+      value: 0.35
       objectReference: {fileID: 0}
     - target: {fileID: 465023391363997228, guid: cfb3d329c14dbbc4caafbcde2c4c134d,
         type: 3}
       propertyPath: counterAttackProbability
-      value: 0.25
+      value: 0.35
       objectReference: {fileID: 0}
     - target: {fileID: 465023391363997228, guid: cfb3d329c14dbbc4caafbcde2c4c134d,
         type: 3}
@@ -7251,7 +7263,7 @@ PrefabInstance:
     - target: {fileID: 465023391363997228, guid: cfb3d329c14dbbc4caafbcde2c4c134d,
         type: 3}
       propertyPath: keepCounterAttackingProbability
-      value: 0.25
+      value: 0.35
       objectReference: {fileID: 0}
     m_RemovedComponents:
     - {fileID: 465023391363997224, guid: cfb3d329c14dbbc4caafbcde2c4c134d, type: 3}
@@ -10925,7 +10937,7 @@ PrefabInstance:
     - target: {fileID: 982481149171213334, guid: 52bc354dfb39963458ac13011dec0d98,
         type: 3}
       propertyPath: IsImmortal
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 982481149171213365, guid: 52bc354dfb39963458ac13011dec0d98,
         type: 3}

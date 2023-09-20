@@ -37,6 +37,11 @@ public class Parry : MonoBehaviour
     {
         _isSpamming = IsSpammingParryInput();
 
+        if (!_isSpamming && PlayerInputManager.IsPerformedParry)
+        {
+            AudioManager.PlayAudioSource(audioParry);
+        }
+
         if (_parriableHostile != null)
         {
             if (IsCanParry() && PlayerInputManager.IsPerformedParry)
@@ -56,7 +61,6 @@ public class Parry : MonoBehaviour
 
                 _parriableHostile.Parry();
                ResetSpam();
-               AudioManager.PlayAudioSource(audioParry);
             }
         }
         else if (pDash.IsHolding && PlayerInputManager.IsPerformedParry)

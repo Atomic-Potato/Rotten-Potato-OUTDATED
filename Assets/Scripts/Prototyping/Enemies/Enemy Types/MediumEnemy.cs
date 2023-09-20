@@ -127,7 +127,6 @@ public class MediumEnemy : Enemy, IParriable
     }
     #endregion
 
-    bool _isrepsawned;
     public override void Damage()
     {
         if(_isAttacking)
@@ -216,7 +215,13 @@ public class MediumEnemy : Enemy, IParriable
 
         IEnumerator ExecuteRespawn()
         {
-            _isrepsawned = true;
+            if (enemyCluster != null)
+            {
+                _spawnedCluster.SetActive(true);
+                _spawnedCluster.transform.position = transform.position;
+            }
+            AudioManager.PlayAudioSource(audioDeath);
+
             Hide();
             pathManager.Reset();
             LinkedPoint point = pathManager.MoveToNextPoint();
