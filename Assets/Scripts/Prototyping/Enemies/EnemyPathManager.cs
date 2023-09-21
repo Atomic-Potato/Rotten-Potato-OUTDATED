@@ -32,12 +32,12 @@ public class EnemyPathManager : MonoBehaviour
 
     public LinkedPoint GetCurrentPoint()
     {
-        return path[_currentSectionIndex].GetCurrentPoint();
+        return IsInsideASection() ? path[_currentSectionIndex].GetCurrentPoint() : null;
     }
     
     public LinkedPoint MoveToNextPoint()
     {
-        LinkedPoint point = path[_currentSectionIndex].GetNextPoint();
+        LinkedPoint point = IsInsideASection() ? path[_currentSectionIndex].GetNextPoint() : null;
 
         if (point == null)
         {
@@ -60,8 +60,7 @@ public class EnemyPathManager : MonoBehaviour
 
     public LinkedPoint MoveToPreviousPoint()
     {
-        LinkedPoint point = path[_currentSectionIndex].GetPreviousPoint();
-
+        LinkedPoint point = IsInsideASection() ? path[_currentSectionIndex].GetPreviousPoint() : null;
         if (point == null)
         {
             EnemyPathSection section =  MoveToPreviousSection();
@@ -86,8 +85,9 @@ public class EnemyPathManager : MonoBehaviour
     EnemyPathSection MoveToPreviousSection()
     {
         _currentSectionIndex--;
-        if (_currentSectionIndex == -1)
+        if (_currentSectionIndex <= -1)
         {
+            _currentSectionIndex = -1;
             return null;
         }
 
@@ -105,6 +105,11 @@ public class EnemyPathManager : MonoBehaviour
             section.Reset();
         }
         MoveToNextSection();
+    }
+
+    bool IsInsideASection()
+    {
+        return _currentSectionIndex > -1 && _currentSectionIndex < path.Length;
     }
 
     void ConnectPathsSections()

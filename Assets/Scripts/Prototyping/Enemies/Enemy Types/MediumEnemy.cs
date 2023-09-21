@@ -66,6 +66,8 @@ public class MediumEnemy : Enemy, IParriable
     bool _isParriable;
     bool _isPlayerInRange;
 
+
+    Color _previousColor;
     pDash _playerDash;
     GameObject _spawnedCluster;
     Coroutine _respawnCache;
@@ -158,10 +160,13 @@ public class MediumEnemy : Enemy, IParriable
             }
             return;
         }
-        spriteRenderer.color = GetPointColor(point);
+        if (point != null)
+        {
+            spriteRenderer.color = (Color)GetPointColor(point);
+        }
         AudioManager.PlayAudioSource(audioTeleport);
 
-        _isCanCounterAttack = RollForSuccess(counterAttackProbability);
+        _isCanCounterAttack = point.Previous != null && RollForSuccess(counterAttackProbability);
     }
 
     void DamageNoAttack()
@@ -189,7 +194,10 @@ public class MediumEnemy : Enemy, IParriable
             }
             return;
         }
-        spriteRenderer.color = GetPointColor(point);
+        if (point != null)
+        {
+            spriteRenderer.color = (Color)GetPointColor(point);
+        }
         AudioManager.PlayAudioSource(audioTeleport);
 
         _isCanCounterAttack = RollForSuccess(counterAttackProbability);
@@ -225,7 +233,10 @@ public class MediumEnemy : Enemy, IParriable
             Hide();
             pathManager.Reset();
             LinkedPoint point = pathManager.MoveToNextPoint();
-            spriteRenderer.color = GetPointColor(point);
+            if (point != null)
+            {
+                spriteRenderer.color = (Color)GetPointColor(point);
+            }
             yield return new WaitForSeconds(timeToRespawn);
             Show();
             _respawnCache = null;
@@ -275,6 +286,7 @@ public class MediumEnemy : Enemy, IParriable
     #endregion
 
     #region Counter Attack
+
     void CounterAttack()
     {
         if (isCanCounterToSectionStartOnly)
@@ -291,6 +303,7 @@ public class MediumEnemy : Enemy, IParriable
         {
             _isCounterAttacking = true;
             _counterAttackTimer = 0f;
+            _previousColor = spriteRenderer.color;
             spriteRenderer.color = Color.yellow;
         }
 
@@ -299,21 +312,28 @@ public class MediumEnemy : Enemy, IParriable
         if (_counterAttackTimer >= timeToCounterAttack)
         {
             LinkedPoint point = pathManager.MoveToPreviousPoint();
-            if (point != null)
+            StopCounterAttack(GetPointColor(point));
+            if (point == null)
             {
-                StopCounterAttack(GetPointColor(point));
+                spriteRenderer.color = _previousColor;
             }
-            AudioManager.PlayAudioSource(audioTeleport);
-            _isCanAttack = true;
+            else
+            {
+                AudioManager.PlayAudioSource(audioTeleport);
+                _isCanAttack = true;
+            }
         }
     }
 
-    void StopCounterAttack(Color color)
+    void StopCounterAttack(Color? color = null)
     {
         _isCanCounterAttack = false;
         _isCounterAttacking = false;
         _counterAttackTimer = 0f;
-        spriteRenderer.color = color;
+        if (color != null)
+        {
+            spriteRenderer.color = (Color)color;
+        }
     }
     #endregion
 
@@ -345,16 +365,20 @@ public class MediumEnemy : Enemy, IParriable
             AudioManager.PlayAudioSource(audioAttack);
             StopAttack(GetPointColor(pathManager.GetCurrentPoint()));
 
-            bool isShouldCounterAttackAgain = RollForSuccess(keepCounterAttackingProbability);
-            if (isShouldCounterAttackAgain)
+            LinkedPoint currentPoint = pathManager.GetCurrentPoint();
+            if (currentPoint != null && currentPoint.Previous != null)
             {
-                _isCanCounterAttack = true;
+                bool isShouldCounterAttackAgain = RollForSuccess(keepCounterAttackingProbability);
+                if (isShouldCounterAttackAgain)
+                {
+                    _isCanCounterAttack = true;
+                }
             }
         }
 
         void KnockPlayerBack()
         {
-            LinkedPoint previousPoint = pathManager.GetCurrentPoint().Previous;
+            LinkedPoint previousPoint = pathManager.GetCurrentPoint()?.Previous;
             Vector2 direction;
             float distance;
 
@@ -372,12 +396,15 @@ public class MediumEnemy : Enemy, IParriable
         }
     }
 
-    void StopAttack(Color color)
+    void StopAttack(Color? color = null)
     {
         _isCanAttack = false;
         _isAttacking = false;
         _toBeParriedTimer = 0f;
-        spriteRenderer.color = color;
+        if (color != null)
+        {
+            spriteRenderer.color = (Color)color;
+        }
     }
     #endregion
 
@@ -388,8 +415,13 @@ public class MediumEnemy : Enemy, IParriable
         return random <= probablityOfSuccess;
     }
 
-    Color GetPointColor(LinkedPoint point)
+    Color? GetPointColor(LinkedPoint point)
     {
+        if (point == null)
+        {
+            return null;
+        }
+
         if (point.type == LinkedPoint.Types.Random)
         {
             return Color.red;
@@ -398,10 +430,8 @@ public class MediumEnemy : Enemy, IParriable
         {
             return Color.green;
         }
-        else
-        {
-            return Color.white;
-        }
+        
+        return null;
     }
     #endregion
 }
