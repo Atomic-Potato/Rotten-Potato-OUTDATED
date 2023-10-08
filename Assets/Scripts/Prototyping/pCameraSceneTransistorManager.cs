@@ -11,7 +11,7 @@ public class pCameraSceneTransistorManager : MonoBehaviour {
 
     [Space]
     [SerializeField] Transform player;
-    [SerializeField] pCameraController cameraController;
+    [SerializeField] CameraScenePanning cameraController;
 
     public void SwitchToLeftScene(){
         rightPart.gameObject.SetActive(false);

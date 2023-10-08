@@ -2,7 +2,7 @@ using System.Collections;
 using UnityEngine;
 using UnityEngine.U2D;
 
-public class CameraBasicFollow : MonoBehaviour, CameraStrategy{
+public class CameraBasicFollow : MonoBehaviour, ICameraStrategy{
     #region INSPECTOR VARIABLES
     [Header("WINDOW")]
     [SerializeField] bool enableWindow = true;
@@ -104,7 +104,7 @@ public class CameraBasicFollow : MonoBehaviour, CameraStrategy{
         MatchTriggerSizeToCameraSize();
     }
 
-    public void Execute(){
+    public void ExecuteUpdate(){
         leftScreenEdge = Camera.main.transform.position.x - (cameraWidth / 2f);
         bottomScreenEdge = Camera.main.transform.position.y - (cameraHeight / 2f);
 
@@ -316,6 +316,11 @@ public class CameraBasicFollow : MonoBehaviour, CameraStrategy{
         Debug.DrawLine(new Vector2(leftScreenEdge + windowOffset.x - .5f, bottomScreenEdge + windowOffset.y + offset), 
                        new Vector2(leftScreenEdge + windowOffset.x + windowSize.x + .5f, bottomScreenEdge + windowOffset.y + offset), 
                        color);
+    }
+
+    public void ExecuteFixedUpdate()
+    {
+        throw new System.NotImplementedException();
     }
     #endregion
 }

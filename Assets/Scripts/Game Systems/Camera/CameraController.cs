@@ -1,30 +1,35 @@
 using UnityEngine;
 
-[RequireComponent(typeof(CameraBasicFollow), typeof(CameraDash))]
 public class CameraController : MonoBehaviour{
     
     [Header("Camera Strategies")]
-    [SerializeField] CameraBasicFollow cameraBasicFollow;
-    [SerializeField] CameraDash cameraDash;
+    [SerializeField] CameraScenePanning strategyCameraScenePanning;
+    [SerializeField] ZoomEffect strategyZoomEffect;
 
-    CameraStrategy strategy;
+    ICameraStrategy strategy;
     
     void Awake(){
-        strategy = cameraBasicFollow;
+        strategy = strategyCameraScenePanning;
     }
 
-    void Start(){
-        strategy.Execute();
-    }
-
-    void LateUpdate(){
+    void Update(){
         strategy = GetStrategy();
-        strategy.Execute();        
+        strategy.ExecuteUpdate();        
     }
 
-    CameraStrategy GetStrategy(){
-        if(Dash.IS_DASHING || Dash.IS_HOLDING)
-            return cameraDash;
-        return cameraBasicFollow;
+    void FixedUpdate() 
+    {
+        strategy.ExecuteFixedUpdate();
+    }
+
+    ICameraStrategy GetStrategy(){
+        Debug.Log(Time.timeScale + " " + strategyZoomEffect.IsZooming);
+        if (Time.timeScale < 1f || strategyZoomEffect.IsZooming)
+        {
+            return strategyZoomEffect;
+        }
+
+
+        return strategyCameraScenePanning;
     }
 }

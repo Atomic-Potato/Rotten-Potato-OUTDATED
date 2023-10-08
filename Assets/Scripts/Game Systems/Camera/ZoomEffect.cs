@@ -1,7 +1,7 @@
 ﻿using System;
 using UnityEngine;
 
-public class ZoomEffect : MonoBehaviour
+public class ZoomEffect : MonoBehaviour, ICameraStrategy
 {
     [SerializeField] float zoomInSize;
     [Range(0f, 100f)]
@@ -9,16 +9,25 @@ public class ZoomEffect : MonoBehaviour
     [Range(0f, 100f)]
     [SerializeField] float zoomOutTime = 0.25f;
     
+    bool _isZooming;
+    public bool IsZooming => _isZooming;
+
+    Transform target;
+
     float _originalSize;
     float _zoomTimer;
-    bool _isZoomingIn;
 
     void Awake()
     {
         _originalSize = Camera.main.orthographicSize;
     }
 
-    void Update()
+    void Start()
+    {
+        target = pPlayer.Instance.transform;
+    }
+
+    void ICameraStrategy.ExecuteUpdate()
     {
         if (Time.timeScale < 1f)
         {
@@ -29,28 +38,31 @@ public class ZoomEffect : MonoBehaviour
         }
         else
         {
-            if (!IsValueReached(_originalSize))
-            {
-                ZoomUsingUnscaledTime(_originalSize, zoomOutTime);
-            }
-            else if (Camera.main.orthographicSize != _originalSize)
+            ZoomUsingUnscaledTime(_originalSize, zoomOutTime);
+
+            if (!_isZooming)
             {
                 Camera.main.orthographicSize = _originalSize;
             }
         }  
     }
 
+    void ICameraStrategy.ExecuteFixedUpdate()
+    {
+
+    }
+
     public void ZoomUsingUnscaledTime(float size, float time)
     {
-        if (!_isZoomingIn)
+        if (!_isZooming)
         {
-            _isZoomingIn = true;
+            _isZooming = true;
             _zoomTimer = 0f;
         }
         
         if (IsValueReached(size))
         {
-            _isZoomingIn = false;
+            _isZooming = false;
             return;
         }
 
@@ -58,19 +70,28 @@ public class ZoomEffect : MonoBehaviour
 
         float t = Mathf.Clamp01(_zoomTimer / time);
         Camera.main.orthographicSize = Mathf.Lerp(Camera.main.orthographicSize, size, t);
+
+        if (size < Camera.main.orthographicSize)
+        {
+            transform.position = new Vector3(
+                Mathf.Lerp(transform.position.x, target.position.x, t),
+                Mathf.Lerp(transform.position.y, target.position.y, t),
+                transform.position.z
+            );
+        }
     }
 
     public void ZoomUsingScaledTime(float size, float time)
     {
-        if (!_isZoomingIn)
+        if (!_isZooming)
         {
-            _isZoomingIn = true;
+            _isZooming = true;
             _zoomTimer = 0f;
         }
         
         if (IsValueReached(size))
         {
-            _isZoomingIn = false;
+            _isZooming = false;
             return;
         }
 
@@ -78,6 +99,15 @@ public class ZoomEffect : MonoBehaviour
 
         float t = Mathf.Clamp01(_zoomTimer / time);
         Camera.main.orthographicSize = Mathf.Lerp(Camera.main.orthographicSize, size, t);
+
+        if (size < Camera.main.orthographicSize)
+        {
+            transform.position = new Vector3(
+                Mathf.Lerp(transform.position.x, target.position.x, t),
+                Mathf.Lerp(transform.position.y, target.position.y, t),
+                transform.position.z
+            );
+        }
     }
 
     bool IsValueReached(float size)

@@ -61,7 +61,6 @@ public class PlayerAnimationManager : MonoBehaviour
 
     void Update()
     {
-        Debug.Log(pPlayer.IsInRecovery);
         #region Animation States Handeling
         if (IsRunning())
         {

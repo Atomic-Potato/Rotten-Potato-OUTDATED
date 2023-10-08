@@ -65,6 +65,7 @@ public class MediumEnemy : Enemy, IParriable
     bool _isAttacking;
     bool _isParriable;
     bool _isPlayerInRange;
+    bool _isRespawning;
 
 
     Color _previousColor;
@@ -115,7 +116,7 @@ public class MediumEnemy : Enemy, IParriable
     {
         if (shooting != null)
         {
-            shooting.enabled = !_isCounterAttacking && !_isAttacking ? true : false; 
+            shooting.enabled = !_isCounterAttacking && !_isAttacking && !_isRespawning ? true : false; 
         }
 
         if (_isCanCounterAttack)
@@ -231,6 +232,7 @@ public class MediumEnemy : Enemy, IParriable
             AudioManager.PlayAudioSource(audioDeath);
 
             Hide();
+            _isRespawning = true;
             pathManager.Reset();
             LinkedPoint point = pathManager.MoveToNextPoint();
             if (point != null)
@@ -239,6 +241,7 @@ public class MediumEnemy : Enemy, IParriable
             }
             yield return new WaitForSeconds(timeToRespawn);
             Show();
+            _isRespawning = false;
             _respawnCache = null;
         }
 

@@ -1,3 +1,5 @@
-public interface CameraStrategy{
-    void Execute();
+public interface ICameraStrategy
+{
+    void ExecuteUpdate();
+    void ExecuteFixedUpdate();
 }
