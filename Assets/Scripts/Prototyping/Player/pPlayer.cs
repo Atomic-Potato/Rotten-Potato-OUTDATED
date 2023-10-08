@@ -29,6 +29,7 @@ public class pPlayer : MonoBehaviour
     public int HitPoints => hitPoints;
     public Rigidbody2D Rigidbody => rigidbody;
     public Action<int> Damage;
+    public Action Respawn;
 
     int _initialHitPoints;
     static bool _isInRecovery;
@@ -50,6 +51,7 @@ public class pPlayer : MonoBehaviour
         _initialHitPoints = hitPoints;
 
         Damage = ApplyDamage;
+        Respawn = ExecuteRespawn;
     }
 
 
@@ -97,10 +99,10 @@ public class pPlayer : MonoBehaviour
     public void Kill()
     {
         Object.SetActive(false);
-        Respawn();
+        Respawn?.Invoke();
     }
 
-    public void Respawn()
+    void ExecuteRespawn()
     {
         ReloadScene();
 

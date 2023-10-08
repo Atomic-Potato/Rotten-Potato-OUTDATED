@@ -23,7 +23,6 @@ public class CameraController : MonoBehaviour{
     }
 
     ICameraStrategy GetStrategy(){
-        Debug.Log(Time.timeScale + " " + strategyZoomEffect.IsZooming);
         if (Time.timeScale < 1f || strategyZoomEffect.IsZooming)
         {
             return strategyZoomEffect;

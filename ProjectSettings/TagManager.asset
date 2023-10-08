@@ -16,6 +16,7 @@ TagManager:
   - Flyer Bullet
   - Projectile
   - Parry System
+  - Medium Enemy
   layers:
   - Default
   - TransparentFX

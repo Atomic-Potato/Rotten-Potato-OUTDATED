@@ -5,10 +5,13 @@ EditorBuildSettings:
   m_ObjectHideFlags: 0
   serializedVersion: 2
   m_Scenes:
-  - enabled: 1
+  - enabled: 0
     path: Assets/Scenes/Potato Land.unity
     guid: 2cda990e2423bbf4892e6590ba056729
-  - enabled: 1
+  - enabled: 0
     path: Assets/Scenes/Experimental Course.unity
     guid: 677985ffabf559744adff821e704709c
+  - enabled: 1
+    path: Assets/Scenes/Prototypes/Prototype 1.unity
+    guid: 710b6b3aa47a83c4da222ede20e7e4d0
   m_configObjects: {}
