@@ -142,7 +142,8 @@ public class pDash : MonoBehaviour
             return;
         }
         
-        if (other.gameObject.tag == "Enemy")
+        string tag = other.gameObject.tag; 
+        if (Tags.EnemyTags.Contains(tag))
         {
             Enemy enemy = other.gameObject.GetComponent<Enemy>();
             enemy.Damage();

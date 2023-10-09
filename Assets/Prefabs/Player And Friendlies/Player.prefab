@@ -200,7 +200,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   IsImmortal: 0
-  hitPoints: 1
+  hitPoints: 10
   recoveryTime: 1.25
   rigidbody: {fileID: 982481149171213323}
   audioHurt: {fileID: 7814471421569466103}

@@ -89,15 +89,15 @@ public class Parry : MonoBehaviour
         {
             return;
         }
-
-        if (other.gameObject.tag == "Enemy")
+        string tag = other.gameObject.tag; 
+        if (Tags.EnemyTags.Contains(tag))
         {
             if (_parriableHostile == null)
             {
                 _parriableHostile = other.gameObject.GetComponent<Enemy>();
             }
         }
-        else if (other.gameObject.tag == "Projectile")
+        else if (other.gameObject.tag == Tags.Tag_Projectile)
         {
             if (_parriableHostile == null)
             {
@@ -108,7 +108,8 @@ public class Parry : MonoBehaviour
 
     void OnTriggerExit2D(Collider2D other) 
     {
-        if (other.gameObject.tag == "Enemy" || other.gameObject.tag == "Projectile")
+        string tag = other.gameObject.tag;
+        if (Tags.EnemyTags.Contains(tag) || tag == Tags.Tag_Projectile)
         {
             _parriableHostile = null;
         }  
