@@ -6396,45 +6396,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f97458e870a714d40ada7a16bdb5d438, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!1 &1129866838
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 1129866839}
-  - component: {fileID: 1129866840}
-  m_Layer: 14
-  m_Name: Audio Listener
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &1129866839
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1129866838}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_Children: []
-  m_Father: {fileID: 7239286059446304613}
-  m_RootOrder: 0
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!81 &1129866840
-AudioListener:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1129866838}
-  m_Enabled: 1
 --- !u!1 &1138007809
 GameObject:
   m_ObjectHideFlags: 0
@@ -7224,6 +7185,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1836264063495390989, guid: 56e8bb7937e196d4bb807605a4e63276,
+        type: 3}
+      propertyPath: isLevelStartingPoint
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 6622945254073949312, guid: 56e8bb7937e196d4bb807605a4e63276,
         type: 3}
@@ -13640,6 +13606,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: Spawn Manager
       objectReference: {fileID: 0}
+    - target: {fileID: 7908634555056325873, guid: ea38c749276d3f544afb6de626f5d040,
+        type: 3}
+      propertyPath: timeToSpawn
+      value: 1
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: ea38c749276d3f544afb6de626f5d040, type: 3}
 --- !u!1001 &5606858627242256987
@@ -13707,7 +13678,7 @@ PrefabInstance:
     - target: {fileID: 1836264063495390989, guid: 56e8bb7937e196d4bb807605a4e63276,
         type: 3}
       propertyPath: isLevelStartingPoint
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 6622945254073949312, guid: 56e8bb7937e196d4bb807605a4e63276,
         type: 3}
@@ -13746,8 +13717,7 @@ Transform:
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 99.54, y: 4.5, z: -10}
   m_LocalScale: {x: 1, y: 1, z: 1}
-  m_Children:
-  - {fileID: 1129866839}
+  m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
