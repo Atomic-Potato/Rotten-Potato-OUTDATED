@@ -2,19 +2,25 @@ using UnityEngine;
 
 public class EnemyPathCreator : MonoBehaviour 
 {
+    [SerializeField, Range(0, 100f), Tooltip("Distance that is reachable by the player")]
+    float safeDistance = 3f;
     [SerializeField, Range(0, 100f)]
     float handlesSize = .1f;
     [SerializeField] 
     Color handlesColor;
     [SerializeField]
-    Color pathColor;
+    Color safeDistancePathColor;
+    [SerializeField]
+    Color nonSafeDistancePathColor;
     [SerializeField]
     Transform pathPointsParent;
 
     public EnemyPath path;
+    public float SafeDistance => safeDistance;
     public float HandlesSize => handlesSize;
     public Color HandlesColor => handlesColor;
-    public Color PathColor => pathColor;
+    public Color SafeDistancePathColor => safeDistancePathColor;
+    public Color NonSafeDistancePathColor => nonSafeDistancePathColor;
 
     public void CreatePath()
     {
@@ -25,6 +31,6 @@ public class EnemyPathCreator : MonoBehaviour
     void OnEnable()
     {
         handlesColor = Color.green;
-        pathColor = Color.white;    
+        safeDistancePathColor = Color.white;    
     }
 }

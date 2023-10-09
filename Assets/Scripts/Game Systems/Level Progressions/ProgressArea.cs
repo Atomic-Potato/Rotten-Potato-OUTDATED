@@ -15,7 +15,7 @@ public class ProgressArea : MonoBehaviour
         if (entranceBlock == null) 
             return;
         
-        if (entranceBlock.TriggeredTag != null && entranceBlock.TriggeredTag == Tags.Tag_Player)
+        if (entranceBlock.TriggeredTag != null && entranceBlock.TriggeredTag == TagsManager.Tag_Player)
         {
             if (entranceBlock.IsOpen)
                 entranceBlock.Close();
@@ -29,7 +29,7 @@ public class ProgressArea : MonoBehaviour
         
         Debug.Log(exitBlock.TriggeredTag + " " + exitBlock.TriggeredTag);
 
-        if (exitBlock.TriggeredTag != null && exitBlock.TriggeredTag == Tags.Tag_MediumEnemy)
+        if (exitBlock.TriggeredTag != null && exitBlock.TriggeredTag == TagsManager.Tag_MediumEnemy)
         {
             if (exitBlock.IsClosed)
                 exitBlock.Open();

@@ -56,9 +56,10 @@ public class EnemyPathEditor : Editor
             }
 
             // Drawing the line between handles
-            Handles.color = creator.PathColor;
             if (i > 0)
             {
+                float distanceBetweenHandles = Vector2.Distance(path.points[i-1].transform.position, path.points[i].transform.position);
+                Handles.color = distanceBetweenHandles <= creator.SafeDistance ? creator.SafeDistancePathColor : creator.NonSafeDistancePathColor;
                 Vector3 previousPointPosition = path.points[i-1].transform.position;
                 Handles.DrawLine(previousPointPosition, pointPosition);
             }

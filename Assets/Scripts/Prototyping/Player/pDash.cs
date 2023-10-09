@@ -143,7 +143,7 @@ public class pDash : MonoBehaviour
         }
         
         string tag = other.gameObject.tag; 
-        if (Tags.EnemyTags.Contains(tag))
+        if (TagsManager.EnemyTags.Contains(tag))
         {
             Enemy enemy = other.gameObject.GetComponent<Enemy>();
             enemy.Damage();

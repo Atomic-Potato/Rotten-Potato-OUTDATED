@@ -18,7 +18,7 @@ public class LevelAreaProgressManager : MonoBehaviour
 
     void OnTriggerEnter2D(Collider2D other) 
     {
-        if (other.gameObject.tag == Tags.Tag_Player)
+        if (other.gameObject.tag == TagsManager.Tag_Player)
         {
             ResetAreaProgress();
         }    
