@@ -4,9 +4,6 @@ public class ProgressArea : MonoBehaviour
 {
     [SerializeField] ProgressBlock entranceBlock;
     [SerializeField] ProgressBlock exitBlock;
-    [SerializeField] Transform respawnPoint;
-
-
     void Update() 
     {
         CloseEntrance();
@@ -21,12 +18,7 @@ public class ProgressArea : MonoBehaviour
         if (entranceBlock.TriggeredTag != null && entranceBlock.TriggeredTag == Tags.Tag_Player)
         {
             if (entranceBlock.IsOpen)
-            {
                 entranceBlock.Close();
-
-                if (respawnPoint != null)
-                    LevelManager.RespawnPoint = respawnPoint;
-            }
         }
     }
 

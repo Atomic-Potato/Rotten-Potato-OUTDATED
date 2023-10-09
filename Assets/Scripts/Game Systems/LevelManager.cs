@@ -1,14 +1,13 @@
-﻿using UnityEngine;
+using UnityEngine;
 
-public class LevelManager : MonoBehaviour
+public class LevelManager : MonoBehaviour 
 {
-    [SerializeField] Transform mainRespawnPoint;
-
-    public static Transform RespawnPoint;
-
-    void Awake() 
+    void Awake()
     {
-        RespawnPoint = mainRespawnPoint;
         Time.timeScale = 1f;
-    }
+        if (SpawnManager.Instance.Checkpoint != null)
+            SpawnManager.Instance.SpawnPlayerAtCheckpoint();
+        else 
+            SpawnManager.Instance.SpawnPlayer();
+    }    
 }
