@@ -1,5 +1,6 @@
 ﻿using System;
 using UnityEngine;
+using UnityEngine.Rendering;
 
 public class Timer : MonoBehaviour
 {
@@ -12,17 +13,21 @@ public class Timer : MonoBehaviour
     float currentTime;
     public float CurrentTime => currentTime;
 
+    bool _isUsingUnscaledTime;
+    public bool IsUsingUnscaledTime => _isUsingUnscaledTime;
+
+    private Timer(){}
+    
+    public Timer(bool isUsingUnscaledTime)
+    {
+        _isUsingUnscaledTime = isUsingUnscaledTime;
+    }
+   
     void Awake() 
     {
         currentTime = 0f;
     }
    
-    void Update()
-    {
-        if (isStarted && !isPaused)
-            Count();            
-    }
-
     public void Start()
     {
         Reset();
@@ -58,8 +63,13 @@ public class Timer : MonoBehaviour
         currentTime = 0f;
     }
 
-    void Count()
+    public void Count()
     {
-        currentTime += Time.unscaledDeltaTime;
+        if (!isStarted || isPaused)
+            return;
+            
+        currentTime = _isUsingUnscaledTime ? 
+            currentTime + Time.unscaledDeltaTime : 
+            currentTime + Time.deltaTime; 
     }
 }

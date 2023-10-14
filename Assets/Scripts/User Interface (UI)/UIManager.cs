@@ -8,7 +8,6 @@ public class UIManager : MonoBehaviour
     [SerializeField] TMP_Text hitPoints;
     [SerializeField] TMP_Text dashes;
     [SerializeField] TMP_Text playerState;
-    [SerializeField] TMP_Text timer;
 
     [Space]
     [Header("Menus")]
@@ -83,20 +82,6 @@ public class UIManager : MonoBehaviour
         }
         playerState.text = _playerStateText + PlayerAnimationManager.Instance.CurrentClip.name;
     }
-
-    public void UpdateTimer(float time)
-    {
-        if (timer == null)
-            throw new Exception("No UI timer text is set");
-        if (!timer.enabled)
-            return;
-
-        TimeSpan timeSpan = TimeSpan.FromSeconds(time);
-        timer.text = timeSpan.Minutes.ToString("0") + ":" 
-            + timeSpan.Seconds.ToString("00") + ":" 
-            + ((int)timeSpan.Milliseconds/100).ToString();
-    }
-    
     #endregion
 
     #region Methods
@@ -117,20 +102,5 @@ public class UIManager : MonoBehaviour
         GameManager.Instance.QuitGame();
     }
 
-    public void ShowTimer()
-    {
-        if (timer != null && !timer.enabled)
-            timer.enabled = true;
-        else if (timer == null)
-            throw new Exception("No UI timer text is set");
-    }
-
-    public void HideTimer()
-    {
-        if (timer != null && timer.enabled)
-            timer.enabled = false;
-        else if (timer == null)
-            throw new Exception("No UI timer text is set");
-    }
     #endregion
 }
