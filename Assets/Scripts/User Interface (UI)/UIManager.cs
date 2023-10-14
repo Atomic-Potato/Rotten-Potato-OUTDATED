@@ -2,13 +2,13 @@
 using UnityEngine;
 using TMPro;
 
-public class pUIManager : MonoBehaviour
+public class UIManager : MonoBehaviour
 {
     #region Inspector
     [SerializeField] TMP_Text hitPoints;
     [SerializeField] TMP_Text dashes;
     [SerializeField] TMP_Text playerState;
-    [SerializeField] TMP_Text screenTimer;
+    [SerializeField] TMP_Text timer;
 
     [Space]
     [Header("Menus")]
@@ -16,22 +16,30 @@ public class pUIManager : MonoBehaviour
     #endregion
 
     #region Global Variables
+    static UIManager _instance;
+    public static UIManager Instance => _instance;
     string _hitPointsText;
     string _dashesText;
     string _playerStateText;
-    float _currentTimeScale;
-    bool _isPausedGame;
 
-    static TMP_Text timer;
     #endregion
 
     #region Execution
     void Awake() 
     {
+        if (_instance == null)
+        {
+            _instance = this;
+            DontDestroyOnLoad(gameObject);
+        }
+        else
+        {
+            Destroy(gameObject);
+        }
+
         _hitPointsText = hitPoints.text;  
         _dashesText = dashes.text;  
         _playerStateText = playerState.text;
-        timer = screenTimer;
     }
 
     void OnEnable()
@@ -39,6 +47,9 @@ public class pUIManager : MonoBehaviour
         pPlayer.Instance.Damage += UpdateHitPoints;
         pDash.Instance.AlterDashCount += UpdateDashes;
         PlayerAnimationManager.Instance.AnimationStateAction += UpdatePlayerState;
+        GameManager.Instance.PauseGame += PauseGame;
+        GameManager.Instance.ResumeGame += ResumeGame;
+
         UpdateHitPoints();
         UpdateDashes();
         UpdatePlayerState();
@@ -51,20 +62,6 @@ public class pUIManager : MonoBehaviour
         PlayerAnimationManager.Instance.AnimationStateAction -= UpdatePlayerState;
     }
 
-    void Update()
-    {
-        if (PlayerInputManager.Maps.UI.Pause.triggered)
-        {
-            if (_isPausedGame == false)
-            {
-                PauseGame();
-            }
-            else
-            {
-                ResumeGame();
-            }
-        }
-    }
     #endregion
 
     #region UI Updates
@@ -87,15 +84,7 @@ public class pUIManager : MonoBehaviour
         playerState.text = _playerStateText + PlayerAnimationManager.Instance.CurrentClip.name;
     }
 
-    public static void ShowTimer()
-    {
-        if (timer != null && !timer.enabled)
-            timer.enabled = true;
-        else if (timer == null)
-            throw new Exception("No UI timer text is set");
-    }
-
-    public static void UpdateTimer(float time)
+    public void UpdateTimer(float time)
     {
         if (timer == null)
             throw new Exception("No UI timer text is set");
@@ -107,35 +96,41 @@ public class pUIManager : MonoBehaviour
             + timeSpan.Seconds.ToString("00") + ":" 
             + ((int)timeSpan.Milliseconds/100).ToString();
     }
-
-    public static void HideTimer()
-    {
-        if (timer != null && timer.enabled)
-            timer.enabled = false;
-        else if (timer == null)
-            throw new Exception("No UI timer text is set");
-    }
+    
     #endregion
 
     #region Methods
     public void ResumeGame()
     {
-        _isPausedGame = false;
-        Time.timeScale = _currentTimeScale;
+        GameManager.Instance.PauseGame();
         menuPause.SetActive(false);
     }
 
     public void PauseGame()
     {
-        _isPausedGame = true;
-        _currentTimeScale = Time.timeScale;
-        Time.timeScale = 0f;
+        GameManager.Instance.ResumeGame();
         menuPause.SetActive(true);
     }
 
     public void QuitGame()
     {
-        Application.Quit();
+        GameManager.Instance.QuitGame();
+    }
+
+    public void ShowTimer()
+    {
+        if (timer != null && !timer.enabled)
+            timer.enabled = true;
+        else if (timer == null)
+            throw new Exception("No UI timer text is set");
+    }
+
+    public void HideTimer()
+    {
+        if (timer != null && timer.enabled)
+            timer.enabled = false;
+        else if (timer == null)
+            throw new Exception("No UI timer text is set");
     }
     #endregion
 }
