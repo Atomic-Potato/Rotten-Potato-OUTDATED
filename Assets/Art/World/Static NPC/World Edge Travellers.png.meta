@@ -1,0 +1,1928 @@
+fileFormatVersion: 2
+guid: e64c20187657ef148b72b4297564c080
+TextureImporter:
+  internalIDToNameTable:
+  - first:
+      213: 7526551131411257280
+    second: World Edge Travellers_0
+  - first:
+      213: -7411957662631507045
+    second: World Edge Travellers_1
+  - first:
+      213: -1056774440286540723
+    second: World Edge Travellers_2
+  - first:
+      213: 7999088701582247489
+    second: World Edge Travellers_3
+  - first:
+      213: -4681073051434515475
+    second: World Edge Travellers_4
+  - first:
+      213: 4373095814848643151
+    second: World Edge Travellers_5
+  - first:
+      213: 8811024605517215251
+    second: World Edge Travellers_6
+  - first:
+      213: -602885299008153572
+    second: World Edge Travellers_7
+  - first:
+      213: -8065408084354552328
+    second: World Edge Travellers_8
+  - first:
+      213: -8771588427368663763
+    second: World Edge Travellers_9
+  - first:
+      213: 8671387702778225640
+    second: World Edge Travellers_10
+  - first:
+      213: -4224251965117432447
+    second: World Edge Travellers_11
+  - first:
+      213: -1049445726463910883
+    second: World Edge Travellers_12
+  - first:
+      213: -4202548389646670822
+    second: World Edge Travellers_13
+  - first:
+      213: -3790543714471140287
+    second: World Edge Travellers_14
+  - first:
+      213: 2956135794147684336
+    second: World Edge Travellers_15
+  - first:
+      213: -8178116624215697119
+    second: World Edge Travellers_16
+  - first:
+      213: -971198436792761128
+    second: World Edge Travellers_17
+  - first:
+      213: 7942196648404801372
+    second: World Edge Travellers_18
+  - first:
+      213: 2342387399349770563
+    second: World Edge Travellers_19
+  - first:
+      213: 4340948966213770879
+    second: World Edge Travellers_20
+  - first:
+      213: 7774913344247953602
+    second: World Edge Travellers_21
+  - first:
+      213: 7837052972352613372
+    second: World Edge Travellers_22
+  - first:
+      213: -1249394835095962608
+    second: World Edge Travellers_23
+  - first:
+      213: 5821143786917458750
+    second: World Edge Travellers_24
+  - first:
+      213: 2622413936853857318
+    second: World Edge Travellers_25
+  - first:
+      213: 803592783923770180
+    second: World Edge Travellers_26
+  - first:
+      213: 5682508655518807558
+    second: World Edge Travellers_27
+  - first:
+      213: -3308300444371581610
+    second: World Edge Travellers_28
+  - first:
+      213: 1896638131371192361
+    second: World Edge Travellers_29
+  - first:
+      213: 1653229540058752498
+    second: World Edge Travellers_30
+  - first:
+      213: -1878369132078546504
+    second: World Edge Travellers_31
+  - first:
+      213: 3500198936451202538
+    second: World Edge Travellers_32
+  - first:
+      213: 7450578515929658421
+    second: World Edge Travellers_33
+  - first:
+      213: 9068530854585249032
+    second: World Edge Travellers_34
+  - first:
+      213: 7883101761159805124
+    second: World Edge Travellers_35
+  - first:
+      213: 248458753155563323
+    second: World Edge Travellers_36
+  - first:
+      213: -5311865532545167191
+    second: World Edge Travellers_37
+  - first:
+      213: 7308992175187248219
+    second: World Edge Travellers_38
+  - first:
+      213: 1765823814026612422
+    second: World Edge Travellers_39
+  - first:
+      213: -6059850211844106625
+    second: World Edge Travellers_40
+  - first:
+      213: 7971870167284131208
+    second: World Edge Travellers_41
+  - first:
+      213: 2011278418318101755
+    second: World Edge Travellers_42
+  - first:
+      213: 1723089792233877613
+    second: World Edge Travellers_43
+  - first:
+      213: 6382286631624999057
+    second: World Edge Travellers_44
+  - first:
+      213: 4359663975126564859
+    second: World Edge Travellers_45
+  - first:
+      213: 4367024325411971382
+    second: World Edge Travellers_46
+  - first:
+      213: 5755381597221338292
+    second: World Edge Travellers_47
+  - first:
+      213: -4533400401083819778
+    second: World Edge Travellers_48
+  - first:
+      213: -381323882053869881
+    second: World Edge Travellers_49
+  - first:
+      213: -1686490731506071258
+    second: World Edge Travellers_50
+  - first:
+      213: 8142069458873394290
+    second: World Edge Travellers_51
+  - first:
+      213: -671590265668554309
+    second: World Edge Travellers_52
+  - first:
+      213: 4818191004253439620
+    second: World Edge Travellers_53
+  - first:
+      213: 5508327932389174463
+    second: World Edge Travellers_54
+  - first:
+      213: 5751554791853844418
+    second: World Edge Travellers_55
+  - first:
+      213: -5609911312060290950
+    second: World Edge Travellers_56
+  - first:
+      213: -8736725061500397620
+    second: World Edge Travellers_57
+  - first:
+      213: -8432167658146140178
+    second: World Edge Travellers_58
+  - first:
+      213: 2737423004462250603
+    second: World Edge Travellers_59
+  - first:
+      213: -643774356178652344
+    second: World Edge Travellers_60
+  - first:
+      213: 4886890344504463368
+    second: World Edge Travellers_61
+  - first:
+      213: 3975822748124726725
+    second: World Edge Travellers_62
+  - first:
+      213: 755153428552390823
+    second: World Edge Travellers_63
+  - first:
+      213: -4411843077589480431
+    second: World Edge Travellers_64
+  - first:
+      213: 6970124499145858966
+    second: World Edge Travellers_65
+  - first:
+      213: -3241241778798452601
+    second: World Edge Travellers_66
+  - first:
+      213: 975351663980323277
+    second: World Edge Travellers_67
+  - first:
+      213: 7349099646034301157
+    second: World Edge Travellers_68
+  - first:
+      213: 5285438839026753505
+    second: World Edge Travellers_69
+  - first:
+      213: 3168779450102810074
+    second: World Edge Travellers_70
+  - first:
+      213: -2129651562007041146
+    second: World Edge Travellers_71
+  - first:
+      213: 8152753312252434003
+    second: World Edge Travellers_72
+  - first:
+      213: -4681647408103920806
+    second: World Edge Travellers_73
+  - first:
+      213: -7346493917294203431
+    second: World Edge Travellers_74
+  - first:
+      213: -679152600246973773
+    second: World Edge Travellers_75
+  externalObjects: {}
+  serializedVersion: 11
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 0
+    sRGBTexture: 1
+    linearTexture: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapsPreserveCoverage: 0
+    alphaTestReferenceValue: 0.5
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+  isReadable: 0
+  streamingMipmaps: 0
+  streamingMipmapsPriority: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 6
+  cubemapConvolution: 0
+  seamlessCubemap: 0
+  textureFormat: 1
+  maxTextureSize: 2048
+  textureSettings:
+    serializedVersion: 2
+    filterMode: 0
+    aniso: -1
+    mipBias: -100
+    wrapU: 1
+    wrapV: 1
+    wrapW: 1
+  nPOTScale: 0
+  lightmap: 0
+  compressionQuality: 50
+  spriteMode: 2
+  spriteExtrude: 1
+  spriteMeshType: 1
+  alignment: 0
+  spritePivot: {x: 0.5, y: 0.5}
+  spritePixelsToUnits: 32
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spriteGenerateFallbackPhysicsShape: 1
+  alphaUsage: 1
+  alphaIsTransparency: 1
+  spriteTessellationDetail: -1
+  textureType: 8
+  textureShape: 1
+  singleChannelComponent: 0
+  maxTextureSizeSet: 0
+  compressionQualitySet: 0
+  textureFormatSet: 0
+  applyGammaDecoding: 0
+  platformSettings:
+  - serializedVersion: 3
+    buildTarget: DefaultTexturePlatform
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 0
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 3
+    buildTarget: Standalone
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 0
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  spriteSheet:
+    serializedVersion: 2
+    sprites:
+    - serializedVersion: 2
+      name: World Edge Travellers_0
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 1800
+        width: 193
+        height: 225
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 0c7159b606ea37860800000000000000
+      internalID: 7526551131411257280
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: World Edge Travellers_1
+      rect:
+        serializedVersion: 2
+        x: 193
+        y: 1800
+        width: 193
+        height: 225
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: b9b4d9ca6cf632990800000000000000
+      internalID: -7411957662631507045
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: World Edge Travellers_2
+      rect:
+        serializedVersion: 2
+        x: 386
+        y: 1800
+        width: 193
+        height: 225
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: d4c220fde359551f0800000000000000
+      internalID: -1056774440286540723
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: World Edge Travellers_3
+      rect:
+        serializedVersion: 2
+        x: 579
+        y: 1800
+        width: 193
+        height: 225
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 14686a80bc8720f60800000000000000
+      internalID: 7999088701582247489
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: World Edge Travellers_4
+      rect:
+        serializedVersion: 2
+        x: 772
+        y: 1800
+        width: 193
+        height: 225
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: de387917cdc790fb0800000000000000
+      internalID: -4681073051434515475
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: World Edge Travellers_5
+      rect:
+        serializedVersion: 2
+        x: 965
+        y: 1800
+        width: 193
+        height: 225
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: f400dc4597b50bc30800000000000000
+      internalID: 4373095814848643151
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: World Edge Travellers_6
+      rect:
+        serializedVersion: 2
+        x: 1158
+        y: 1800
+        width: 193
+        height: 225
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 3167417223c074a70800000000000000
+      internalID: 8811024605517215251
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: World Edge Travellers_7
+      rect:
+        serializedVersion: 2
+        x: 1351
+        y: 1800
+        width: 193
+        height: 225
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: c185058c30f12a7f0800000000000000
+      internalID: -602885299008153572
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: World Edge Travellers_8
+      rect:
+        serializedVersion: 2
+        x: 1544
+        y: 1800
+        width: 193
+        height: 225
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 8fdab73641ae11090800000000000000
+      internalID: -8065408084354552328
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: World Edge Travellers_9
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 1575
+        width: 193
+        height: 225
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: d2573c69cce054680800000000000000
+      internalID: -8771588427368663763
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: World Edge Travellers_10
+      rect:
+        serializedVersion: 2
+        x: 193
+        y: 1575
+        width: 193
+        height: 225
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 8e369c53c25f65870800000000000000
+      internalID: 8671387702778225640
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: World Edge Travellers_11
+      rect:
+        serializedVersion: 2
+        x: 386
+        y: 1575
+        width: 193
+        height: 225
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 18dfd6108317065c0800000000000000
+      internalID: -4224251965117432447
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: World Edge Travellers_12
+      rect:
+        serializedVersion: 2
+        x: 579
+        y: 1575
+        width: 193
+        height: 225
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: d1c11170cae9f61f0800000000000000
+      internalID: -1049445726463910883
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: World Edge Travellers_13
+      rect:
+        serializedVersion: 2
+        x: 772
+        y: 1575
+        width: 193
+        height: 225
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: a1468b3718c8da5c0800000000000000
+      internalID: -4202548389646670822
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: World Edge Travellers_14
+      rect:
+        serializedVersion: 2
+        x: 965
+        y: 1575
+        width: 193
+        height: 225
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 144ab592398456bc0800000000000000
+      internalID: -3790543714471140287
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: World Edge Travellers_15
+      rect:
+        serializedVersion: 2
+        x: 1158
+        y: 1575
+        width: 193
+        height: 225
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 0ff6dfda7dd460920800000000000000
+      internalID: 2956135794147684336
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: World Edge Travellers_16
+      rect:
+        serializedVersion: 2
+        x: 1351
+        y: 1575
+        width: 193
+        height: 225
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 12918e1824e718e80800000000000000
+      internalID: -8178116624215697119
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: World Edge Travellers_17
+      rect:
+        serializedVersion: 2
+        x: 1544
+        y: 1575
+        width: 193
+        height: 225
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 8d48d88da2c9582f0800000000000000
+      internalID: -971198436792761128
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: World Edge Travellers_18
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 1350
+        width: 193
+        height: 225
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: c57577ca5c9583e60800000000000000
+      internalID: 7942196648404801372
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: World Edge Travellers_19
+      rect:
+        serializedVersion: 2
+        x: 193
+        y: 1350
+        width: 193
+        height: 225
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 3491890ede4d18020800000000000000
+      internalID: 2342387399349770563
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: World Edge Travellers_20
+      rect:
+        serializedVersion: 2
+        x: 386
+        y: 1350
+        width: 193
+        height: 225
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: f7e554fd5162e3c30800000000000000
+      internalID: 4340948966213770879
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: World Edge Travellers_21
+      rect:
+        serializedVersion: 2
+        x: 579
+        y: 1350
+        width: 193
+        height: 225
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 2c8f75b4e7a06eb60800000000000000
+      internalID: 7774913344247953602
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: World Edge Travellers_22
+      rect:
+        serializedVersion: 2
+        x: 772
+        y: 1350
+        width: 193
+        height: 225
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: cfb2ff6e72ec2cc60800000000000000
+      internalID: 7837052972352613372
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: World Edge Travellers_23
+      rect:
+        serializedVersion: 2
+        x: 965
+        y: 1350
+        width: 193
+        height: 225
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 01cb5ed540249aee0800000000000000
+      internalID: -1249394835095962608
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: World Edge Travellers_24
+      rect:
+        serializedVersion: 2
+        x: 1158
+        y: 1350
+        width: 193
+        height: 225
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: e33ffa5be6bd8c050800000000000000
+      internalID: 5821143786917458750
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: World Edge Travellers_25
+      rect:
+        serializedVersion: 2
+        x: 1351
+        y: 1350
+        width: 193
+        height: 225
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 6243538d49fa46420800000000000000
+      internalID: 2622413936853857318
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: World Edge Travellers_26
+      rect:
+        serializedVersion: 2
+        x: 1544
+        y: 1350
+        width: 193
+        height: 225
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 443f7dd116fe62b00800000000000000
+      internalID: 803592783923770180
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: World Edge Travellers_27
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 1125
+        width: 193
+        height: 225
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 606f745d3835cde40800000000000000
+      internalID: 5682508655518807558
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: World Edge Travellers_28
+      rect:
+        serializedVersion: 2
+        x: 193
+        y: 1125
+        width: 193
+        height: 225
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 65507f2264e8612d0800000000000000
+      internalID: -3308300444371581610
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: World Edge Travellers_29
+      rect:
+        serializedVersion: 2
+        x: 386
+        y: 1125
+        width: 193
+        height: 225
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 92037d7e456325a10800000000000000
+      internalID: 1896638131371192361
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: World Edge Travellers_30
+      rect:
+        serializedVersion: 2
+        x: 579
+        y: 1125
+        width: 193
+        height: 225
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 2f5626be18371f610800000000000000
+      internalID: 1653229540058752498
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: World Edge Travellers_31
+      rect:
+        serializedVersion: 2
+        x: 772
+        y: 1125
+        width: 193
+        height: 225
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 8b14665f931bee5e0800000000000000
+      internalID: -1878369132078546504
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: World Edge Travellers_32
+      rect:
+        serializedVersion: 2
+        x: 965
+        y: 1125
+        width: 193
+        height: 225
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: aedbf5a4364339030800000000000000
+      internalID: 3500198936451202538
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: World Edge Travellers_33
+      rect:
+        serializedVersion: 2
+        x: 1158
+        y: 1125
+        width: 193
+        height: 225
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 534f4257fa5c56760800000000000000
+      internalID: 7450578515929658421
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: World Edge Travellers_34
+      rect:
+        serializedVersion: 2
+        x: 1351
+        y: 1125
+        width: 193
+        height: 225
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 80d293ed3c4e9dd70800000000000000
+      internalID: 9068530854585249032
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: World Edge Travellers_35
+      rect:
+        serializedVersion: 2
+        x: 1544
+        y: 1125
+        width: 193
+        height: 225
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 4c8bf2a0947666d60800000000000000
+      internalID: 7883101761159805124
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: World Edge Travellers_36
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 900
+        width: 193
+        height: 225
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: b3f7c2b6be3b27300800000000000000
+      internalID: 248458753155563323
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: World Edge Travellers_37
+      rect:
+        serializedVersion: 2
+        x: 193
+        y: 900
+        width: 193
+        height: 225
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 9a0110e01767846b0800000000000000
+      internalID: -5311865532545167191
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: World Edge Travellers_38
+      rect:
+        serializedVersion: 2
+        x: 386
+        y: 900
+        width: 193
+        height: 225
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: b54452c98a1ce6560800000000000000
+      internalID: 7308992175187248219
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: World Edge Travellers_39
+      rect:
+        serializedVersion: 2
+        x: 579
+        y: 900
+        width: 193
+        height: 225
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 6ce4bf23767718810800000000000000
+      internalID: 1765823814026612422
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: World Edge Travellers_40
+      rect:
+        serializedVersion: 2
+        x: 772
+        y: 900
+        width: 193
+        height: 225
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: f76d4fab65617eba0800000000000000
+      internalID: -6059850211844106625
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: World Edge Travellers_41
+      rect:
+        serializedVersion: 2
+        x: 965
+        y: 900
+        width: 193
+        height: 225
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 885218c2ea5c1ae60800000000000000
+      internalID: 7971870167284131208
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: World Edge Travellers_42
+      rect:
+        serializedVersion: 2
+        x: 1158
+        y: 900
+        width: 193
+        height: 225
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: bfc8244b01f79eb10800000000000000
+      internalID: 2011278418318101755
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: World Edge Travellers_43
+      rect:
+        serializedVersion: 2
+        x: 1351
+        y: 900
+        width: 193
+        height: 225
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: d60b3366905a9e710800000000000000
+      internalID: 1723089792233877613
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: World Edge Travellers_44
+      rect:
+        serializedVersion: 2
+        x: 1544
+        y: 900
+        width: 193
+        height: 225
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 1908bbc60ef629850800000000000000
+      internalID: 6382286631624999057
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: World Edge Travellers_45
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 675
+        width: 193
+        height: 225
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: bff7c717943a08c30800000000000000
+      internalID: 4359663975126564859
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: World Edge Travellers_46
+      rect:
+        serializedVersion: 2
+        x: 193
+        y: 675
+        width: 193
+        height: 225
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 631aba98c79ca9c30800000000000000
+      internalID: 4367024325411971382
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: World Edge Travellers_47
+      rect:
+        serializedVersion: 2
+        x: 386
+        y: 675
+        width: 193
+        height: 225
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 4bcb231c1193fdf40800000000000000
+      internalID: 5755381597221338292
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: World Edge Travellers_48
+      rect:
+        serializedVersion: 2
+        x: 579
+        y: 675
+        width: 193
+        height: 225
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: ef819ccaa502611c0800000000000000
+      internalID: -4533400401083819778
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: World Edge Travellers_49
+      rect:
+        serializedVersion: 2
+        x: 772
+        y: 675
+        width: 193
+        height: 225
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 7ce5ec913f345baf0800000000000000
+      internalID: -381323882053869881
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: World Edge Travellers_50
+      rect:
+        serializedVersion: 2
+        x: 965
+        y: 675
+        width: 193
+        height: 225
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 62987977d916898e0800000000000000
+      internalID: -1686490731506071258
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: World Edge Travellers_51
+      rect:
+        serializedVersion: 2
+        x: 1158
+        y: 675
+        width: 193
+        height: 225
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 274a4b8c8017ef070800000000000000
+      internalID: 8142069458873394290
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: World Edge Travellers_52
+      rect:
+        serializedVersion: 2
+        x: 1351
+        y: 675
+        width: 193
+        height: 225
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: bb1373c26380ea6f0800000000000000
+      internalID: -671590265668554309
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: World Edge Travellers_53
+      rect:
+        serializedVersion: 2
+        x: 1544
+        y: 675
+        width: 193
+        height: 225
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 4864284c037add240800000000000000
+      internalID: 4818191004253439620
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: World Edge Travellers_54
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 450
+        width: 193
+        height: 225
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: fbc2b64f113817c40800000000000000
+      internalID: 5508327932389174463
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: World Edge Travellers_55
+      rect:
+        serializedVersion: 2
+        x: 193
+        y: 450
+        width: 193
+        height: 225
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 2c7e4a23c90a1df40800000000000000
+      internalID: 5751554791853844418
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: World Edge Travellers_56
+      rect:
+        serializedVersion: 2
+        x: 386
+        y: 450
+        width: 193
+        height: 225
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: a78633f52679522b0800000000000000
+      internalID: -5609911312060290950
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: World Edge Travellers_57
+      rect:
+        serializedVersion: 2
+        x: 579
+        y: 450
+        width: 193
+        height: 225
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: cc7140188dae0c680800000000000000
+      internalID: -8736725061500397620
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: World Edge Travellers_58
+      rect:
+        serializedVersion: 2
+        x: 772
+        y: 450
+        width: 193
+        height: 225
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: eef69a1c03ceafa80800000000000000
+      internalID: -8432167658146140178
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: World Edge Travellers_59
+      rect:
+        serializedVersion: 2
+        x: 965
+        y: 450
+        width: 193
+        height: 225
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: b6a74f418b74df520800000000000000
+      internalID: 2737423004462250603
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: World Edge Travellers_60
+      rect:
+        serializedVersion: 2
+        x: 1158
+        y: 450
+        width: 193
+        height: 225
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 843377842aad017f0800000000000000
+      internalID: -643774356178652344
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: World Edge Travellers_61
+      rect:
+        serializedVersion: 2
+        x: 1351
+        y: 450
+        width: 193
+        height: 225
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 800997060e8b1d340800000000000000
+      internalID: 4886890344504463368
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: World Edge Travellers_62
+      rect:
+        serializedVersion: 2
+        x: 1544
+        y: 450
+        width: 193
+        height: 225
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 5c544ef79b5fc2730800000000000000
+      internalID: 3975822748124726725
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: World Edge Travellers_63
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 225
+        width: 193
+        height: 225
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 7a898c3da08da7a00800000000000000
+      internalID: 755153428552390823
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: World Edge Travellers_64
+      rect:
+        serializedVersion: 2
+        x: 193
+        y: 225
+        width: 193
+        height: 225
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 11c438b881cf5c2c0800000000000000
+      internalID: -4411843077589480431
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: World Edge Travellers_65
+      rect:
+        serializedVersion: 2
+        x: 386
+        y: 225
+        width: 193
+        height: 225
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 69f16db7d4bdab060800000000000000
+      internalID: 6970124499145858966
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: World Edge Travellers_66
+      rect:
+        serializedVersion: 2
+        x: 579
+        y: 225
+        width: 193
+        height: 225
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 780209766cbc403d0800000000000000
+      internalID: -3241241778798452601
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: World Edge Travellers_67
+      rect:
+        serializedVersion: 2
+        x: 772
+        y: 225
+        width: 193
+        height: 225
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: dc122a6bb25298d00800000000000000
+      internalID: 975351663980323277
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: World Edge Travellers_68
+      rect:
+        serializedVersion: 2
+        x: 965
+        y: 225
+        width: 193
+        height: 225
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 5e0d2dcd03f3df560800000000000000
+      internalID: 7349099646034301157
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: World Edge Travellers_69
+      rect:
+        serializedVersion: 2
+        x: 1158
+        y: 225
+        width: 193
+        height: 225
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 1ef1e32ee96a95940800000000000000
+      internalID: 5285438839026753505
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: World Edge Travellers_70
+      rect:
+        serializedVersion: 2
+        x: 1351
+        y: 225
+        width: 193
+        height: 225
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: ad58fe6fe14c9fb20800000000000000
+      internalID: 3168779450102810074
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: World Edge Travellers_71
+      rect:
+        serializedVersion: 2
+        x: 1544
+        y: 225
+        width: 193
+        height: 225
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 68be63f0035f172e0800000000000000
+      internalID: -2129651562007041146
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: World Edge Travellers_72
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 0
+        width: 193
+        height: 225
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 356123e31f5642170800000000000000
+      internalID: 8152753312252434003
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: World Edge Travellers_73
+      rect:
+        serializedVersion: 2
+        x: 193
+        y: 0
+        width: 193
+        height: 225
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: a5b665c9c72770fb0800000000000000
+      internalID: -4681647408103920806
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: World Edge Travellers_74
+      rect:
+        serializedVersion: 2
+        x: 386
+        y: 0
+        width: 193
+        height: 225
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 9dd6c13a4b20c0a90800000000000000
+      internalID: -7346493917294203431
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: World Edge Travellers_75
+      rect:
+        serializedVersion: 2
+        x: 579
+        y: 0
+        width: 193
+        height: 225
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 3ba0ff1fe4a2396f0800000000000000
+      internalID: -679152600246973773
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    outline: []
+    physicsShape: []
+    bones: []
+    spriteID: 5e97eb03825dee720800000000000000
+    internalID: 0
+    vertices: []
+    indices: 
+    edges: []
+    weights: []
+    secondaryTextures: []
+  spritePackingTag: 
+  pSDRemoveMatte: 0
+  pSDShowRemoveMatteOption: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
