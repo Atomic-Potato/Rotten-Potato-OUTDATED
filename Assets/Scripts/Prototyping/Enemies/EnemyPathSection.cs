@@ -373,7 +373,7 @@ public class EnemyPathSection
     class Linear : EnemyPathSectionBase
     {
         [Tooltip("Enemy will move in the same order of the points")]
-        [SerializeField] Transform[] points;
+        [SerializeField] EnemyPathCreator creator;
 
         int _currentIndex = -1;
 
@@ -385,7 +385,7 @@ public class EnemyPathSection
 
         public override int GetSectionLength()
         {
-            return points.Length;
+            return creator.path.points.Count;
         }
 
         public override LinkedPoint GetCurrentPoint()
@@ -395,18 +395,18 @@ public class EnemyPathSection
 
         public override LinkedPoint GetNextPoint()
         {
-            if (points.Length == 0)
+            if (creator.path.points.Count == 0)
             {
                 throw new Exception("Linear section contains no points");
             }
 
-            if (_currentIndex == points.Length)
+            if (_currentIndex == creator.path.points.Count)
             {
                 return END_OF_PATH;
             }
             
             _currentIndex++;
-            if (_currentIndex == points.Length)
+            if (_currentIndex == creator.path.points.Count)
             {
                 if (_currentPoint == END_OF_PATH)
                 {
@@ -419,12 +419,12 @@ public class EnemyPathSection
             }
             else if (_currentPoint == null)
             {
-                _currentPoint = new LinkedPoint(points[_currentIndex].position, LinkedPoint.Types.Linear);
+                _currentPoint = new LinkedPoint(creator.path.points[_currentIndex].transform.position, LinkedPoint.Types.Linear);
                 return _currentPoint;
             }
             
             LinkedPoint nextPoint = _currentPoint.Next == null ? 
-                new LinkedPoint(points[_currentIndex].position, LinkedPoint.Types.Linear) :
+                new LinkedPoint(creator.path.points[_currentIndex].transform.position, LinkedPoint.Types.Linear) :
                 _currentPoint.Next;
 
             _previousPoint = _currentPoint;
@@ -438,7 +438,7 @@ public class EnemyPathSection
 
         public override LinkedPoint GetPreviousPoint()
         {
-            if (points.Length == 0)
+            if (creator.path.points.Count == 0)
             {
                 throw new Exception("Linear section contains no points");
             }

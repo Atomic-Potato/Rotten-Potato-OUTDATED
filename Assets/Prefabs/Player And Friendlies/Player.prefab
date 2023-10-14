@@ -249,8 +249,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 413292e5fd6274948854b126b5dc8237, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  count: 2
-  distance: 3
+  count: 5
+  distance: 4
   time: 0.1
   holdTime: -1
   holdJumpDistance: 1
