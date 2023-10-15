@@ -129,7 +129,7 @@ public class pPlayer : MonoBehaviour
         void ReloadScene()
         {
            Scene scene = SceneManager.GetActiveScene();
-           SceneManager.LoadScene(scene.name); 
+           SceneManager.LoadScene(scene.name);
         }
     }
     void ExecuteUpdateHitpoints(){}
