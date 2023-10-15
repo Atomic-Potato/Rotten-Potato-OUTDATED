@@ -46,6 +46,7 @@ public class PlayerInputManager : MonoBehaviour{
     public static bool IsPerformedJump => Maps.Player.Jump.triggered;
     public static bool IsPerformedTheFunny => Maps.Player.TheFunny.triggered;
     public static bool IsPerformedDash => Maps.Player.Dash.triggered;
+    public static bool IsPerformedInteract => Maps.Player.Interact.triggered;
 
     void Awake() 
     {
