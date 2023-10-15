@@ -82,9 +82,9 @@ GameObject:
   m_Component:
   - component: {fileID: 8460193405690895908}
   - component: {fileID: 8314805980087914297}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Block
-  m_TagString: Untagged
+  m_TagString: Ground
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -258,9 +258,9 @@ GameObject:
   m_Component:
   - component: {fileID: 8460193406884946349}
   - component: {fileID: 8851096954476034818}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Block
-  m_TagString: Untagged
+  m_TagString: Ground
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
