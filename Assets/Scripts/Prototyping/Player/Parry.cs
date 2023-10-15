@@ -17,6 +17,10 @@ public class Parry : MonoBehaviour
     [SerializeField] pDash dash;
 
     [Space]
+    [SerializeField] Animator animator;
+    [SerializeField] AnimationClip parryAnimation;
+
+    [Space]
     [Header("Audio")]
     [SerializeField] AudioSource audioParry;
     #endregion
@@ -40,6 +44,7 @@ public class Parry : MonoBehaviour
         if (!_isSpamming && PlayerInputManager.IsPerformedParry)
         {
             AudioManager.PlayAudioSource(audioParry);
+            PlayAnimation();
         }
 
         if (_parriableHostile != null)
@@ -214,4 +219,11 @@ public class Parry : MonoBehaviour
         _isGivenFreeDash = false;
         _giveFreeDashCache = null;
     }
+
+    #region Animation
+    void PlayAnimation()
+    {
+        animator.Play(parryAnimation.name);
+    }
+    #endregion
 }
