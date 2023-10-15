@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Linq.Expressions;
+using Unity.Mathematics;
 using UnityEngine;
 
 public class MediumEnemy : Enemy, IParriable
@@ -44,6 +45,7 @@ public class MediumEnemy : Enemy, IParriable
     [SerializeField] Collider2D collider;
     [SerializeField] SpriteRenderer spriteRenderer;
     [SerializeField] GameObject sprite;
+    [SerializeField] GameObject deathEffect;
 
     [Space]
     [Header("Audio")]
@@ -229,6 +231,7 @@ public class MediumEnemy : Enemy, IParriable
             _spawnedCluster.SetActive(true);
             _spawnedCluster.transform.position = transform.position;
         }
+        Instantiate(deathEffect, transform.position, Quaternion.identity);
         AudioManager.PlayAudioSource(audioDeath);
         Destroy(gameObject);
     }
@@ -250,6 +253,7 @@ public class MediumEnemy : Enemy, IParriable
             AudioManager.PlayAudioSource(audioDeath);
 
             Hide();
+            Instantiate(deathEffect, transform.position, Quaternion.identity);
             _isRespawning = true;
             pathManager.Reset();
             LinkedPoint point = pathManager.MoveToNextPoint();

@@ -193,6 +193,8 @@ MonoBehaviour:
   collider: {fileID: 465023391363997229}
   spriteRenderer: {fileID: 465023393393336948}
   sprite: {fileID: 465023393393336946}
+  deathEffect: {fileID: 702890733136639866, guid: b371c116777736d488a42800c161b33c,
+    type: 3}
   audioAttack: {fileID: 465023391271528609}
   audioDeath: {fileID: 465023392371594012}
   audioTeleport: {fileID: 465023393380733058}
