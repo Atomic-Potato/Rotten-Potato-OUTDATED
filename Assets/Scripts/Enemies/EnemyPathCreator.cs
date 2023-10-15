@@ -7,11 +7,11 @@ public class EnemyPathCreator : MonoBehaviour
     [SerializeField, Range(0, 100f)]
     float handlesSize = .1f;
     [SerializeField] 
-    Color handlesColor;
+    Color handlesColor = new Color(0, 1, 0);
     [SerializeField]
-    Color safeDistancePathColor;
+    Color safeDistancePathColor = new Color(1, 1, 1);
     [SerializeField]
-    Color nonSafeDistancePathColor;
+    Color nonSafeDistancePathColor = new Color(1, 0, 0);
     [SerializeField]
     Transform pathPointsParent;
 
