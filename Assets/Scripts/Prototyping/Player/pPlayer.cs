@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using UnityEngine;
+using UnityEngine.Rendering.PostProcessing;
 using UnityEngine.SceneManagement;
 
 // Note:
@@ -9,8 +10,10 @@ public class pPlayer : MonoBehaviour
 {
     #region Inspector Variables
     public bool IsImmortal;
-    [Range(0, 999)]
+    [MinMax(1, 999)]
     [SerializeField] int hitPoints = 4;
+    [MinMax(1,999)]
+    [SerializeField] int maxHitPoints = 20;
     [Range(0f, 10f)]
     [SerializeField] float recoveryTime = 2f;
 
@@ -28,7 +31,9 @@ public class pPlayer : MonoBehaviour
     public GameObject Object => gameObject;
     public int HitPoints => hitPoints;
     public Rigidbody2D Rigidbody => rigidbody;
+    public Action UpdateHitPoints;
     public Action<int> Damage;
+    public Func<int, bool> Heal;
     public Action Respawn;
 
     int _initialHitPoints;
@@ -51,7 +56,9 @@ public class pPlayer : MonoBehaviour
         _initialHitPoints = hitPoints;
 
         Damage = ApplyDamage;
+        Heal = ApplyHeal;
         Respawn = ExecuteRespawn;
+        UpdateHitPoints = ExecuteUpdateHitpoints;
     }
 
 
@@ -63,6 +70,7 @@ public class pPlayer : MonoBehaviour
         }
 
         hitPoints -= damagePoints;
+        UpdateHitPoints();
         AudioManager.PlayAudioSource(audioHurt);
 
         if (hitPoints <= 0)
@@ -70,6 +78,7 @@ public class pPlayer : MonoBehaviour
             if (IsImmortal)
             {
                 hitPoints = _initialHitPoints;
+                UpdateHitPoints();
             }
             else
             {
@@ -96,6 +105,17 @@ public class pPlayer : MonoBehaviour
         }
     }
 
+    bool ApplyHeal(int health)
+    {
+        if (hitPoints >= maxHitPoints || health < 0)
+            return false; // failed to heal
+
+        hitPoints += health;
+        UpdateHitPoints();
+        return true;
+    }
+
+
     public void Kill()
     {
         Object.SetActive(false);
@@ -112,4 +132,5 @@ public class pPlayer : MonoBehaviour
            SceneManager.LoadScene(scene.name); 
         }
     }
+    void ExecuteUpdateHitpoints(){}
 }

@@ -43,7 +43,7 @@ public class UIManager : MonoBehaviour
 
     void OnEnable()
     {
-        pPlayer.Instance.Damage += UpdateHitPoints;
+        pPlayer.Instance.UpdateHitPoints += UpdateHitPoints;
         pDash.Instance.AlterDashCount += UpdateDashes;
         PlayerAnimationManager.Instance.AnimationStateAction += UpdatePlayerState;
         GameManager.Instance.PauseGame += PauseGame;
@@ -56,7 +56,7 @@ public class UIManager : MonoBehaviour
 
     void OnDisable() 
     {
-        pPlayer.Instance.Damage -= UpdateHitPoints;
+        pPlayer.Instance.UpdateHitPoints -= UpdateHitPoints;
         pDash.Instance.AlterDashCount -= UpdateDashes;
         PlayerAnimationManager.Instance.AnimationStateAction -= UpdatePlayerState;
     }
@@ -64,7 +64,7 @@ public class UIManager : MonoBehaviour
     #endregion
 
     #region UI Updates
-    void UpdateHitPoints(int x = 0)
+    void UpdateHitPoints()
     {
         hitPoints.text = _hitPointsText + pPlayer.Instance.HitPoints.ToString();
     }
