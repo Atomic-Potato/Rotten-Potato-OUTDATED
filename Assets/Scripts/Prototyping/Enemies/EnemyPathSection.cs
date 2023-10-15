@@ -191,7 +191,7 @@ public class EnemyPathSection
         {
             if (isUsingRandomPoints)
             {
-                return numberOfPoints;
+                return _originalNumberOfPoints;
             }
             if (isUsingManualPoints)
             {

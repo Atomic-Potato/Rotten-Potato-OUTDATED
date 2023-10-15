@@ -1,4 +1,6 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
+using System.Linq.Expressions;
 using UnityEngine;
 
 public class MediumEnemy : Enemy, IParriable
@@ -41,6 +43,7 @@ public class MediumEnemy : Enemy, IParriable
     [SerializeField] EnemyProjectileShooting shooting;
     [SerializeField] Collider2D collider;
     [SerializeField] SpriteRenderer spriteRenderer;
+    [SerializeField] GameObject sprite;
 
     [Space]
     [Header("Audio")]
@@ -55,14 +58,22 @@ public class MediumEnemy : Enemy, IParriable
     #endregion
 
     #region Global Variables
-    public float TimeToCounterAttack => timeToCounterAttack;
+    int _hitPoints;
+    public int HitPoints => _hitPoints;
+    public Action UpdateHitPoints;
 
     float _counterAttackTimer;
+    public float CounterAttackTimer => _counterAttackTimer;
     float _toBeParriedTimer;
+    public float ToBeParriedTimer => _toBeParriedTimer;
     bool _isCanCounterAttack;
     bool _isCounterAttacking;
+    public bool IsCounterAttacking => _isCounterAttacking;
+
     bool _isCanAttack;
     bool _isAttacking;
+    public bool IsAttacking => _isAttacking;
+    
     bool _isParriable;
     bool _isPlayerInRange;
     bool _isRespawning;
@@ -83,6 +94,9 @@ public class MediumEnemy : Enemy, IParriable
             _spawnedCluster = Instantiate(enemyCluster);
             _spawnedCluster.SetActive(false);
         }
+
+        UpdateHitPoints = ExecuteUpdateHitPoints;
+        UpdateHitPoints.Invoke();
     }
 
     private void OnDrawGizmos() 
@@ -149,6 +163,7 @@ public class MediumEnemy : Enemy, IParriable
         }
 
         LinkedPoint point = pathManager.MoveToNextPoint();
+        UpdateHitPoints.Invoke();
         if (point == null)
         {
             if (isShouldRespawn)
@@ -183,6 +198,7 @@ public class MediumEnemy : Enemy, IParriable
         }
         
         LinkedPoint point = pathManager.MoveToNextPoint();
+        UpdateHitPoints.Invoke();
         if (point == null)
         {
             if (isShouldRespawn)
@@ -235,6 +251,7 @@ public class MediumEnemy : Enemy, IParriable
             _isRespawning = true;
             pathManager.Reset();
             LinkedPoint point = pathManager.MoveToNextPoint();
+            UpdateHitPoints.Invoke();
             if (point != null)
             {
                 spriteRenderer.color = (Color)GetPointColor(point);
@@ -251,7 +268,7 @@ public class MediumEnemy : Enemy, IParriable
             {
                 shooting.enabled = false;
             }
-            spriteRenderer.enabled = false;
+            sprite.SetActive(false);
             collider.enabled = false;
         }
 
@@ -261,8 +278,9 @@ public class MediumEnemy : Enemy, IParriable
             {
                 shooting.enabled = true;
             }
-            spriteRenderer.enabled = true;
+            sprite.SetActive(true);
             collider.enabled = true;
+            UpdateHitPoints();
         }
     }
 
@@ -315,6 +333,7 @@ public class MediumEnemy : Enemy, IParriable
         if (_counterAttackTimer >= timeToCounterAttack)
         {
             LinkedPoint point = pathManager.MoveToPreviousPoint();
+            UpdateHitPoints.Invoke();
             StopCounterAttack(GetPointColor(point));
             if (point == null)
             {
@@ -414,7 +433,7 @@ public class MediumEnemy : Enemy, IParriable
     #region Methods
     bool RollForSuccess(float probablityOfSuccess)
     {
-        float random = Random.Range(0f, 1f);
+        float random = UnityEngine.Random.Range(0f, 1f);
         return random <= probablityOfSuccess;
     }
 
@@ -435,6 +454,15 @@ public class MediumEnemy : Enemy, IParriable
         }
         
         return null;
+    }
+
+    void ExecuteUpdateHitPoints()
+    {
+        if (pathManager == null)
+            return;
+        int length = pathManager.GetCurrentSectionLength();
+        int index = pathManager.GetCurrentPointIndex();
+        _hitPoints =  length - index + 1;
     }
     #endregion
 }

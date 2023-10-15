@@ -20,12 +20,16 @@ public class EnemyPathManager : MonoBehaviour
     /// </summary>
     public int GetCurrentPointIndex()
     {
-        return path[_currentSectionIndex] != null ? path[_currentSectionIndex].GetCurrentPointIndex() : -1;
+        return _currentSectionIndex >= path.Length || path[_currentSectionIndex] == null ? 
+            -1 :
+            path[_currentSectionIndex].GetCurrentPointIndex();
     }
 
     public int GetCurrentSectionLength()
     {
-        return path[_currentSectionIndex] == null ? 0 : path[_currentSectionIndex].GetSectionLength();
+        return _currentSectionIndex >= path.Length || path[_currentSectionIndex] == null ? 
+            0 :
+            path[_currentSectionIndex].GetSectionLength();
     }
 
     public LinkedPoint GetCurrentPoint()
