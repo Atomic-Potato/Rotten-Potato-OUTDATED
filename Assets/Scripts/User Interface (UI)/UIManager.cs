@@ -87,13 +87,14 @@ public class UIManager : MonoBehaviour
     #region Methods
     public void ResumeGame()
     {
-        GameManager.Instance.PauseGame();
+        if (GameManager.Instance.CurrentGameState != GameManager.GameState.Playing)
+            GameManager.Instance.ResumeGame();
+
         menuPause.SetActive(false);
     }
 
     public void PauseGame()
     {
-        GameManager.Instance.ResumeGame();
         menuPause.SetActive(true);
     }
 

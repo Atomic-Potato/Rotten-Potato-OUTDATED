@@ -59,11 +59,13 @@ public class GameManager : MonoBehaviour
         _currentGameState = GameState.Paused;
         _timeScaleBeforePause = Time.timeScale;
         Time.timeScale = 0f;
+        PlayerInputManager.Maps.Player.Disable();
     }
 
     void ExecuteResumeGame()
     {
         _currentGameState = GameState.Playing;
         Time.timeScale = _timeScaleBeforePause;
+        PlayerInputManager.Maps.Player.Enable();
     }
 }
