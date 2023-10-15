@@ -10,6 +10,7 @@ public class Interactable : MonoBehaviour
     bool interactOnContact;
     [SerializeField] bool showPrompt = true;
     [SerializeField] Canvas promptCanvas;
+    [SerializeField] GameObject prompt;
 
     [SerializeField, Space(10), Tooltip("The event that is executed on interaction")]
     UnityEvent interactionEvent;
@@ -20,7 +21,7 @@ public class Interactable : MonoBehaviour
     void Awake()
     {
         promptCanvas.worldCamera = Camera.main;
-        promptCanvas.enabled = false;
+        prompt.SetActive(false);
 
         if (interactionEvent.GetPersistentEventCount() == 0)
         {
@@ -33,8 +34,8 @@ public class Interactable : MonoBehaviour
     {
         if (_isInInteractionZone)
         {
-            if (showPrompt && !promptCanvas.enabled)
-                promptCanvas.enabled = true;
+            if (showPrompt && !prompt.activeSelf)
+                prompt.SetActive(true);
 
             if(interactOnContact)
                 interactionEvent.Invoke();
@@ -43,8 +44,8 @@ public class Interactable : MonoBehaviour
         }
         else
         {
-            if (promptCanvas.enabled)
-                promptCanvas.enabled = false;
+            if (prompt.activeSelf)
+                prompt.SetActive(false);
         }
     }
 
