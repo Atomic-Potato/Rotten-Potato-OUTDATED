@@ -54,7 +54,7 @@ public class GameManager : MonoBehaviour
         Application.Quit();
     }
 
-    void ExecutePauseGame()
+    public void ExecutePauseGame()
     {
         _currentGameState = GameState.Paused;
         _timeScaleBeforePause = Time.timeScale;
@@ -62,7 +62,7 @@ public class GameManager : MonoBehaviour
         PlayerInputManager.Maps.Player.Disable();
     }
 
-    void ExecuteResumeGame()
+    public void ExecuteResumeGame()
     {
         _currentGameState = GameState.Playing;
         Time.timeScale = _timeScaleBeforePause;

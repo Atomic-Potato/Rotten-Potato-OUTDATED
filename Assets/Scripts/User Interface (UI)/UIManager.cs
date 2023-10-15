@@ -88,7 +88,7 @@ public class UIManager : MonoBehaviour
     public void ResumeGame()
     {
         if (GameManager.Instance.CurrentGameState != GameManager.GameState.Playing)
-            GameManager.Instance.ResumeGame();
+            GameManager.Instance.ExecuteResumeGame();
 
         menuPause.SetActive(false);
     }
@@ -96,6 +96,13 @@ public class UIManager : MonoBehaviour
     public void PauseGame()
     {
         menuPause.SetActive(true);
+    }
+
+    public void Respawn()
+    {
+        if (GameManager.Instance.CurrentGameState == GameManager.GameState.Paused)
+            GameManager.Instance.ResumeGame();
+        pPlayer.Instance.Respawn();
     }
 
     public void QuitGame()
