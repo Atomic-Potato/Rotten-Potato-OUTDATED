@@ -64,8 +64,10 @@ public class MediumEnemy : Enemy, IParriable
 
     float _counterAttackTimer;
     public float CounterAttackTimer => _counterAttackTimer;
+    public float CounterAttackTime => timeToCounterAttack;
     float _toBeParriedTimer;
     public float ToBeParriedTimer => _toBeParriedTimer;
+    public float ToBeParriedTime => timeToBeParried;
     bool _isCanCounterAttack;
     bool _isCounterAttacking;
     public bool IsCounterAttacking => _isCounterAttacking;

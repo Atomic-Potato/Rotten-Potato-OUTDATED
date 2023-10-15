@@ -1,4 +1,5 @@
-﻿using TMPro;
+﻿using System;
+using TMPro;
 using UnityEngine;
 
 public class MediumEnemyUIManager : MonoBehaviour
@@ -59,14 +60,24 @@ public class MediumEnemyUIManager : MonoBehaviour
     #region States
     void DisplayAttackState()
     {
+        float time = enemy.ToBeParriedTime - enemy.ToBeParriedTimer;
+        TimeSpan timeSpan = TimeSpan.FromSeconds(time);
+
         stateText.color = attackColor;
-        stateText.text = attackDescription + enemy.ToBeParriedTimer.ToString();
+        stateText.text = attackDescription + 
+            timeSpan.Seconds.ToString("0") + ":" +
+            ((int)timeSpan.Milliseconds/100).ToString();
     }
 
     void DisplayCounterAttackState()
     {
+        float time = enemy.CounterAttackTime - enemy.CounterAttackTimer;
+        TimeSpan timeSpan = TimeSpan.FromSeconds(time);
+
         stateText.color = counterAttackColor;
-        stateText.text = counterAttackDescription + enemy.CounterAttackTimer.ToString();
+        stateText.text = counterAttackDescription + 
+            timeSpan.Seconds.ToString("0") + ":" +
+            ((int)timeSpan.Milliseconds/100).ToString();
     }
 
     void DisplayIdleState()
