@@ -485,7 +485,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!114 &99293309
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4806,7 +4806,7 @@ PrefabInstance:
     - target: {fileID: 465023391363997225, guid: cfb3d329c14dbbc4caafbcde2c4c134d,
         type: 3}
       propertyPath: m_Name
-      value: Enemy MID (1)
+      value: Enemy EZ-MID
       objectReference: {fileID: 0}
     - target: {fileID: 465023391363997225, guid: cfb3d329c14dbbc4caafbcde2c4c134d,
         type: 3}
@@ -5321,22 +5321,22 @@ PrefabInstance:
     - target: {fileID: 465023391363997228, guid: cfb3d329c14dbbc4caafbcde2c4c134d,
         type: 3}
       propertyPath: timeToBeParried
-      value: 1
+      value: 0.75
       objectReference: {fileID: 0}
     - target: {fileID: 465023391363997228, guid: cfb3d329c14dbbc4caafbcde2c4c134d,
         type: 3}
       propertyPath: timeToCounterAttack
-      value: 0.65
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 465023391363997228, guid: cfb3d329c14dbbc4caafbcde2c4c134d,
         type: 3}
       propertyPath: attackPlayerProbability
-      value: 0
+      value: 0.5
       objectReference: {fileID: 0}
     - target: {fileID: 465023391363997228, guid: cfb3d329c14dbbc4caafbcde2c4c134d,
         type: 3}
       propertyPath: counterAttackProbability
-      value: 0
+      value: 0.5
       objectReference: {fileID: 0}
     - target: {fileID: 465023391363997228, guid: cfb3d329c14dbbc4caafbcde2c4c134d,
         type: 3}
@@ -5346,7 +5346,7 @@ PrefabInstance:
     - target: {fileID: 465023391363997228, guid: cfb3d329c14dbbc4caafbcde2c4c134d,
         type: 3}
       propertyPath: keepCounterAttackingProbability
-      value: 0
+      value: 0.5
       objectReference: {fileID: 0}
     - target: {fileID: 5263287796732956670, guid: cfb3d329c14dbbc4caafbcde2c4c134d,
         type: 3}
@@ -7206,8 +7206,8 @@ MonoBehaviour:
   m_fontMaterials: []
   m_fontColor32:
     serializedVersion: 2
-    rgba: 1959984904
-  m_fontColor: {r: 0.033018887, g: 1, b: 0.8229755, a: 0.45490196}
+    rgba: 349372168
+  m_fontColor: {r: 0.033018887, g: 1, b: 0.8229755, a: 0.078431375}
   m_enableVertexGradient: 0
   m_colorMode: 3
   m_fontColorGradient:
@@ -11329,7 +11329,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!114 &1138007810
 MonoBehaviour:
   m_ObjectHideFlags: 0
