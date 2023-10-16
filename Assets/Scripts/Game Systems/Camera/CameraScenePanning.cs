@@ -67,7 +67,7 @@ public class CameraScenePanning : MonoBehaviour, ICameraStrategy
         Transform panningPoint = nextPanningPoint != null ? nextPanningPoint.transform : previousPanningPoint.transform;
 
         transform.position = new Vector3(
-            target.position.x, 
+            panningPoint.position.x, 
             Mathf.SmoothDamp(transform.position.y, target.transform.position.y, ref refcamSpeed, 0.1f), 
             transform.position.z);
     }
