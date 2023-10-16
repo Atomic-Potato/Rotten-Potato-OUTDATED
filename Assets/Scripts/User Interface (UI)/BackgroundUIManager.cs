@@ -6,13 +6,30 @@ using UnityEngine.SceneManagement;
 public class BackgroundUIManager : MonoBehaviour
 {
     [SerializeField] TMP_Text freeDash;
+    
+    [Space]
     [SerializeField] TMP_Text timer;
+    [SerializeField] RectTransform timerTransfrom;
 
     [Space]
     [SerializeField] Canvas canvas;
 
     static BackgroundUIManager _instance;
     public static BackgroundUIManager Instance => _instance;
+
+    public Vector3 TimerPosition
+    {
+        get { return timerTransfrom.anchoredPosition; }
+        set { timerTransfrom.anchoredPosition = value; }
+    }
+
+    public Color TimerColor 
+    {
+        get { return timer.color; }
+        set { timer.color = value; }
+    }
+
+    Vector3 refTimerOffsetVelocity;
 
     void Awake()
     {

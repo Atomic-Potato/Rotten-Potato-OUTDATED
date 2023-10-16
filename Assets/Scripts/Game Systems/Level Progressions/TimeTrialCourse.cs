@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.Rendering.PostProcessing;
 
 [RequireComponent(typeof(Collider2D), typeof(Collider2D))]
 public class TimeTrialCourse : MonoBehaviour
@@ -7,24 +8,36 @@ public class TimeTrialCourse : MonoBehaviour
     float timeLimit = -1f;
     
     [Space]
+    [SerializeField] bool isShouldOffsetTimerOnFinish = true;
+    [SerializeField, UnityEngine.Min(0)] 
+    float timerOffsetSpeed = 1f;
+    [SerializeField] Vector2 timerOffset;
+
+    [Space]
     [SerializeField] Collider2D startTrigger;
     [SerializeField] Collider2D finishTrigger;
 
-    Timer timer;
+    Timer _timer;
+    Color _originalTimerColor;
 
     void Awake()
     {
-        timer = new Timer(false);
+        _timer = new Timer(false);
         startTrigger.enabled = true;
         finishTrigger.enabled = false;
     }
 
+    void Start()
+    {
+        _originalTimerColor = BackgroundUIManager.Instance.TimerColor;
+    }
+
     void Update()
     {
-        if (timer.IsStarted && !timer.IsPaused)
+        if (_timer.IsStarted && !_timer.IsPaused)
         {
-            timer.Count();
-            BackgroundUIManager.Instance.UpdateTimer(timer.CurrentTime);
+            _timer.Count();
+            BackgroundUIManager.Instance.UpdateTimer(_timer.CurrentTime);
         }
     }
 
@@ -33,17 +46,18 @@ public class TimeTrialCourse : MonoBehaviour
         string tag = other.gameObject.tag;
         if (tag == TagsManager.Tag_Player)
         {
-            if (!timer.IsStarted)
+            if (!_timer.IsStarted)
                 StartTrial();
             else
                 FinishTrial();
         }    
     }
 
+    #region Public Methods
     public void StartTrial()
     {
         ResetTrial();
-        timer.Start();
+        _timer.Start();
         BackgroundUIManager.Instance.ShowTimer();
         startTrigger.enabled = false;
         finishTrigger.enabled = true;
@@ -51,15 +65,22 @@ public class TimeTrialCourse : MonoBehaviour
 
     public void FinishTrial()
     {
-        timer.Stop();
+        Color brightTimerColor = _originalTimerColor;
+        brightTimerColor.a = 1f;
+
+        _timer.Stop();
+        BackgroundUIManager.Instance.TimerPosition = timerOffset;
+        BackgroundUIManager.Instance.TimerColor = brightTimerColor; 
         finishTrigger.enabled = false;
     }
 
     public void ResetTrial()
     {
-        timer.Reset();
+        _timer.Reset();
+        BackgroundUIManager.Instance.TimerPosition = Vector3.zero;
+        BackgroundUIManager.Instance.TimerColor = _originalTimerColor; 
         startTrigger.enabled = true;
         finishTrigger.enabled = false;
     }
-
+    #endregion
 }
