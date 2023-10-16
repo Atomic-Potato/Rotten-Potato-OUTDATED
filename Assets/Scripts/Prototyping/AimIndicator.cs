@@ -44,7 +44,11 @@ public class AimIndicator : MonoBehaviour
 
     void Update()
     {
-        indicator.transform.position = (Vector2)transform.position + GetAimingDirection() * distanceFromPlayer;
+        Vector2 aimingDirection = GetAimingDirection();
+        float angle = Mathf.Atan2(aimingDirection.y, aimingDirection.x) * Mathf.Rad2Deg;
+        indicator.transform.position = (Vector2)transform.position + aimingDirection * distanceFromPlayer;
+        indicator.transform.rotation = Quaternion.Euler(new Vector3(0, 0, angle));
+
         DrawBox(indicator.transform.position, new Vector3(collider.size.x/2f, collider.size.y/2f, 0f), Color.red);
         DrawBox(
             new Vector3(transform.position.x, transform.position.y -0.08f, 0f), 
