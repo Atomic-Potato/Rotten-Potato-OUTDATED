@@ -62,16 +62,14 @@ public class AimIndicator : MonoBehaviour
         {
             if (PlayerInputManager.Aim == Vector2.zero)
             {
-                return PlayerInputManager.DirectionRaw;
+                return PlayerInputManager.DirectionRaw.normalized;
             }
             else if (PlayerInputManager.Aim != Vector2.zero)
             {
                 return PlayerInputManager.Aim;
             }
-            else
-            {
-                return Vector2.up;
-            }
+
+            return Vector2.up;
         }
         else
         {
