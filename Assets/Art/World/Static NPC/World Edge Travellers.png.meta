@@ -230,6 +230,21 @@ TextureImporter:
   - first:
       213: -679152600246973773
     second: World Edge Travellers_75
+  - first:
+      213: 1199775923141364205
+    second: World Edge Travellers_76
+  - first:
+      213: -6731574310346183000
+    second: World Edge Travellers_77
+  - first:
+      213: -2428537885414777028
+    second: World Edge Travellers_78
+  - first:
+      213: -7754449935573262283
+    second: World Edge Travellers_79
+  - first:
+      213: 2146450462932818877
+    second: World Edge Travellers_80
   externalObjects: {}
   serializedVersion: 11
   mipmaps:
@@ -289,7 +304,7 @@ TextureImporter:
   platformSettings:
   - serializedVersion: 3
     buildTarget: DefaultTexturePlatform
-    maxTextureSize: 2048
+    maxTextureSize: 4096
     resizeAlgorithm: 0
     textureFormat: -1
     textureCompression: 0
@@ -301,7 +316,7 @@ TextureImporter:
     forceMaximumCompressionQuality_BC6H_BC7: 0
   - serializedVersion: 3
     buildTarget: Standalone
-    maxTextureSize: 2048
+    maxTextureSize: 4096
     resizeAlgorithm: 0
     textureFormat: -1
     textureCompression: 0
@@ -319,9 +334,9 @@ TextureImporter:
       rect:
         serializedVersion: 2
         x: 0
-        y: 1800
-        width: 193
-        height: 225
+        y: 2032
+        width: 185
+        height: 254
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -339,10 +354,10 @@ TextureImporter:
       name: World Edge Travellers_1
       rect:
         serializedVersion: 2
-        x: 193
-        y: 1800
-        width: 193
-        height: 225
+        x: 185
+        y: 2032
+        width: 185
+        height: 254
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -360,10 +375,10 @@ TextureImporter:
       name: World Edge Travellers_2
       rect:
         serializedVersion: 2
-        x: 386
-        y: 1800
-        width: 193
-        height: 225
+        x: 370
+        y: 2032
+        width: 185
+        height: 254
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -381,10 +396,10 @@ TextureImporter:
       name: World Edge Travellers_3
       rect:
         serializedVersion: 2
-        x: 579
-        y: 1800
-        width: 193
-        height: 225
+        x: 555
+        y: 2032
+        width: 185
+        height: 254
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -402,10 +417,10 @@ TextureImporter:
       name: World Edge Travellers_4
       rect:
         serializedVersion: 2
-        x: 772
-        y: 1800
-        width: 193
-        height: 225
+        x: 740
+        y: 2032
+        width: 185
+        height: 254
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -423,10 +438,10 @@ TextureImporter:
       name: World Edge Travellers_5
       rect:
         serializedVersion: 2
-        x: 965
-        y: 1800
-        width: 193
-        height: 225
+        x: 925
+        y: 2032
+        width: 185
+        height: 254
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -444,10 +459,10 @@ TextureImporter:
       name: World Edge Travellers_6
       rect:
         serializedVersion: 2
-        x: 1158
-        y: 1800
-        width: 193
-        height: 225
+        x: 1110
+        y: 2032
+        width: 185
+        height: 254
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -465,10 +480,10 @@ TextureImporter:
       name: World Edge Travellers_7
       rect:
         serializedVersion: 2
-        x: 1351
-        y: 1800
-        width: 193
-        height: 225
+        x: 1295
+        y: 2032
+        width: 185
+        height: 254
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -486,10 +501,10 @@ TextureImporter:
       name: World Edge Travellers_8
       rect:
         serializedVersion: 2
-        x: 1544
-        y: 1800
-        width: 193
-        height: 225
+        x: 1480
+        y: 2032
+        width: 185
+        height: 254
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -508,9 +523,9 @@ TextureImporter:
       rect:
         serializedVersion: 2
         x: 0
-        y: 1575
-        width: 193
-        height: 225
+        y: 1778
+        width: 185
+        height: 254
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -528,10 +543,10 @@ TextureImporter:
       name: World Edge Travellers_10
       rect:
         serializedVersion: 2
-        x: 193
-        y: 1575
-        width: 193
-        height: 225
+        x: 185
+        y: 1778
+        width: 185
+        height: 254
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -549,10 +564,10 @@ TextureImporter:
       name: World Edge Travellers_11
       rect:
         serializedVersion: 2
-        x: 386
-        y: 1575
-        width: 193
-        height: 225
+        x: 370
+        y: 1778
+        width: 185
+        height: 254
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -570,10 +585,10 @@ TextureImporter:
       name: World Edge Travellers_12
       rect:
         serializedVersion: 2
-        x: 579
-        y: 1575
-        width: 193
-        height: 225
+        x: 555
+        y: 1778
+        width: 185
+        height: 254
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -591,10 +606,10 @@ TextureImporter:
       name: World Edge Travellers_13
       rect:
         serializedVersion: 2
-        x: 772
-        y: 1575
-        width: 193
-        height: 225
+        x: 740
+        y: 1778
+        width: 185
+        height: 254
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -612,10 +627,10 @@ TextureImporter:
       name: World Edge Travellers_14
       rect:
         serializedVersion: 2
-        x: 965
-        y: 1575
-        width: 193
-        height: 225
+        x: 925
+        y: 1778
+        width: 185
+        height: 254
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -633,10 +648,10 @@ TextureImporter:
       name: World Edge Travellers_15
       rect:
         serializedVersion: 2
-        x: 1158
-        y: 1575
-        width: 193
-        height: 225
+        x: 1110
+        y: 1778
+        width: 185
+        height: 254
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -654,10 +669,10 @@ TextureImporter:
       name: World Edge Travellers_16
       rect:
         serializedVersion: 2
-        x: 1351
-        y: 1575
-        width: 193
-        height: 225
+        x: 1295
+        y: 1778
+        width: 185
+        height: 254
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -675,10 +690,10 @@ TextureImporter:
       name: World Edge Travellers_17
       rect:
         serializedVersion: 2
-        x: 1544
-        y: 1575
-        width: 193
-        height: 225
+        x: 1480
+        y: 1778
+        width: 185
+        height: 254
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -697,9 +712,9 @@ TextureImporter:
       rect:
         serializedVersion: 2
         x: 0
-        y: 1350
-        width: 193
-        height: 225
+        y: 1524
+        width: 185
+        height: 254
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -717,10 +732,10 @@ TextureImporter:
       name: World Edge Travellers_19
       rect:
         serializedVersion: 2
-        x: 193
-        y: 1350
-        width: 193
-        height: 225
+        x: 185
+        y: 1524
+        width: 185
+        height: 254
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -738,10 +753,10 @@ TextureImporter:
       name: World Edge Travellers_20
       rect:
         serializedVersion: 2
-        x: 386
-        y: 1350
-        width: 193
-        height: 225
+        x: 370
+        y: 1524
+        width: 185
+        height: 254
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -759,10 +774,10 @@ TextureImporter:
       name: World Edge Travellers_21
       rect:
         serializedVersion: 2
-        x: 579
-        y: 1350
-        width: 193
-        height: 225
+        x: 555
+        y: 1524
+        width: 185
+        height: 254
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -780,10 +795,10 @@ TextureImporter:
       name: World Edge Travellers_22
       rect:
         serializedVersion: 2
-        x: 772
-        y: 1350
-        width: 193
-        height: 225
+        x: 740
+        y: 1524
+        width: 185
+        height: 254
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -801,10 +816,10 @@ TextureImporter:
       name: World Edge Travellers_23
       rect:
         serializedVersion: 2
-        x: 965
-        y: 1350
-        width: 193
-        height: 225
+        x: 925
+        y: 1524
+        width: 185
+        height: 254
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -822,10 +837,10 @@ TextureImporter:
       name: World Edge Travellers_24
       rect:
         serializedVersion: 2
-        x: 1158
-        y: 1350
-        width: 193
-        height: 225
+        x: 1110
+        y: 1524
+        width: 185
+        height: 254
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -843,10 +858,10 @@ TextureImporter:
       name: World Edge Travellers_25
       rect:
         serializedVersion: 2
-        x: 1351
-        y: 1350
-        width: 193
-        height: 225
+        x: 1295
+        y: 1524
+        width: 185
+        height: 254
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -864,10 +879,10 @@ TextureImporter:
       name: World Edge Travellers_26
       rect:
         serializedVersion: 2
-        x: 1544
-        y: 1350
-        width: 193
-        height: 225
+        x: 1480
+        y: 1524
+        width: 185
+        height: 254
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -886,9 +901,9 @@ TextureImporter:
       rect:
         serializedVersion: 2
         x: 0
-        y: 1125
-        width: 193
-        height: 225
+        y: 1270
+        width: 185
+        height: 254
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -906,10 +921,10 @@ TextureImporter:
       name: World Edge Travellers_28
       rect:
         serializedVersion: 2
-        x: 193
-        y: 1125
-        width: 193
-        height: 225
+        x: 185
+        y: 1270
+        width: 185
+        height: 254
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -927,10 +942,10 @@ TextureImporter:
       name: World Edge Travellers_29
       rect:
         serializedVersion: 2
-        x: 386
-        y: 1125
-        width: 193
-        height: 225
+        x: 370
+        y: 1270
+        width: 185
+        height: 254
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -948,10 +963,10 @@ TextureImporter:
       name: World Edge Travellers_30
       rect:
         serializedVersion: 2
-        x: 579
-        y: 1125
-        width: 193
-        height: 225
+        x: 555
+        y: 1270
+        width: 185
+        height: 254
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -969,10 +984,10 @@ TextureImporter:
       name: World Edge Travellers_31
       rect:
         serializedVersion: 2
-        x: 772
-        y: 1125
-        width: 193
-        height: 225
+        x: 740
+        y: 1270
+        width: 185
+        height: 254
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -990,10 +1005,10 @@ TextureImporter:
       name: World Edge Travellers_32
       rect:
         serializedVersion: 2
-        x: 965
-        y: 1125
-        width: 193
-        height: 225
+        x: 925
+        y: 1270
+        width: 185
+        height: 254
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -1011,10 +1026,10 @@ TextureImporter:
       name: World Edge Travellers_33
       rect:
         serializedVersion: 2
-        x: 1158
-        y: 1125
-        width: 193
-        height: 225
+        x: 1110
+        y: 1270
+        width: 185
+        height: 254
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -1032,10 +1047,10 @@ TextureImporter:
       name: World Edge Travellers_34
       rect:
         serializedVersion: 2
-        x: 1351
-        y: 1125
-        width: 193
-        height: 225
+        x: 1295
+        y: 1270
+        width: 185
+        height: 254
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -1053,10 +1068,10 @@ TextureImporter:
       name: World Edge Travellers_35
       rect:
         serializedVersion: 2
-        x: 1544
-        y: 1125
-        width: 193
-        height: 225
+        x: 1480
+        y: 1270
+        width: 185
+        height: 254
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -1075,9 +1090,9 @@ TextureImporter:
       rect:
         serializedVersion: 2
         x: 0
-        y: 900
-        width: 193
-        height: 225
+        y: 1016
+        width: 185
+        height: 254
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -1095,10 +1110,10 @@ TextureImporter:
       name: World Edge Travellers_37
       rect:
         serializedVersion: 2
-        x: 193
-        y: 900
-        width: 193
-        height: 225
+        x: 185
+        y: 1016
+        width: 185
+        height: 254
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -1116,10 +1131,10 @@ TextureImporter:
       name: World Edge Travellers_38
       rect:
         serializedVersion: 2
-        x: 386
-        y: 900
-        width: 193
-        height: 225
+        x: 370
+        y: 1016
+        width: 185
+        height: 254
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -1137,10 +1152,10 @@ TextureImporter:
       name: World Edge Travellers_39
       rect:
         serializedVersion: 2
-        x: 579
-        y: 900
-        width: 193
-        height: 225
+        x: 555
+        y: 1016
+        width: 185
+        height: 254
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -1158,10 +1173,10 @@ TextureImporter:
       name: World Edge Travellers_40
       rect:
         serializedVersion: 2
-        x: 772
-        y: 900
-        width: 193
-        height: 225
+        x: 740
+        y: 1016
+        width: 185
+        height: 254
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -1179,10 +1194,10 @@ TextureImporter:
       name: World Edge Travellers_41
       rect:
         serializedVersion: 2
-        x: 965
-        y: 900
-        width: 193
-        height: 225
+        x: 925
+        y: 1016
+        width: 185
+        height: 254
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -1200,10 +1215,10 @@ TextureImporter:
       name: World Edge Travellers_42
       rect:
         serializedVersion: 2
-        x: 1158
-        y: 900
-        width: 193
-        height: 225
+        x: 1110
+        y: 1016
+        width: 185
+        height: 254
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -1221,10 +1236,10 @@ TextureImporter:
       name: World Edge Travellers_43
       rect:
         serializedVersion: 2
-        x: 1351
-        y: 900
-        width: 193
-        height: 225
+        x: 1295
+        y: 1016
+        width: 185
+        height: 254
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -1242,10 +1257,10 @@ TextureImporter:
       name: World Edge Travellers_44
       rect:
         serializedVersion: 2
-        x: 1544
-        y: 900
-        width: 193
-        height: 225
+        x: 1480
+        y: 1016
+        width: 185
+        height: 254
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -1264,9 +1279,9 @@ TextureImporter:
       rect:
         serializedVersion: 2
         x: 0
-        y: 675
-        width: 193
-        height: 225
+        y: 762
+        width: 185
+        height: 254
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -1284,10 +1299,10 @@ TextureImporter:
       name: World Edge Travellers_46
       rect:
         serializedVersion: 2
-        x: 193
-        y: 675
-        width: 193
-        height: 225
+        x: 185
+        y: 762
+        width: 185
+        height: 254
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -1305,10 +1320,10 @@ TextureImporter:
       name: World Edge Travellers_47
       rect:
         serializedVersion: 2
-        x: 386
-        y: 675
-        width: 193
-        height: 225
+        x: 370
+        y: 762
+        width: 185
+        height: 254
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -1326,10 +1341,10 @@ TextureImporter:
       name: World Edge Travellers_48
       rect:
         serializedVersion: 2
-        x: 579
-        y: 675
-        width: 193
-        height: 225
+        x: 555
+        y: 762
+        width: 185
+        height: 254
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -1347,10 +1362,10 @@ TextureImporter:
       name: World Edge Travellers_49
       rect:
         serializedVersion: 2
-        x: 772
-        y: 675
-        width: 193
-        height: 225
+        x: 740
+        y: 762
+        width: 185
+        height: 254
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -1368,10 +1383,10 @@ TextureImporter:
       name: World Edge Travellers_50
       rect:
         serializedVersion: 2
-        x: 965
-        y: 675
-        width: 193
-        height: 225
+        x: 925
+        y: 762
+        width: 185
+        height: 254
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -1389,10 +1404,10 @@ TextureImporter:
       name: World Edge Travellers_51
       rect:
         serializedVersion: 2
-        x: 1158
-        y: 675
-        width: 193
-        height: 225
+        x: 1110
+        y: 762
+        width: 185
+        height: 254
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -1410,10 +1425,10 @@ TextureImporter:
       name: World Edge Travellers_52
       rect:
         serializedVersion: 2
-        x: 1351
-        y: 675
-        width: 193
-        height: 225
+        x: 1295
+        y: 762
+        width: 185
+        height: 254
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -1431,10 +1446,10 @@ TextureImporter:
       name: World Edge Travellers_53
       rect:
         serializedVersion: 2
-        x: 1544
-        y: 675
-        width: 193
-        height: 225
+        x: 1480
+        y: 762
+        width: 185
+        height: 254
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -1453,9 +1468,9 @@ TextureImporter:
       rect:
         serializedVersion: 2
         x: 0
-        y: 450
-        width: 193
-        height: 225
+        y: 508
+        width: 185
+        height: 254
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -1473,10 +1488,10 @@ TextureImporter:
       name: World Edge Travellers_55
       rect:
         serializedVersion: 2
-        x: 193
-        y: 450
-        width: 193
-        height: 225
+        x: 185
+        y: 508
+        width: 185
+        height: 254
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -1494,10 +1509,10 @@ TextureImporter:
       name: World Edge Travellers_56
       rect:
         serializedVersion: 2
-        x: 386
-        y: 450
-        width: 193
-        height: 225
+        x: 370
+        y: 508
+        width: 185
+        height: 254
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -1515,10 +1530,10 @@ TextureImporter:
       name: World Edge Travellers_57
       rect:
         serializedVersion: 2
-        x: 579
-        y: 450
-        width: 193
-        height: 225
+        x: 555
+        y: 508
+        width: 185
+        height: 254
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -1536,10 +1551,10 @@ TextureImporter:
       name: World Edge Travellers_58
       rect:
         serializedVersion: 2
-        x: 772
-        y: 450
-        width: 193
-        height: 225
+        x: 740
+        y: 508
+        width: 185
+        height: 254
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -1557,10 +1572,10 @@ TextureImporter:
       name: World Edge Travellers_59
       rect:
         serializedVersion: 2
-        x: 965
-        y: 450
-        width: 193
-        height: 225
+        x: 925
+        y: 508
+        width: 185
+        height: 254
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -1578,10 +1593,10 @@ TextureImporter:
       name: World Edge Travellers_60
       rect:
         serializedVersion: 2
-        x: 1158
-        y: 450
-        width: 193
-        height: 225
+        x: 1110
+        y: 508
+        width: 185
+        height: 254
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -1599,10 +1614,10 @@ TextureImporter:
       name: World Edge Travellers_61
       rect:
         serializedVersion: 2
-        x: 1351
-        y: 450
-        width: 193
-        height: 225
+        x: 1295
+        y: 508
+        width: 185
+        height: 254
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -1620,10 +1635,10 @@ TextureImporter:
       name: World Edge Travellers_62
       rect:
         serializedVersion: 2
-        x: 1544
-        y: 450
-        width: 193
-        height: 225
+        x: 1480
+        y: 508
+        width: 185
+        height: 254
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -1642,9 +1657,9 @@ TextureImporter:
       rect:
         serializedVersion: 2
         x: 0
-        y: 225
-        width: 193
-        height: 225
+        y: 254
+        width: 185
+        height: 254
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -1662,10 +1677,10 @@ TextureImporter:
       name: World Edge Travellers_64
       rect:
         serializedVersion: 2
-        x: 193
-        y: 225
-        width: 193
-        height: 225
+        x: 185
+        y: 254
+        width: 185
+        height: 254
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -1683,10 +1698,10 @@ TextureImporter:
       name: World Edge Travellers_65
       rect:
         serializedVersion: 2
-        x: 386
-        y: 225
-        width: 193
-        height: 225
+        x: 370
+        y: 254
+        width: 185
+        height: 254
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -1704,10 +1719,10 @@ TextureImporter:
       name: World Edge Travellers_66
       rect:
         serializedVersion: 2
-        x: 579
-        y: 225
-        width: 193
-        height: 225
+        x: 555
+        y: 254
+        width: 185
+        height: 254
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -1725,10 +1740,10 @@ TextureImporter:
       name: World Edge Travellers_67
       rect:
         serializedVersion: 2
-        x: 772
-        y: 225
-        width: 193
-        height: 225
+        x: 740
+        y: 254
+        width: 185
+        height: 254
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -1746,10 +1761,10 @@ TextureImporter:
       name: World Edge Travellers_68
       rect:
         serializedVersion: 2
-        x: 965
-        y: 225
-        width: 193
-        height: 225
+        x: 925
+        y: 254
+        width: 185
+        height: 254
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -1767,10 +1782,10 @@ TextureImporter:
       name: World Edge Travellers_69
       rect:
         serializedVersion: 2
-        x: 1158
-        y: 225
-        width: 193
-        height: 225
+        x: 1110
+        y: 254
+        width: 185
+        height: 254
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -1788,10 +1803,10 @@ TextureImporter:
       name: World Edge Travellers_70
       rect:
         serializedVersion: 2
-        x: 1351
-        y: 225
-        width: 193
-        height: 225
+        x: 1295
+        y: 254
+        width: 185
+        height: 254
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -1809,10 +1824,10 @@ TextureImporter:
       name: World Edge Travellers_71
       rect:
         serializedVersion: 2
-        x: 1544
-        y: 225
-        width: 193
-        height: 225
+        x: 1480
+        y: 254
+        width: 185
+        height: 254
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -1832,8 +1847,8 @@ TextureImporter:
         serializedVersion: 2
         x: 0
         y: 0
-        width: 193
-        height: 225
+        width: 185
+        height: 254
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -1851,10 +1866,10 @@ TextureImporter:
       name: World Edge Travellers_73
       rect:
         serializedVersion: 2
-        x: 193
+        x: 185
         y: 0
-        width: 193
-        height: 225
+        width: 185
+        height: 254
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -1872,10 +1887,10 @@ TextureImporter:
       name: World Edge Travellers_74
       rect:
         serializedVersion: 2
-        x: 386
+        x: 370
         y: 0
-        width: 193
-        height: 225
+        width: 185
+        height: 254
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -1893,10 +1908,10 @@ TextureImporter:
       name: World Edge Travellers_75
       rect:
         serializedVersion: 2
-        x: 579
+        x: 555
         y: 0
-        width: 193
-        height: 225
+        width: 185
+        height: 254
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -1906,6 +1921,27 @@ TextureImporter:
       bones: []
       spriteID: 3ba0ff1fe4a2396f0800000000000000
       internalID: -679152600246973773
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: World Edge Travellers_76
+      rect:
+        serializedVersion: 2
+        x: 740
+        y: 0
+        width: 185
+        height: 254
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: de948ec68d576a010800000000000000
+      internalID: 1199775923141364205
       vertices: []
       indices: 
       edges: []
