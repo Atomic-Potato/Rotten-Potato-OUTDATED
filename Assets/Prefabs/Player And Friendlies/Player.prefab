@@ -225,7 +225,7 @@ MonoBehaviour:
   coyoteTime: 0.05
   jumpBufferTime: 0.1
   jumpingStateCooldownTime: 0.1
-  groundBoxCastSize: {x: 0.95, y: 0.25}
+  groundBoxCastSize: {x: 0.535, y: 0.25}
   groundBoxCastPosition: {fileID: 982481149545524107}
   groundLayer:
     serializedVersion: 2
