@@ -456,7 +456,7 @@ public class MediumEnemy : Enemy, IParriable
         }
         else if (point.type == LinkedPoint.Types.Linear)
         {
-            return Color.green;
+            return Color.red;
         }
         
         return null;
