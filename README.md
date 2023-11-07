@@ -1,4 +1,4 @@
-**This 'read me' files contains a history of all prototypes and milestones of previous versions of the game as nice gifs and some text :)**
+**This 'read me' file contains a history of all prototypes and milestones of previous versions of the game as nice gifs and some text :)**
 
 # Untitled Potato Game
 The game aims to be a fast paced 2D top down game about potatoes with dashing being your main fighting mechanic
@@ -17,7 +17,14 @@ For contact you can reach me here:
 # Prototype B
 This prototype overhauled the game, centering the focus on the dashing. And an enemy behavior that resembles a chase.
 
-
+<div display="flex"
+    flex-wrap="nowrap">
+  <img src="https://github.com/Atomic-Potato/Untitled-Potato-Game/assets/55362397/71e81102-7f19-4081-b396-8ea0f0e94bee" width="450"/>
+  <img src="https://github.com/Atomic-Potato/Untitled-Potato-Game/assets/55362397/b44bf3b1-c0ad-4c4e-a973-c63996e654ca" width="450"/>
+  <img src="https://github.com/Atomic-Potato/Untitled-Potato-Game/assets/55362397/36f08de3-4801-40eb-89ec-ccbf16ebd13b" height="425"/>
+  <img src="https://github.com/Atomic-Potato/Untitled-Potato-Game/assets/55362397/e391f93b-4559-49fe-aaf1-f0a0d730ec37" height="425"/>
+<div/>
+  
 # Prototype A (aka v.0.2-alpha)
 **This build contains:**
 - Player Controller, that includes
