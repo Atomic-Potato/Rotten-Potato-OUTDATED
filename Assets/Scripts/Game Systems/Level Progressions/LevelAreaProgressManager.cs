@@ -11,7 +11,7 @@ public class LevelAreaProgressManager : MonoBehaviour
     {
         if (isShouldResetProgressOnRespawn)
         {
-            pPlayer.Instance.Respawn += ResetAreaProgress;
+            Player.Instance.Respawn += ResetAreaProgress;
         }
     
     }

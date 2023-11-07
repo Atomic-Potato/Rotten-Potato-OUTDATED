@@ -4,10 +4,10 @@ using UnityEngine;
 
 public class CameraScenePanning : MonoBehaviour, ICameraStrategy
 {
-    public pCameraPanningPoint firstPanningPoint;
+    public CameraPanningPoint firstPanningPoint;
 
-    pCameraPanningPoint nextPanningPoint;
-    pCameraPanningPoint previousPanningPoint;
+    CameraPanningPoint nextPanningPoint;
+    CameraPanningPoint previousPanningPoint;
 
     Transform target;
 
@@ -27,7 +27,7 @@ public class CameraScenePanning : MonoBehaviour, ICameraStrategy
 
     void Start()
     {
-        target = pPlayer.Instance.transform;
+        target = Player.Instance.transform;
     }
 
     void ICameraStrategy.ExecuteFixedUpdate() {
@@ -238,7 +238,7 @@ public class CameraScenePanning : MonoBehaviour, ICameraStrategy
         FlowDirection = GetFlowDirection(CurrentPanningType);
     }
 
-    void ShiftPointsWhenInNextPanningRegion(Vector2 shiftingDirection, int panningType, pCameraPanningPoint startPoint, pCameraPanningPoint endPoint){
+    void ShiftPointsWhenInNextPanningRegion(Vector2 shiftingDirection, int panningType, CameraPanningPoint startPoint, CameraPanningPoint endPoint){
             Vector2 nextFlowDirection = GetFlowDirection(panningType, startPoint, endPoint);
             
             if(nextFlowDirection == Vector2.up){
@@ -290,7 +290,7 @@ public class CameraScenePanning : MonoBehaviour, ICameraStrategy
             return HorizontalPanning; 
     }
 
-    int GetPanningType(pCameraPanningPoint previous, pCameraPanningPoint next){
+    int GetPanningType(CameraPanningPoint previous, CameraPanningPoint next){
         float differenceInHeight = Mathf.Abs(previous.y - next.y); 
         float differenceInWidth = Mathf.Abs(previous.x - next.x);
 
@@ -315,7 +315,7 @@ public class CameraScenePanning : MonoBehaviour, ICameraStrategy
         }
     }
 
-    Vector2 GetFlowDirection(int panningType, pCameraPanningPoint previous, pCameraPanningPoint next){
+    Vector2 GetFlowDirection(int panningType, CameraPanningPoint previous, CameraPanningPoint next){
         if(panningType == HorizontalPanning){
             if(previous.x < next.x)
                 return Vector2.right;

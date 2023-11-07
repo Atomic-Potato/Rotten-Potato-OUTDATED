@@ -6,7 +6,7 @@ public class HealthPickup : MonoBehaviour
 
     public void Heal()
     {
-        bool isHealed = pPlayer.Instance.Heal(health);
+        bool isHealed = Player.Instance.Heal(health);
         if (isHealed)
         {
             Destroy(gameObject);

@@ -28,7 +28,7 @@ public class SpawnManager : MonoBehaviour
 
     public void SpawnPlayer()
     {
-        if (pPlayer.Instance != null)
+        if (Player.Instance != null)
             throw new System.Exception("Failed to spawn player: Player already spawned");
 
         if (LevelSpawnPoint == null)
@@ -49,7 +49,7 @@ public class SpawnManager : MonoBehaviour
 
     public void SpawnPlayerAtCheckpoint()
     {
-        if (pPlayer.Instance != null)
+        if (Player.Instance != null)
             throw new System.Exception("Failed to spawn player: Player already spawned");
 
         if (Checkpoint == null)

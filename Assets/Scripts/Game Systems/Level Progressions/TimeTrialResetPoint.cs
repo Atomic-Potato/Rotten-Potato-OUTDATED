@@ -9,6 +9,6 @@ public class TimeTrialResetPoint : MonoBehaviour
     {
         timeTrialCourse.ResetTrial();
         if (isShouldRespawn)
-            pPlayer.Instance.Respawn();
+            Player.Instance.Respawn();
     }
 }
