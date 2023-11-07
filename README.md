@@ -1,7 +1,25 @@
-# Untitled Potato Game
-A fast paced 2D semi open world wave survival game about fighting hordes of mutated Potatoes!
+**This 'read me' files contains a history of all prototypes and milestones of previous versions of the game as nice gifs and some text :)**
 
-## What is currently built:
+# Untitled Potato Game
+The game aims to be a fast paced 2D top down game about potatoes with dashing being your main fighting mechanic
+
+> [!Important]
+> _This repo code will not be updated past `Prototype B`, as development has been moved to a private repo.
+> However all releases will be done on this repository.
+> (I may update this code at some points in development, but highly unlikely)_
+
+---
+
+For contact you can reach me here:
+- medyan.mhd@gmail.com
+- atomic_potato_32 (Discord)
+
+# Prototype B
+This prototype overhauled the game, centering the focus on the dashing. And an enemy behavior that resembles a chase.
+
+
+# Prototype A (aka v.0.2-alpha)
+**This build contains:**
 - Player Controller, that includes
   - Horizontal Movement
   - Jumping
@@ -28,15 +46,3 @@ A fast paced 2D semi open world wave survival game about fighting hordes of muta
 
 ![course gif](https://user-images.githubusercontent.com/55362397/195274245-5f329c1b-b7fb-4904-844c-dc8673497581.gif)
 
----
-
-To check the current ToDo list that includes `Features, Enhancements, Bugs & Ideas` you can find them here: <br />
-https://github.com/users/Atomic-Potato/projects/2
-
-_Currently just accepting help in Bugs, like why this is happening, and Ideas, whats an easy way to implement this. Will most likely allow for actual contributions in the future, but so far I'm still using this project to learn game development._
-
----
-
-For contact you can reach me here:
-- medyanmehiddine@gmail.com
-- Atomic Potato#1947 (Discord)
