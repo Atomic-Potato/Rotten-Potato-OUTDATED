@@ -5,7 +5,7 @@ The game aims to be a fast paced 2D top down game about potatoes with dashing be
 
 > [!Important]
 > _This repo code will not be updated past `Prototype B`, as development has been moved to a private repo.
-> However all releases will be done on this repository.
+> However all releases will be done on this repository and occasional readme updates.
 > (I may update this code at some points in development, but highly unlikely)_
 
 ---
@@ -13,6 +13,33 @@ The game aims to be a fast paced 2D top down game about potatoes with dashing be
 For contact you can reach me here:
 - medyan.mhd@gmail.com
 - atomic_potato_32 (Discord)
+
+# Concept art
+<table style="border: none;">
+  <tr>
+    <!-- Left cell: vertical image spanning two rows -->
+    <td rowspan="2" style="vertical-align: top;">
+      <img src="https://github.com/user-attachments/assets/737d3fb3-b2dc-424c-a64d-adf45c69eb4c" 
+           alt="Vertical Image" 
+           style="">
+    </td>
+    <!-- Right cell: top square image -->
+    <td style="vertical-align: top;">
+      <img src="https://github.com/user-attachments/assets/cb3802ef-bf08-4143-b258-7c4acd01e882" 
+           alt="Square Image 1" 
+           style=" object-fit: cover;">
+    </td>
+  </tr>
+  <tr>
+    <!-- Right cell: bottom square image -->
+    <td style="vertical-align: top;">
+      <img src="https://github.com/user-attachments/assets/47f35db2-b672-4459-882a-64623d7bef42" 
+           alt="Square Image 2" 
+           style=" object-fit: cover;">
+    </td>
+  </tr>
+</table>
+
 
 # Prototype B
 This prototype overhauled the game, centering the focus on the dashing. And an enemy behavior that resembles a chase.
