@@ -1,7 +1,8 @@
 **This 'read me' file contains a history of all prototypes and milestones of previous versions of the game as nice gifs and some text :)**
 
 # Untitled Potato Game
-The game aims to be a fast paced 2D top down game about potatoes with dashing being your main fighting mechanic
+~~The game aims to be a fast paced 2D top down game about potatoes with dashing being your main fighting mechanic~~
+The direction of the game has changed and i'm still figuring out what it will be, but definetly not that.
 
 > [!Important]
 > _This repo code will not be updated past `Prototype B`, as development has been moved to a private repo.
